@@ -80,14 +80,6 @@ geg/
 - 设置页可导出 / 导入 / 重置存档。
 - 换浏览器、清理缓存前请先导出。
 
-## 调试工具（开发用）
-
-- 打开 `index.html?debug=allcards`：自动解锁全部卡片（存档即时生效）。
-- 打开 `index.html?debug` 后按 F12 在控制台执行：
-  - `__geg.allCards()` 解锁全部卡片
-  - `__geg.addFrags(1000)` 加碎片
-  - `__geg.reset()` 重置存档
-
 ## 部署到 GitHub Pages
 
 1. 推到 GitHub 仓库。
