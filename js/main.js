@@ -28,9 +28,10 @@
   initViewer();
   bindEvents();
   renderAll();
+  Tutorial.begin();
   if (off) toast('离线归来：碎片收益 +' + off.frags + '（相当于 ' + Math.floor(off.frags / CONFIG.FRAG_COST_PER_DRAW) + ' 抽）', '', 6000);
 
-  setInterval(() => tick(performance.now()), 100);
+  setInterval(() => { tick(performance.now()); Tutorial.check(); }, 100);
   setInterval(() => Save.write(S), 5000);
   onPageHide = () => Save.write(S);
   window.addEventListener('pagehide', onPageHide);

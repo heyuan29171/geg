@@ -81,6 +81,7 @@ function spawnMonster() { monsterHp = monsterMaxHp(); }
 
 function clickMonster() {
   monsterHp -= activePower() * 0.5;
+  if (typeof Tutorial !== 'undefined') Tutorial.onMonsterClick();
 }
 
 function tick(now) {

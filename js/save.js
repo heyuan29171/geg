@@ -62,6 +62,7 @@ function defaultSave() {
     totalPulls: 0,
     rarityCounts: rarityCounts,
     log: [],
+    tutorial: 0,
     updatedAt: Date.now(),
   };
 }
@@ -85,6 +86,7 @@ function sanitize(raw) {
     totalPulls: num(raw.totalPulls, 0, 0, 1e12),
     rarityCounts: {},
     log: Array.isArray(raw.log) ? raw.log.slice(0, 12) : [],
+    tutorial: raw.tutorial != null ? num(raw.tutorial, 0, 0, 4) : ((raw.totalPulls || 0) > 0 ? 4 : 0),
     updatedAt: num(raw.updatedAt, Date.now(), 0, Date.now()),
   };
   CARDS.forEach(c => {

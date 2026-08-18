@@ -683,3 +683,89 @@ h3 { font-size: 15px; color: var(--text); margin: 14px 0 8px; }
   .bag-inner { flex-wrap: wrap; }
   .bag-actions { flex-direction: row; }
 }
+
+/* ===== 新手引导 ===== */
+
+#tut-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: rgba(10, 18, 36, .55);
+  pointer-events: none;
+}
+
+#tut-ring {
+  position: fixed;
+  z-index: 9002;
+  pointer-events: none;
+  border: 3px solid #3b82f6;
+  border-radius: 10px;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, .9);
+  display: none;
+}
+
+#tut-bubble {
+  position: fixed;
+  z-index: 9003;
+  max-width: min(92vw, 360px);
+  background: #fff;
+  border: 2px solid #3b82f6;
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .28);
+  font-size: 14px;
+  line-height: 1.65;
+  display: none;
+}
+
+#tut-bubble .tut-title { font-weight: 800; font-size: 15px; color: #1d4ed8; margin-bottom: 6px; }
+#tut-bubble .tut-body { color: #334155; }
+#tut-bubble .tut-progress { color: #1d4ed8; font-weight: 700; }
+
+#tut-bubble .tut-btns { display: flex; gap: 8px; margin-top: 12px; justify-content: flex-end; align-items: center; }
+
+#tut-bubble .tut-btn {
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-radius: 8px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-size: 13px;
+  min-height: 36px;
+}
+
+#tut-bubble .tut-btn.primary { background: #2563eb; border-color: #2563eb; color: #fff; }
+#tut-bubble .tut-btn.primary:hover { background: #1d4ed8; }
+#tut-bubble .tut-skip { border: 0; background: transparent; color: #94a3b8; margin-right: auto; }
+#tut-bubble .tut-skip:hover { color: #64748b; background: transparent; }
+
+/* ===== 移动端适配 ===== */
+
+@media (max-width: 560px) {
+  main { margin: 12px auto; padding: 0 10px 70px; }
+  .topbar { padding: 8px 12px; gap: 8px; }
+  .brand { font-size: 16px; }
+  .top-stats { order: 3; width: 100%; gap: 10px; font-size: 12px; justify-content: space-between; }
+  .tabs { order: 2; width: 100%; overflow-x: auto; }
+  .tab-btn { flex: 1; min-width: 0; padding: 8px 6px; font-size: 13px; white-space: nowrap; }
+  .panel { padding: 12px 14px; border-radius: 12px; }
+  .battle-layout { gap: 12px; }
+  .quick-actions { flex-wrap: wrap; }
+  .quick-actions .btn { flex: 1 1 auto; min-width: 130px; }
+  .codex-grid { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px; }
+  .codex-cell .frame-inner { min-height: 128px; }
+  .bag-inner { gap: 10px; padding: 10px 12px; }
+  .bag-actions { width: 100%; justify-content: flex-end; }
+  .bag-actions .btn { flex: 1; }
+  .battle-row { gap: 6px; padding: 24px 4px 8px; min-height: 110px; }
+  .mini-card { width: 48px; }
+  .mini-card.center { transform: translateY(-14px) scale(1.25); }
+  .monster-timer { font-size: 12px; }
+  #toasts { top: auto; bottom: 12px; right: 10px; left: 10px; }
+  .toast { font-size: 12px; padding: 8px 12px; }
+  .viewer-hint { display: none; }
+  .kv { font-size: 13px; }
+  #tut-bubble { padding: 12px 14px; font-size: 13px; }
+  #tut-bubble .tut-btn { padding: 8px 14px; }
+}
