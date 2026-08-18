@@ -231,7 +231,12 @@ h3 { font-size: 15px; color: var(--text); margin: 14px 0 8px; }
       rgba(244, 63, 94, .20), rgba(245, 158, 11, .17), rgba(132, 204, 22, .17),
       rgba(34, 197, 94, .17), rgba(14, 165, 233, .19), rgba(139, 92, 246, .20),
       rgba(236, 72, 153, .19), rgba(244, 63, 94, .20));
-  animation: laser-hue 7s linear infinite;
+  animation: laser-slide 6s linear infinite, laser-hue 12s linear infinite;
+}
+
+@keyframes laser-slide {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 200px 0, 0 0; }
 }
 
 @keyframes laser-hue {
