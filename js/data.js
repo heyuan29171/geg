@@ -1,12 +1,12 @@
 const RARITIES = {
   white:   { name: '白卡',   order: 0, color: '#9ca3af', weight: 55,      basePower: 1,       frag: 1 },
 green:   { name: '绿卡',   order: 1, color: '#16a34a', weight: 7.3,     basePower: 10,      frag: 2 },
-  blue:    { name: '蓝卡',   order: 2, color: '#2563eb', weight: 2.5,     basePower: 20,      frag: 20 },
-  purple:  { name: '紫卡',   order: 3, color: '#7c3aed', weight: 0.5,     basePower: 45,      frag: 80 },
-  gold:    { name: '金卡',   order: 4, color: '#d97706', weight: 0.1,     basePower: 107,     frag: 400 },
-  red:     { name: '红卡',   order: 5, color: '#dc2626', weight: 0.004,    basePower: 12000,   frag: 3000 },
-  black:   { name: '黑卡',   order: 6, color: '#111827', weight: 0.0001,  basePower: 80000,   frag: 15000 },
-  rainbow: { name: '炫彩卡', order: 7, color: 'rainbow', weight: 0.00002, basePower: 2000000, frag: 40000 },
+  blue:    { name: '蓝卡',   order: 2, color: '#2563eb', weight: 2.5,     basePower: 20,      frag: 33 },
+  purple:  { name: '紫卡',   order: 3, color: '#7c3aed', weight: 0.5,     basePower: 45,      frag: 164 },
+  gold:    { name: '金卡',   order: 4, color: '#d97706', weight: 0.1,     basePower: 107,     frag: 818 },
+  red:     { name: '红卡',   order: 5, color: '#dc2626', weight: 0.004,    basePower: 12000,   frag: 20439 },
+  black:   { name: '黑卡',   order: 6, color: '#111827', weight: 0.0001,  basePower: 80000,   frag: 817552 },
+  rainbow: { name: '炫彩卡', order: 7, color: 'rainbow', weight: 0.00002, basePower: 2000000, frag: 4087758 },
 };
 
 const RARITY_LIST = Object.keys(RARITIES).map(k => ({ id: k, ...RARITIES[k] })).sort((a, b) => a.order - b.order);
@@ -151,7 +151,7 @@ const CARD_MAP = {};
 CARDS.forEach(c => { CARD_MAP[c.id] = c; });
 
 const CONFIG = {
-  VERSION: '1.0.1',
+  VERSION: '1.0.2',
   INTERVAL_BASE: 10,
   INTERVAL_EXP: 0.4956,
   MIN_INTERVAL: 0.005,
