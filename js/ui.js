@@ -299,6 +299,7 @@ function sortedCards(pool, sort) {
       case 'power': return basePowerOf(c);
       case 'fp': return formationPowerOf(c.id);
       case 'count': return S.owned[c.id] || 0;
+      case 'got': return S.ownedAt[c.id] || 0;
       default: return c.no;
     }
   };
@@ -307,7 +308,7 @@ function sortedCards(pool, sort) {
 
 function renderSortBar(el, sort, withCount) {
   const opts = withCount
-    ? [['no', '编号'], ['rarity', '稀有度'], ['power', '战力'], ['fp', '编队战力'], ['count', '持有数']]
+    ? [['no', '编号'], ['rarity', '稀有度'], ['power', '战力'], ['fp', '编队战力'], ['count', '持有数'], ['got', '获得时间']]
     : [['no', '编号'], ['rarity', '稀有度'], ['power', '战力'], ['fp', '编队战力']];
   const chips = opts.map(o =>
     '<button class="chip' + (sort.key === o[0] ? ' active' : '') + '" data-sort="' + o[0] + '">' + o[1] + '</button>'

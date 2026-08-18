@@ -44,12 +44,17 @@ function decodeSave(str) {
 
 function defaultSave() {
   const owned = {};
-  CARDS.forEach(c => { if (c.start) owned[c.id] = 1; });
+  const ownedAt = {};
+  const now = Date.now();
+  CARDS.forEach(c => {
+    if (c.start) { owned[c.id] = 1; ownedAt[c.id] = now; }
+  });
   const rarityCounts = {};
   RARITY_LIST.forEach(r => { rarityCounts[r.id] = 0; });
   return {
     v: 1,
     owned: owned,
+    ownedAt: ownedAt,
     fragments: 0,
     activeCenter: 'egg-rainbow',
     monsterLevel: 1,
@@ -72,6 +77,7 @@ function sanitize(raw) {
   const s = {
     v: 1,
     owned: {},
+    ownedAt: {},
     fragments: num(raw.fragments, 0, 0, 1e12),
     activeCenter: typeof raw.activeCenter === 'string' && CARD_MAP[raw.activeCenter] ? raw.activeCenter : d.activeCenter,
     monsterLevel: num(raw.monsterLevel, 1, 1, 1e7),
@@ -86,6 +92,12 @@ function sanitize(raw) {
     const def = c.start ? 1 : 0;
     const n = num(rawOwned[c.id], def, 0, 1e9);
     s.owned[c.id] = c.unique ? 1 : (c.start && n === 0 ? 1 : n);
+  });
+  const rawOwnedAt = raw.ownedAt && typeof raw.ownedAt === 'object' ? raw.ownedAt : {};
+  CARDS.forEach(c => {
+    s.ownedAt[c.id] = rawOwnedAt[c.id] != null
+      ? num(rawOwnedAt[c.id], 0, 0, Date.now())
+      : (c.start ? s.updatedAt : 0);
   });
   RARITY_LIST.forEach(r => {
     const rawRc = raw.rarityCounts && typeof raw.rarityCounts === 'object' ? raw.rarityCounts : {};

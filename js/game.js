@@ -63,6 +63,7 @@ function doDraw(opts) {
   const before = S.owned[card.id] || 0;
   const isNew = before === 0;
   S.owned[card.id] = before + 1;
+  if (isNew) S.ownedAt[card.id] = Date.now();
   S.rarityCounts[r.id]++;
   let frag = 0;
   if (!isNew) {
