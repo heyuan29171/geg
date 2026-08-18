@@ -365,6 +365,8 @@ h3 { font-size: 15px; color: var(--text); margin: 14px 0 8px; }
 
 .search-input { flex: 1; min-width: 150px; max-width: 240px; padding: 6px 10px; font-size: 12px; border: 1px solid var(--line); border-radius: 8px; }
 
+.star-btn { display: inline-block; text-decoration: none; font-weight: 600; }
+
 .range-sep { color: var(--muted); font-size: 12px; }
 
 .codex-head { margin-bottom: 14px; }

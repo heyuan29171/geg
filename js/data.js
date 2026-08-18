@@ -1,9 +1,9 @@
 const RARITIES = {
   white:   { name: '白卡',   order: 0, color: '#9ca3af', weight: 55,      basePower: 1,       frag: 1 },
 green:   { name: '绿卡',   order: 1, color: '#16a34a', weight: 7.3,     basePower: 10,      frag: 3 },
-  blue:    { name: '蓝卡',   order: 2, color: '#2563eb', weight: 2.5,     basePower: 20,      frag: 8 },
-  purple:  { name: '紫卡',   order: 3, color: '#7c3aed', weight: 0.5,     basePower: 45,      frag: 25 },
-  gold:    { name: '金卡',   order: 4, color: '#d97706', weight: 0.1,     basePower: 107,     frag: 80 },
+  blue:    { name: '蓝卡',   order: 2, color: '#2563eb', weight: 2.5,     basePower: 20,      frag: 105 },
+  purple:  { name: '紫卡',   order: 3, color: '#7c3aed', weight: 0.5,     basePower: 45,      frag: 541 },
+  gold:    { name: '金卡',   order: 4, color: '#d97706', weight: 0.1,     basePower: 107,     frag: 3141 },
   red:     { name: '红卡',   order: 5, color: '#dc2626', weight: 0.004,    basePower: 12000,   frag: 79374 },
   black:   { name: '黑卡',   order: 6, color: '#111827', weight: 0.0001,  basePower: 80000,   frag: 2725172 },
   rainbow: { name: '炫彩卡', order: 7, color: 'rainbow', weight: 0.00002, basePower: 2000000, frag: 16351030 },
