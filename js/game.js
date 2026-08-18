@@ -26,7 +26,12 @@ function activePower() { return formationPowerOf(S.activeCenter); }
 
 function battleInterval() {
   const P = Math.max(activePower(), 1);
-  return Math.max(CONFIG.MIN_INTERVAL, Math.min(CONFIG.INTERVAL_BASE, CONFIG.INTERVAL_BASE * Math.pow(Math.max(P0, 1) / P, CONFIG.INTERVAL_EXP)));
+  const P0 = Math.max(P0, 1);
+  const Pg = CONFIG.INTERVAL_GOLD_P;
+  const iv = P <= Pg
+    ? CONFIG.INTERVAL_BASE * Math.pow(P0 / P, CONFIG.EXP_START_TO_GOLD)
+    : CONFIG.INTERVAL_GOLD_S * Math.pow(Pg / P, CONFIG.EXP_GOLD_TO_TOP);
+  return Math.max(CONFIG.MIN_INTERVAL, Math.min(CONFIG.INTERVAL_BASE, iv));
 }
 
 function monsterMaxHp() { return Math.max(1, activePower() * battleInterval()); }

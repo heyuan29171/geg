@@ -51,12 +51,24 @@ function toast(msg, cls, ms) {
   setTimeout(() => t.remove(), (ms || 4000) + 500);
 }
 
+function fmtInterval(sec) {
+  if (sec >= 1) return sec.toFixed(1) + 's';
+  return (1 / sec).toFixed(1) + ' 抽/秒';
+}
+
+let lastToastAt = 0;
+
 function onReward(res) {
   const order = res.r.order;
+  const now = Date.now();
   if (res.isNew || order >= 3) {
-    const tag = res.isNew ? '<b>新卡！</b>' : '';
-    toast(tag + rarityTagHTML(res.r.id) + ' · ' + res.card.name, 'rc-' + res.r.id, 4500);
-  } else {
+    if (now - lastToastAt >= 1200) {
+      lastToastAt = now;
+      const tag = res.isNew ? '<b>新卡！</b>' : '';
+      toast(tag + rarityTagHTML(res.r.id) + ' · ' + res.card.name, 'rc-' + res.r.id, 4500);
+    }
+  } else if (now - lastToastAt >= 1200) {
+    lastToastAt = now;
     toast(res.card.name + (res.frag ? ' +' + res.frag + ' 碎片' : ''), 'rc-' + res.r.id, 3000);
   }
   renderAll();
@@ -64,7 +76,7 @@ function onReward(res) {
 
 function renderTopbar() {
   $id('ts-power').textContent = Math.round(activePower());
-  $id('ts-interval').textContent = battleInterval().toFixed(1) + 's';
+  $id('ts-interval').textContent = fmtInterval(battleInterval());
   $id('ts-frag').textContent = S.fragments;
   $id('ts-kills').textContent = S.kills;
   const btn = $id('btn-spend-all-frag');
@@ -129,7 +141,7 @@ function formationInfoHTML() {
   }).join('');
   return '<div class="fhead">' + CARD_MAP[S.activeCenter].name + ' ' + rarityTagHTML(CARD_MAP[S.activeCenter].rarity) + '</div>' +
     '<div class="fbody">' + rows + '</div>' +
-    '<div class="fnote">' + (complete ? '编队战力 ' + Math.round(formationPowerOf(S.activeCenter)) : '编队未集齐，单独出战（战力 ' + Math.round(basePowerOf(CARD_MAP[S.activeCenter])) + '）') + ' · 战斗间隔 ' + battleInterval().toFixed(1) + 's</div>';
+    '<div class="fnote">' + (complete ? '编队战力 ' + Math.round(formationPowerOf(S.activeCenter)) : '编队未集齐，单独出战（战力 ' + Math.round(basePowerOf(CARD_MAP[S.activeCenter])) + '）') + ' · 战斗间隔 ' + fmtInterval(battleInterval()) + '</div>';
 }
 
 function rateRowsHTML() {
