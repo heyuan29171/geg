@@ -18,10 +18,10 @@
   mi.onload = () => {
     if (mi.naturalWidth > 0) {
       MONSTER_PNG = true;
-      $id('monster-img').src = 'img/monsters/monster.png';
+      $id('monster-img').src = 'img/monsters/monster.jpg';
     }
   };
-  mi.src = 'img/monsters/monster.png';
+  mi.src = 'img/monsters/monster.jpg';
 
   const off = offlineAccrue();
   spawnMonster();
