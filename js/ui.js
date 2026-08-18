@@ -438,13 +438,31 @@ function renderSettings() {
     '<table class="rate-table"><thead><tr><th>稀有度</th><th>单抽概率</th><th>基础战力</th><th>重复→碎片</th></tr></thead><tbody>' + rows + '</tbody></table>';
 }
 
+let heavyRenderAt = 0;
+let heavyPending = false;
+function renderHeavy() {
+  if (currentTab === 'codex') renderCodex();
+  else if (currentTab === 'backpack') renderBackpack();
+  else if (currentTab === 'settings') renderSettings();
+}
 function renderAll() {
   if (!S) return;
   renderTopbar();
   renderBattle();
-  if (currentTab === 'codex') renderCodex();
-  else if (currentTab === 'backpack') renderBackpack();
-  else if (currentTab === 'settings') renderSettings();
+  if (currentTab === 'codex' || currentTab === 'backpack' || currentTab === 'settings') {
+    const now = Date.now();
+    if (now - heavyRenderAt >= 1200) {
+      heavyRenderAt = now;
+      renderHeavy();
+    } else if (!heavyPending) {
+      heavyPending = true;
+      setTimeout(() => {
+        heavyPending = false;
+        heavyRenderAt = Date.now();
+        renderHeavy();
+      }, 1200);
+    }
+  }
 }
 
 let vRotX = -15, vRotY = 0, vScale = 1, vDragging = false, vtx = 0, vty = 0;
