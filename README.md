@@ -2,6 +2,8 @@
 
 纯静态 HTML 挂机集卡小游戏。零依赖，无需构建，直接双击 `index.html` 即可运行。
 
+在线游玩：https://heyuan29171.github.io/geg/
+
 喜欢的话欢迎在 GitHub 点个 Star：https://github.com/heyuan29171/geg
 
 ## 玩法
