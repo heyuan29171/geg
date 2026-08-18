@@ -287,7 +287,7 @@ function toggleBoss() {
   }
 }
 
-setInterval(() => { if (bossOpen) updateBossPanel(); }, 1000);
+setInterval(() => { if (bossOpen) updateBossPanel(); }, 250);
 
 function applyTheme() {
   const body = document && document.body;
