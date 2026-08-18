@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>挂机集卡</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23e2e8f0'/%3E%3Cellipse cx='32' cy='37' rx='15' ry='20' fill='%23ffffff' stroke='%2394a3b8' stroke-width='3'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">挂机集卡</div>
+  <div class="top-stats">
+    <span class="stat">战力 <b id="ts-power">0</b></span>
+    <span class="stat">间隔 <b id="ts-interval">--</b></span>
+    <span class="stat">碎片 <b id="ts-frag">0</b></span>
+    <span class="stat">击杀 <b id="ts-kills">0</b></span>
+  </div>
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="battle">战斗</button>
+    <button class="tab-btn" data-tab="codex">图鉴</button>
+    <button class="tab-btn" data-tab="backpack">背包</button>
+    <button class="tab-btn" data-tab="settings">设置</button>
+  </nav>
+</header>
+
+<main>
+  <section id="tab-battle" class="tab active">
+    <div class="battle-layout">
+      <div class="panel battle-stage">
+        <div class="monster-box">
+          <img id="monster-img" src="img/monsters/monster.svg" alt="怪物">
+          <div class="monster-name">怪物 <span id="monster-level">Lv.1</span></div>
+          <div class="hpbar"><div class="hpbar-fill" id="monster-hp"></div></div>
+        </div>
+        <div class="row-caption" id="row-caption"></div>
+        <div class="battle-row" id="battle-row"></div>
+        <div class="quick-actions">
+          <button class="btn primary" id="btn-spend-frag">用 10 碎片立即出战</button>
+          <span class="hint">重复卡片会转化为碎片</span>
+        </div>
+        <div class="battle-log" id="battle-log"></div>
+      </div>
+      <aside class="side">
+        <h3>出战编队</h3>
+        <div class="panel" id="formation-info"></div>
+        <h3>战斗统计</h3>
+        <div class="panel stats-panel">
+          <div class="kv"><span>总战斗</span><b id="st-pulls">0</b></div>
+          <div class="kv"><span>总击杀</span><b id="st-kills">0</b></div>
+          <div class="kv"><span>白 / 绿 / 蓝</span><b id="st-lower">-</b></div>
+          <div class="kv"><span>紫 / 金 / 红</span><b id="st-upper">-</b></div>
+          <div class="kv"><span>黑 / 炫彩</span><b id="st-top">-</b></div>
+        </div>
+        <h3>掉落概率</h3>
+        <div class="panel" id="rate-panel"></div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="tab-codex" class="tab">
+    <div class="filter-row" id="codex-filters"></div>
+    <div id="codex-head" class="codex-head"></div>
+    <div class="codex-grid" id="codex-grid"></div>
+  </section>
+
+  <section id="tab-backpack" class="tab">
+    <div class="filter-row" id="bag-filters"></div>
+    <div class="bag-list" id="bag-list"></div>
+  </section>
+
+  <section id="tab-settings" class="tab">
+    <div class="panel">
+      <h3>存档说明</h3>
+      <p>存档保存在浏览器 localStorage（键名 <code>geg_save_v1</code>），不会写入任何文件，与游戏代码完全隔离。换浏览器或清理缓存前请先导出存档。</p>
+      <div class="btn-row">
+        <button class="btn" id="btn-export">导出存档</button>
+        <button class="btn" id="btn-import">导入存档</button>
+        <input type="file" id="import-file" accept="application/json" hidden>
+        <button class="btn danger" id="btn-reset">重置存档</button>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>美术资源</h3>
+      <p>卡片图：把 <code>img/cards/&lt;卡片id&gt;.png</code> 放进目录即自动替换占位图（示例：<code>img/cards/egg-gold.png</code>）。</p>
+      <p>怪物图：放 <code>img/monsters/monster.png</code> 替换占位怪物；未放时使用 <code>monster.svg</code> 占位。</p>
+      <p>六颗蛋是 CSS 绘制的占位，示例卡片是 emoji 占位，均可被 png 覆盖。</p>
+    </div>
+    <div class="panel">
+      <h3>数值说明</h3>
+      <div id="settings-rates"></div>
+    </div>
+    <div class="panel">
+      <h3>玩法说明</h3>
+      <p>每张卡片都有唯一编号和需求编队：集齐编队成员后，该卡才能与编队一同出战（编队可只有自己）。中心卡位于出战队列中央，偶数张时中心靠右。</p>
+      <p>战斗会自动进行：怪物血量按当前战力缩放，击杀怪物掉落一张随机卡片。战斗间隔随编队战力提升而缩短（初始约 10 秒）。</p>
+      <p>初始拥有六颗白卡蛋：金木水火土，以及炫彩蛋。炫彩蛋的编队正是另外五颗蛋。</p>
+      <p>黑卡与炫彩卡极稀有：黑卡约 100 万场出一张，炫彩卡约 500 万场出一张，大部分玩家一生都见不到。</p>
+    </div>
+  </section>
+</main>
+
+<div id="toasts"></div>
+
+<div id="viewer" class="viewer hidden">
+  <div class="viewer-backdrop"></div>
+  <div class="viewer-stage" id="viewer-stage">
+    <div class="vcard" id="viewer-card">
+      <div class="vface-wrap" id="vfront-wrap">
+        <div class="frame-inner vface vfront" id="vfront"></div>
+      </div>
+      <div class="vface-wrap" id="vback-wrap">
+        <div class="frame-inner vface vback" id="vback"></div>
+      </div>
+    </div>
+  </div>
+  <div class="viewer-hint">拖拽旋转 · 滚轮缩放 · 双击复位 · ESC 关闭</div>
+  <button class="btn viewer-close" id="viewer-close">✕</button>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/save.js"></script>
+<script src="js/game.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
