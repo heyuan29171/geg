@@ -57,6 +57,13 @@ function fmtInterval(sec) {
 }
 
 let lastToastAt = 0;
+let renderQueued = false;
+
+function renderSoon() {
+  if (renderQueued) return;
+  renderQueued = true;
+  setTimeout(() => { renderQueued = false; renderAll(); }, 400);
+}
 
 function onReward(res) {
   const order = res.r.order;
@@ -71,7 +78,7 @@ function onReward(res) {
     lastToastAt = now;
     toast(res.card.name + (res.frag ? ' +' + res.frag + ' 碎片' : ''), 'rc-' + res.r.id, 3000);
   }
-  renderAll();
+  renderSoon();
 }
 
 function renderTopbar() {
@@ -222,8 +229,9 @@ function renderSortBar(el, sort, withCount) {
   const chips = opts.map(o =>
     '<button class="chip' + (sort.key === o[0] ? ' active' : '') + '" data-sort="' + o[0] + '">' + o[1] + '</button>'
   ).join('');
-  el.innerHTML = '<span class="sort-label">排序</span>' + chips +
+  const html = '<span class="sort-label">排序</span>' + chips +
     '<button class="chip dir" data-dir="1">' + (sort.dir === 1 ? '↑ 升序' : '↓ 降序') + '</button>';
+  if (el.innerHTML !== html) el.innerHTML = html;
 }
 
 function bindSortRow(el, sort, rerender) {
@@ -286,7 +294,7 @@ function renderBackpack() {
 
 function renderSettings() {
   const rows = RARITY_LIST.map(r =>
-    '<tr><td><span class="r-dot r-' + r.id + '"></span>' + r.name + '</td>' +
+    '<tr><td><span class="rate-name rn-' + r.id + '"><span class="r-dot r-' + r.id + '"></span>' + r.name + '</span></td>' +
     '<td>' + fmtRate(r.weight) + '</td>' +
     '<td>' + r.basePower + '</td>' +
     '<td>' + r.frag + '</td></tr>'
