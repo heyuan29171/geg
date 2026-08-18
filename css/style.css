@@ -799,8 +799,8 @@ body.dark .btn.danger:hover { background: #3a1d22; }
 body.dark .btn:disabled { opacity: .5; }
 body.dark .btn:disabled:hover { background: #1e293b; border-color: #334155; }
 
-body.dark .tab-btn { color: #94a3b8; }
-body.dark .tab-btn:hover { background: #334155; color: #e2e8f0; }
+body.dark .tab-btn { color: #cbd5e1; }
+body.dark .tab-btn:hover { background: #334155; color: #fff; }
 body.dark .tab-btn.active { background: #3b82f6; color: #fff; }
 
 body.dark code { background: #334155; }
@@ -830,9 +830,9 @@ body.dark .row-caption { color: #94a3b8; }
 body.dark .kv { color: #94a3b8; }
 body.dark .kv b { color: #e2e8f0; }
 
-body.dark .chip { background: #1e293b; border-color: #334155; }
-body.dark .chip:hover { border-color: #475569; }
-body.dark .chip.active { background: #3b82f6; border-color: #3b82f6; }
+body.dark .chip { background: #1e293b; border-color: #334155; color: #e2e8f0; }
+body.dark .chip:hover { border-color: #475569; color: #fff; }
+body.dark .chip.active { background: #3b82f6; border-color: #3b82f6; color: #fff; }
 
 body.dark .f-mem { background: #1e293b; border-color: #334155; }
 body.dark .f-mem.miss { background: #3a1d22; border-color: #7f1d1d; }
