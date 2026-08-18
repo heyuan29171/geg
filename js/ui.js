@@ -97,7 +97,8 @@ function renderTopbar() {
   $id('ts-kills').textContent = S.kills;
   const btn = $id('btn-spend-all-frag');
   const draws = Math.floor(S.fragments / CONFIG.FRAG_COST_PER_DRAW);
-  btn.textContent = '用全部碎片抽卡（' + S.fragments + ' 碎片 → ' + draws + ' 抽）';
+  const capped = Math.min(draws, CONFIG.MAX_FRAG_DRAWS);
+  btn.textContent = '用全部碎片抽卡（' + S.fragments + ' 碎片 → ' + capped + ' 抽' + (draws > CONFIG.MAX_FRAG_DRAWS ? '，单次上限 ' + CONFIG.MAX_FRAG_DRAWS + ' 抽' : '') + '）';
   btn.disabled = draws < 1;
 }
 

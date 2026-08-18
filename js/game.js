@@ -122,7 +122,7 @@ function spendFragments() {
 }
 
 function spendAllFragments() {
-  const draws = Math.floor(S.fragments / CONFIG.FRAG_COST_PER_DRAW);
+  const draws = Math.min(Math.floor(S.fragments / CONFIG.FRAG_COST_PER_DRAW), CONFIG.MAX_FRAG_DRAWS);
   if (draws < 1) return null;
   S.fragments -= draws * CONFIG.FRAG_COST_PER_DRAW;
   const newCards = [];
