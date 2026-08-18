@@ -5,7 +5,8 @@
   python tools/batch_gen.py --test   # 只生成 egg-rainbow 测试一张
 """
 import os, sys, json, hashlib, subprocess
-os.environ.setdefault('HF_HOME', r'D:\PYTHON\hf-cache')
+os.environ.setdefault('HF_HOME', r'E:\geg-models\hf-cache')
+os.environ.setdefault('PIP_CACHE_DIR', r'E:\geg-models\pip-cache')
 os.environ.setdefault('HF_ENDPOINT', 'https://hf-mirror.com')
 os.environ.setdefault('HF_HUB_DISABLE_XET', '1')
 
