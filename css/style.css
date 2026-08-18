@@ -212,6 +212,9 @@ h3 { font-size: 15px; color: var(--text); margin: 14px 0 8px; }
   animation: egg-spin 3.5s linear infinite;
 }
 
+.viewer .frame-rainbow::before { inset: -70%; }
+.viewer .frame-rainbow .frame-inner::after { inset: -30%; }
+
 .frame-rainbow .frame-inner {
   position: relative;
   z-index: 1;
@@ -225,8 +228,8 @@ h3 { font-size: 15px; color: var(--text); margin: 14px 0 8px; }
   z-index: 2;
   pointer-events: none;
   background:
-    repeating-linear-gradient(115deg, rgba(255, 255, 255, .14) 0 2px, rgba(255, 255, 255, 0) 2px 12px),
-    conic-gradient(from 0deg, rgba(244, 63, 94, .28), rgba(245, 158, 11, .28), rgba(34, 197, 94, .28), rgba(14, 165, 233, .28), rgba(139, 92, 246, .28), rgba(244, 63, 94, .28));
+    repeating-linear-gradient(115deg, rgba(255, 255, 255, .07) 0 2px, rgba(255, 255, 255, 0) 2px 14px),
+    conic-gradient(from 0deg, rgba(244, 63, 94, .15), rgba(245, 158, 11, .15), rgba(34, 197, 94, .15), rgba(14, 165, 233, .15), rgba(139, 92, 246, .15), rgba(244, 63, 94, .15));
   mix-blend-mode: screen;
   animation: egg-spin 8s linear infinite;
 }
@@ -568,6 +571,7 @@ h3 { font-size: 15px; color: var(--text); margin: 14px 0 8px; }
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
 .viewer.hidden { display: none; }
