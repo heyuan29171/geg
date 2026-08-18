@@ -1,6 +1,34 @@
 (function () {
   S = Save.load();
   gameInit();
+
+  const params = new URLSearchParams(location.search);
+  if (params.has('debug')) {
+    window.__geg = {
+      allCards() {
+        CARDS.forEach(c => { S.owned[c.id] = 1; });
+        Save.write(S);
+        renderAll();
+        toast('已解锁全部卡片', 'rc-rainbow');
+      },
+      addFrags(n) {
+        S.fragments += n;
+        Save.write(S);
+        renderAll();
+        toast('碎片 +' + n);
+      },
+      reset() {
+        Save.reset();
+        location.reload();
+      },
+    };
+    if (params.get('debug') === 'allcards') {
+      CARDS.forEach(c => { S.owned[c.id] = 1; });
+      history.replaceState(null, '', location.pathname);
+      toast('调试模式：已解锁全部卡片', 'rc-rainbow', 5000);
+    }
+  }
+
   spawnMonster();
 
   CARDS.forEach(c => {
