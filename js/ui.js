@@ -104,16 +104,15 @@ function miniCardHTML(card, isCenter) {
 }
 
 function battleRowHTML() {
-  const c = CARD_MAP[S.activeCenter];
-  const complete = formationComplete(S.activeCenter);
-  if (!complete) return miniCardHTML(c, true);
-  const members = c.formation.map(f => CARD_MAP[f]);
-  const n = members.length + 1;
-  const centerIdx = Math.floor(n / 2);
-  const left = members.slice(0, centerIdx);
-  const right = members.slice(centerIdx);
+  const center = CARD_MAP[S.activeCenter];
+  const owned = formationCardsOf(S.activeCenter).filter(cm => (S.owned[cm.id] || 0) > 0);
+  const n = owned.length;
+  if (n === 1) return miniCardHTML(center, true);
+  const others = owned.filter(cm => cm.id !== center.id);
+  const left = others.slice(0, Math.floor(n / 2));
+  const right = others.slice(Math.floor(n / 2));
   return left.map(m => miniCardHTML(m, false)).join('') +
-    miniCardHTML(c, true) +
+    miniCardHTML(center, true) +
     right.map(m => miniCardHTML(m, false)).join('');
 }
 
@@ -130,21 +129,23 @@ function memberChipHTML(cm, isSelf) {
 function formationLineHTML(cardId) {
   const c = CARD_MAP[cardId];
   if (!c.formation.length) return '独行编队 · 战力 ' + Math.round(basePowerOf(c));
-  const complete = formationComplete(cardId);
+  const ownedCount = formationCardsOf(cardId).filter(cm => (S.owned[cm.id] || 0) > 0).length;
+  const total = 1 + c.formation.length;
+  const complete = ownedCount === total;
   const chips = formationCardsOf(cardId).map(cm => memberChipHTML(cm, cm.id === cardId)).join('');
-  const missCount = formationCardsOf(cardId).filter(cm => (S.owned[cm.id] || 0) === 0).length;
   return '<div class="f-line">' + chips + '</div>' +
     '<div class="f-summary ' + (complete ? 'ok-text' : 'miss-text') + '">' +
-    (complete ? '编队已集齐（' + (1 + c.formation.length) + ' 张）· 编队战力 ' + Math.round(formationPowerOf(cardId))
-      : '编队未集齐 · 缺少 ' + missCount + ' 张') +
+    (complete ? '编队已集齐（' + total + ' 张）· 编队战力 ' + Math.round(formationPowerOf(cardId))
+      : '编队未集齐（' + ownedCount + '/' + total + ' 张）· 战力 ' + Math.round(formationPowerOf(cardId)) + ' · 集齐后 ' + Math.round(formationPowerFull(cardId))) +
     '</div>';
 }
 
 function renderBattle() {
   $id('battle-row').innerHTML = battleRowHTML();
   const c = CARD_MAP[S.activeCenter];
-  const complete = formationComplete(S.activeCenter);
-  $id('row-caption').textContent = (complete ? '出战编队' : '单独出战') + ' · 中心 ' + c.name + ' · 共 ' + (complete ? formationCardsOf(S.activeCenter).length : 1) + ' 张';
+  const ownedCount = formationCardsOf(S.activeCenter).filter(cm => (S.owned[cm.id] || 0) > 0).length;
+  const total = formationCardsOf(S.activeCenter).length;
+  $id('row-caption').textContent = (ownedCount === total ? '出战编队 · 中心 ' + c.name + ' · 共 ' + total + ' 张' : (ownedCount > 1 ? '出战编队（' + ownedCount + '/' + total + '）· 中心 ' + c.name : '单独出战 · 中心 ' + c.name));
   $id('formation-info').innerHTML = formationInfoHTML();
   $id('rate-panel').innerHTML = rateRowsHTML();
   $id('st-pulls').textContent = S.totalPulls;
@@ -167,7 +168,8 @@ function formationInfoHTML() {
   }).join('');
   return '<div class="fhead">' + CARD_MAP[S.activeCenter].name + ' ' + rarityTagHTML(CARD_MAP[S.activeCenter].rarity) + '</div>' +
     '<div class="fbody">' + rows + '</div>' +
-    '<div class="fnote">' + (complete ? '编队战力 ' + Math.round(formationPowerOf(S.activeCenter)) : '编队未集齐，单独出战（战力 ' + Math.round(basePowerOf(CARD_MAP[S.activeCenter])) + '）') + ' · 战斗间隔 ' + fmtInterval(battleInterval()) + '</div>';
+    '<div class="fnote">' + (complete ? '编队战力 ' + Math.round(formationPowerOf(S.activeCenter))
+      : '编队未集齐（' + formationCardsOf(S.activeCenter).filter(cm => (S.owned[cm.id] || 0) > 0).length + '/' + formationCardsOf(S.activeCenter).length + '）· 战力 ' + Math.round(formationPowerOf(S.activeCenter)) + ' · 集齐后 ' + Math.round(formationPowerFull(S.activeCenter))) + ' · 战斗间隔 ' + fmtInterval(battleInterval()) + '</div>';
 }
 
 function rateRowsHTML() {

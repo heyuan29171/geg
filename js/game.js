@@ -15,8 +15,15 @@ function formationComplete(cardId) {
 }
 
 function formationPowerOf(cardId) {
+  const cards = formationCardsOf(cardId).filter(c => (S.owned[c.id] || 0) > 0);
+  if (!cards.length) return 0;
+  const n = cards.length;
+  const sum = cards.reduce((a, c) => a + basePowerOf(c), 0);
+  return sum * (1 + 0.2 * (n - 1) + 0.05 * (n - 1) * (n - 1));
+}
+
+function formationPowerFull(cardId) {
   const cards = formationCardsOf(cardId);
-  if (!cards.every(c => (S.owned[c.id] || 0) > 0)) return basePowerOf(cards[0]);
   const n = cards.length;
   const sum = cards.reduce((a, c) => a + basePowerOf(c), 0);
   return sum * (1 + 0.2 * (n - 1) + 0.05 * (n - 1) * (n - 1));
