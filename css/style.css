@@ -221,15 +221,14 @@ h3 { font-size: 15px; color: var(--text); margin: 14px 0 8px; }
 .frame-rainbow .frame-inner::after {
   content: '';
   position: absolute;
-  inset: 0;
+  inset: -50%;
   z-index: 2;
   pointer-events: none;
-  border-radius: inherit;
   background:
-    repeating-linear-gradient(115deg, rgba(255, 255, 255, .22) 0 2px, rgba(255, 255, 255, 0) 2px 8px),
-    conic-gradient(from 0deg, rgba(244, 63, 94, .30), rgba(245, 158, 11, .30), rgba(34, 197, 94, .30), rgba(14, 165, 233, .30), rgba(139, 92, 246, .30), rgba(244, 63, 94, .30));
+    repeating-linear-gradient(115deg, rgba(255, 255, 255, .14) 0 2px, rgba(255, 255, 255, 0) 2px 12px),
+    conic-gradient(from 0deg, rgba(244, 63, 94, .28), rgba(245, 158, 11, .28), rgba(34, 197, 94, .28), rgba(14, 165, 233, .28), rgba(139, 92, 246, .28), rgba(244, 63, 94, .28));
   mix-blend-mode: screen;
-  animation: egg-spin 6s linear infinite;
+  animation: egg-spin 8s linear infinite;
 }
 
 .frame-inner {

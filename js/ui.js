@@ -352,6 +352,25 @@ function bindSortRow(el, sort, rerender) {
   });
 }
 
+function updateGrid(el, htmls) {
+  const html = htmls.join('');
+  const kids = el.children ? Array.from(el.children) : null;
+  if (!kids || kids.length === 0 && html !== '') {
+    el.innerHTML = html;
+    return;
+  }
+  if (!el.insertAdjacentHTML) {
+    el.innerHTML = html;
+    return;
+  }
+  for (let i = 0; i < htmls.length; i++) {
+    const kid = kids[i];
+    if (!kid) { el.insertAdjacentHTML('beforeend', htmls[i]); continue; }
+    if (kid.outerHTML !== htmls[i]) kid.outerHTML = htmls[i];
+  }
+  while (el.children.length > htmls.length) el.lastChild.remove();
+}
+
 function renderCodex() {
   const focus = captureFocus();
   rarityFilterHTML($id('codex-filters'), codexFilter, countOwned);
@@ -371,7 +390,7 @@ function renderCodex() {
     $id('codex-grid').innerHTML = '<div class="log-empty">没有符合条件的卡片</div>';
     return;
   }
-  $id('codex-grid').innerHTML = pool.map(c => {
+  updateGrid($id('codex-grid'), pool.map(c => {
     const ownedCount = S.owned[c.id] || 0;
     const locked = ownedCount === 0;
     const mystery = locked && RARITIES[c.rarity].order >= 4;
@@ -382,7 +401,7 @@ function renderCodex() {
       '<div class="cell-name">' + (mystery ? '???' : c.name) + '</div>' +
       (locked ? '<div class="cell-lock">未获得</div>' : '<div class="cell-count">×' + ownedCount + '</div>') +
       '</div></button>';
-  }).join('');
+  }));
   keepFocus(focus);
 }
 
@@ -402,7 +421,7 @@ function renderBackpack() {
     $id('bag-list').innerHTML = '<div class="log-empty">没有符合筛选的卡片</div>';
     return;
   }
-  $id('bag-list').innerHTML = pool.map(c => {
+  updateGrid($id('bag-list'), pool.map(c => {
     const count = S.owned[c.id];
     const active = S.activeCenter === c.id;
     return '<div class="bag-row ' + frameClass(c) + '">' +
@@ -418,7 +437,7 @@ function renderBackpack() {
       '<button class="btn" data-view="' + c.id + '">观赏</button>' +
       '</div>' +
       '</div></div>';
-  }).join('');
+  }));
   keepFocus(focus);
 }
 
