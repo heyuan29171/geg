@@ -117,13 +117,27 @@ function battleRowHTML() {
     right.map(m => miniCardHTML(m, false)).join('');
 }
 
+function memberChipHTML(cm, isSelf) {
+  const has = (S.owned[cm.id] || 0) > 0;
+  return '<span class="f-mem' + (has ? '' : ' miss') + '">' +
+    '<span class="r-dot r-' + cm.rarity + '"></span>' +
+    '<span class="rn-' + cm.rarity + '">' + cm.name + '</span>' +
+    (isSelf ? '（中心）' : '') +
+    (has ? '' : ' ✗') +
+    '</span>';
+}
+
 function formationLineHTML(cardId) {
   const c = CARD_MAP[cardId];
   if (!c.formation.length) return '独行编队 · 战力 ' + Math.round(basePowerOf(c));
   const complete = formationComplete(cardId);
-  if (complete) return '<span class="ok-text">编队已集齐（' + (1 + c.formation.length) + ' 张）· 编队战力 ' + Math.round(formationPowerOf(cardId)) + '</span>';
-  const miss = c.formation.filter(f => (S.owned[f] || 0) === 0).map(f => CARD_MAP[f].name);
-  return '<span class="miss-text">编队未集齐 · 缺少：' + miss.join('、') + '</span>';
+  const chips = formationCardsOf(cardId).map(cm => memberChipHTML(cm, cm.id === cardId)).join('');
+  const missCount = formationCardsOf(cardId).filter(cm => (S.owned[cm.id] || 0) === 0).length;
+  return '<div class="f-line">' + chips + '</div>' +
+    '<div class="f-summary ' + (complete ? 'ok-text' : 'miss-text') + '">' +
+    (complete ? '编队已集齐（' + (1 + c.formation.length) + ' 张）· 编队战力 ' + Math.round(formationPowerOf(cardId))
+      : '编队未集齐 · 缺少 ' + missCount + ' 张') +
+    '</div>';
 }
 
 function renderBattle() {
@@ -441,8 +455,12 @@ function backHTML(c) {
   const complete = formationComplete(c.id);
   const members = formationCardsOf(c.id).map(cm => {
     const has = (S.owned[cm.id] || 0) > 0;
-    const isSelf = cm.id === c.id;
-    return '<span class="v-mem ' + (has ? 'ok' : 'miss') + '">' + (has ? '✓' : '✗') + ' ' + cm.name + (isSelf ? '（中心）' : '') + '</span>';
+    return '<span class="v-mem ' + (has ? 'ok' : 'miss') + '">' +
+      '<span class="r-dot r-' + cm.rarity + '"></span>' +
+      '<span class="rn-' + cm.rarity + '">' + cm.name + '</span>' +
+      (cm.id === c.id ? '（中心）' : '') +
+      (has ? '' : ' ✗') +
+      '</span>';
   }).join('');
   return '<div class="v-sec">掉落概率 <b>' + fmtRate(RARITIES[c.rarity].weight) + '</b> · 无保底</div>' +
     '<div class="v-sec">重复获得 → 碎片 +' + RARITIES[c.rarity].frag + '</div>' +

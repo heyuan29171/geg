@@ -470,9 +470,17 @@ h3 { font-size: 15px; color: var(--text); margin: 14px 0 8px; }
 .bag-sub { color: var(--muted); font-size: 12px; margin-top: 4px; }
 
 .bag-formation { font-size: 12px; margin-top: 6px; }
-
 .ok-text { color: #15803d; }
+
 .miss-text { color: #b91c1c; }
+
+.f-line { display: flex; flex-wrap: wrap; gap: 4px; }
+
+.f-mem { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; padding: 1px 7px; border-radius: 99px; border: 1px solid var(--line); background: #fff; }
+
+.f-mem.miss { border-color: #fecaca; background: #fef2f2; }
+
+.f-summary { margin-top: 3px; font-size: 12px; }
 
 .bag-actions { display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
 
@@ -587,7 +595,7 @@ h3 { font-size: 15px; color: var(--text); margin: 14px 0 8px; }
 
 .v-mems { display: flex; flex-wrap: wrap; gap: 4px; }
 
-.v-mem { font-size: 11px; padding: 1px 7px; border-radius: 99px; border: 1px solid var(--line); }
+.v-mem { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; padding: 1px 7px; border-radius: 99px; border: 1px solid var(--line); }
 .v-mem.ok { color: #15803d; border-color: #bbf7d0; background: #f0fdf4; }
 .v-mem.miss { color: #b91c1c; border-color: #fecaca; background: #fef2f2; }
 
