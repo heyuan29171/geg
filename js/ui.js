@@ -405,7 +405,11 @@ function renderSettings() {
     '<td>' + r.frag + '</td></tr>'
   ).join('');
   $id('settings-rates').innerHTML =
-    '<div class="formula">当前版本 <b>v' + CONFIG.VERSION + '</b> · 离线收益按线上抽卡速度的 1/10 折算为碎片发放，关闭页面或切走标签页都会累计，最多累积 ' + CONFIG.OFFLINE_CAP_HOURS + ' 小时。点击怪物每次缩短下一抽 0.5 秒。</div>' +
+    '<div class="formula">当前版本 <b>v' + CONFIG.VERSION + '</b></div>' +
+    '<div class="formula">战力 = Σ 已拥有成员基础战力 ×（1 + 0.2×(n−1) + 0.05×(n−1)²），n = 已拥有成员数。编队未集齐时按已有成员出战。</div>' +
+    '<div class="formula">战斗间隔 = 10s ×（初始蛋队 13 战力 / 当前战力）^0.4956，最短 0.005s。编队越强抽得越快。</div>' +
+    '<div class="formula">重复卡片自动转碎片：白 1 / 绿 2；蓝及以上 = 该稀有度期望抽数 × 0.65。10 碎片 = 1 抽，平均每抽回本约一半。</div>' +
+    '<div class="formula">离线收益：关闭页面或切走标签页期间，按线上抽卡速度的 1/10 折算为碎片，最多累计 ' + CONFIG.OFFLINE_CAP_HOURS + ' 小时，回到页面自动入账。点击怪物每次缩短下一抽 0.5 秒。</div>' +
     '<table class="rate-table"><thead><tr><th>稀有度</th><th>单抽概率</th><th>基础战力</th><th>重复→碎片</th></tr></thead><tbody>' + rows + '</tbody></table>';
 }
 
@@ -499,7 +503,7 @@ function backHTML(c) {
       (has ? '' : ' ✗') +
       '</span>';
   }).join('');
-  return '<div class="v-sec">掉落概率 <b>' + fmtRate(ratePct(RARITIES[c.rarity])) + '</b> · 无保底</div>' +
+  return '<div class="v-sec">掉落概率 <b>' + fmtRate(ratePct(RARITIES[c.rarity])) + '</b></div>' +
     '<div class="v-sec">重复获得 → 碎片 +' + RARITIES[c.rarity].frag + '</div>' +
     '<div class="v-sec">战力：单独 ' + basePowerOf(c) +
     (c.formation.length ? ' / 编队 ' + Math.round(formationPowerOf(c.id)) + (complete ? '' : '（未集齐）') : '') + '</div>' +
