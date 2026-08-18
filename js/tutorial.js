@@ -195,12 +195,12 @@ const Tutorial = (function () {
     } else if (S.tutorial === 1) {
       if (S.fragments >= 10 && current !== 'frag') setStep('frag');
     } else if (S.tutorial === 2) {
-      if (hasStronger() && current !== 'bag-tab') {
+      if (hasStronger() && current === 'bag-hint') {
         sub = '';
         setStep('bag-tab');
       }
     } else if (S.tutorial === 3) {
-      if (current !== 'settings') setStep('settings');
+      if (!current) setStep('settings');
     }
     updatePos();
   }
