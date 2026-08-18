@@ -25,6 +25,10 @@ function fmtRate(p) {
   return s + '%';
 }
 
+const RATE_TOTAL = RARITY_LIST.reduce((a, r) => a + r.weight, 0);
+
+function ratePct(r) { return r.weight / RATE_TOTAL * 100; }
+
 function frameClass(card) { return 'frame frame-' + card.rarity; }
 
 function rarityTagHTML(r) { return '<span class="r-tag r-' + r + '">' + RARITIES[r].name + '</span>'; }
@@ -174,7 +178,7 @@ function formationInfoHTML() {
 
 function rateRowsHTML() {
   return RARITY_LIST.map(r =>
-    '<div class="rate-row"><span class="r-dot r-' + r.id + '"></span><span>' + r.name + '</span><b>' + fmtRate(r.weight) + '</b></div>'
+    '<div class="rate-row"><span class="r-dot r-' + r.id + '"></span><span>' + r.name + '</span><b>' + fmtRate(ratePct(r)) + '</b></div>'
   ).join('');
 }
 
@@ -232,13 +236,37 @@ function chipGroup(label, attr, items, current) {
   ).join('');
 }
 
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+}
+
 function rangeRowHTML(prefix, pMin, pMax, query) {
   return '<span class="sort-label">战力区间</span>' +
-    '<input class="num-input" id="' + prefix + '-pmin" type="number" placeholder="最小" value="">' +
+    '<input class="num-input" id="' + prefix + '-pmin" type="number" placeholder="最小" value="' + esc(pMin) + '">' +
     '<span class="range-sep">~</span>' +
-    '<input class="num-input" id="' + prefix + '-pmax" type="number" placeholder="最大" value="">' +
+    '<input class="num-input" id="' + prefix + '-pmax" type="number" placeholder="最大" value="' + esc(pMax) + '">' +
     '<span class="sort-label">搜索</span>' +
-    '<input class="search-input" id="' + prefix + '-search" type="text" placeholder="输入卡名…" value="">';
+    '<input class="search-input" id="' + prefix + '-search" type="text" placeholder="输入卡名…" value="' + esc(query) + '">';
+}
+
+function keepFocus(focus) {
+  if (!focus) return;
+  const el = $id(focus.id);
+  if (el) {
+    el.focus();
+    if (focus.sel != null) {
+      const v = el.value;
+      try { el.setSelectionRange(Math.min(focus.sel, v.length), Math.min(focus.sel, v.length)); } catch (e) { }
+    }
+  }
+}
+
+function captureFocus() {
+  const ae = document.activeElement;
+  if (ae && ae.id && (ae.type === 'number' || ae.type === 'text') && ae.id.indexOf('-') >= 0) {
+    return { id: ae.id, sel: ae.selectionStart };
+  }
+  return null;
 }
 
 function passesFilters(c, f) {
@@ -299,6 +327,7 @@ function bindSortRow(el, sort, rerender) {
 }
 
 function renderCodex() {
+  const focus = captureFocus();
   rarityFilterHTML($id('codex-filters'), codexFilter, countOwned);
   setInnerHTML($id('codex-state-filters'),
     chipGroup('获得', 'own', [['all', '全部'], ['owned', '已获得'], ['missing', '未获得']], codexOwned) +
@@ -328,9 +357,11 @@ function renderCodex() {
       (locked ? '<div class="cell-lock">未获得</div>' : '<div class="cell-count">×' + ownedCount + '</div>') +
       '</div></button>';
   }).join('');
+  keepFocus(focus);
 }
 
 function renderBackpack() {
+  const focus = captureFocus();
   rarityFilterHTML($id('bag-filters'), bagFilter, countOwned);
   setInnerHTML($id('bag-state-filters'),
     chipGroup('编队', 'cpl', [['all', '全部'], ['ready', '可出战'], ['no', '未集齐']], bagComplete));
@@ -362,12 +393,13 @@ function renderBackpack() {
       '</div>' +
       '</div></div>';
   }).join('');
+  keepFocus(focus);
 }
 
 function renderSettings() {
   const rows = RARITY_LIST.map(r =>
     '<tr><td><span class="rate-name rn-' + r.id + '"><span class="r-dot r-' + r.id + '"></span>' + r.name + '</span></td>' +
-    '<td>' + fmtRate(r.weight) + '</td>' +
+    '<td>' + fmtRate(ratePct(r)) + '</td>' +
     '<td>' + r.basePower + '</td>' +
     '<td>' + r.frag + '</td></tr>'
   ).join('');
@@ -466,7 +498,7 @@ function backHTML(c) {
       (has ? '' : ' ✗') +
       '</span>';
   }).join('');
-  return '<div class="v-sec">掉落概率 <b>' + fmtRate(RARITIES[c.rarity].weight) + '</b> · 无保底</div>' +
+  return '<div class="v-sec">掉落概率 <b>' + fmtRate(ratePct(RARITIES[c.rarity])) + '</b> · 无保底</div>' +
     '<div class="v-sec">重复获得 → 碎片 +' + RARITIES[c.rarity].frag + '</div>' +
     '<div class="v-sec">战力：单独 ' + basePowerOf(c) +
     (c.formation.length ? ' / 编队 ' + Math.round(formationPowerOf(c.id)) + (complete ? '' : '（未集齐）') : '') + '</div>' +

@@ -101,7 +101,7 @@ const Save = {
     return sanitize(raw);
   },
   write(S) {
-    S.updatedAt = Date.now();
+    if (typeof document === 'undefined' || !document.hidden) S.updatedAt = Date.now();
     const json = JSON.stringify(S);
     if (json === lastWritten) return;
     lastWritten = json;

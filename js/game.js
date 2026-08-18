@@ -51,7 +51,7 @@ function rollRarity() {
 
 function pickCard(rarityId) {
   const pool = CARDS.filter(c => c.rarity === rarityId && !(c.unique && (S.owned[c.id] || 0) > 0));
-  if (!pool.length) pool.push(CARDS[Math.floor(Math.random() * CARDS.length)]);
+  if (!pool.length) pool.push(CARDS.find(c => c.rarity === rarityId) || CARDS[0]);
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
@@ -84,6 +84,7 @@ function clickMonster() {
 
 function tick(now) {
   if (!S) return;
+  if (typeof document !== 'undefined' && document.hidden) return;
   if (!lastTick) lastTick = now;
   const dt = Math.min((now - lastTick) / 1000, 5);
   lastTick = now;
