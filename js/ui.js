@@ -280,9 +280,7 @@ function renderSettings() {
     '<td>' + r.frag + '</td></tr>'
   ).join('');
   $id('settings-rates').innerHTML =
-    '<div class="formula"><b>战力</b> = Σ卡片基础战力 ×（1 + 0.2×(n−1) + 0.05×(n−1)²），n = 编队张数（含中心卡）</div>' +
-    '<div class="formula"><b>战斗间隔</b> = 10s ×（初始编队战力 / 当前战力）^0.35，下限 2s</div>' +
-    '<div class="formula"><b>离线收益</b> 按线上抽卡速度的 1/10 折算为碎片发放，最多累积 ' + CONFIG.OFFLINE_CAP_HOURS + ' 小时</div>' +
+    '<div class="formula">离线收益按线上抽卡速度的 1/10 折算为碎片发放，最多累积 ' + CONFIG.OFFLINE_CAP_HOURS + ' 小时。</div>' +
     '<table class="rate-table"><thead><tr><th>稀有度</th><th>单抽概率</th><th>基础战力</th><th>重复→碎片</th></tr></thead><tbody>' + rows + '</tbody></table>';
 }
 
