@@ -404,7 +404,7 @@ function renderSettings() {
     '<td>' + r.frag + '</td></tr>'
   ).join('');
   $id('settings-rates').innerHTML =
-    '<div class="formula">离线收益按线上抽卡速度的 1/10 折算为碎片发放，关闭页面或切走标签页都会累计，最多累积 ' + CONFIG.OFFLINE_CAP_HOURS + ' 小时。点击怪物每次缩短下一抽 0.5 秒。</div>' +
+    '<div class="formula">当前版本 <b>v' + CONFIG.VERSION + '</b> · 离线收益按线上抽卡速度的 1/10 折算为碎片发放，关闭页面或切走标签页都会累计，最多累积 ' + CONFIG.OFFLINE_CAP_HOURS + ' 小时。点击怪物每次缩短下一抽 0.5 秒。</div>' +
     '<table class="rate-table"><thead><tr><th>稀有度</th><th>单抽概率</th><th>基础战力</th><th>重复→碎片</th></tr></thead><tbody>' + rows + '</tbody></table>';
 }
 
