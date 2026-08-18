@@ -181,7 +181,7 @@ h3 { font-size: 15px; color: var(--text); margin: 14px 0 8px; }
   box-shadow: 0 8px 20px rgba(15, 23, 42, .18);
 }
 
-.frame { border-radius: 10px; padding: 2px; }
+.frame { border-radius: 10px; padding: 3px; }
 .frame-white { background: var(--c-white); }
 .frame-green { background: var(--c-green); }
 .frame-blue { background: var(--c-blue); }
@@ -211,6 +211,15 @@ h3 { font-size: 15px; color: var(--text); margin: 14px 0 8px; }
   align-items: center;
   overflow: hidden;
 }
+
+.frame-white .frame-inner { border-color: var(--c-white); }
+.frame-green .frame-inner { border-color: var(--c-green); }
+.frame-blue .frame-inner { border-color: var(--c-blue); }
+.frame-purple .frame-inner { border-color: var(--c-purple); }
+.frame-gold .frame-inner { border-color: var(--c-gold); }
+.frame-red .frame-inner { border-color: var(--c-red); }
+.frame-black .frame-inner { border-color: var(--c-black); }
+.frame-rainbow .frame-inner { border-color: #8b5cf6; }
 
 .mini-art {
   height: 64px;
