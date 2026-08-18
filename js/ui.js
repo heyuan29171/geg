@@ -74,11 +74,17 @@ function miniCardHTML(card, isCenter) {
 }
 
 function battleRowHTML() {
-  const cards = formationCardsOf(S.activeCenter);
+  const c = CARD_MAP[S.activeCenter];
   const complete = formationComplete(S.activeCenter);
-  const n = cards.length;
+  if (!complete) return miniCardHTML(c, true);
+  const members = c.formation.map(f => CARD_MAP[f]);
+  const n = members.length + 1;
   const centerIdx = Math.floor(n / 2);
-  return cards.map((c, i) => miniCardHTML(c, complete && i === centerIdx)).join('');
+  const left = members.slice(0, centerIdx);
+  const right = members.slice(centerIdx);
+  return left.map(m => miniCardHTML(m, false)).join('') +
+    miniCardHTML(c, true) +
+    right.map(m => miniCardHTML(m, false)).join('');
 }
 
 function formationLineHTML(cardId) {
@@ -186,11 +192,12 @@ function renderCodex() {
   $id('codex-grid').innerHTML = pool.map(c => {
     const ownedCount = S.owned[c.id] || 0;
     const locked = ownedCount === 0;
-    return '<button class="codex-cell ' + frameClass(c) + '" data-view="' + c.id + '">' +
+    const mystery = locked && RARITIES[c.rarity].order >= 4;
+    return '<button class="codex-cell ' + frameClass(c) + '" data-view="' + c.id + '"' + (mystery ? ' data-mystery="1"' : '') + '>' +
       '<div class="frame-inner' + (locked ? ' locked' : '') + '">' +
-      '<div class="cell-art">' + artHTML(c) + '</div>' +
-      '<div class="cell-no">NO.' + c.no + '</div>' +
-      '<div class="cell-name">' + (locked ? c.name : c.name) + '</div>' +
+      '<div class="cell-art">' + (mystery ? '<div class="emoji-art">?</div>' : artHTML(c)) + '</div>' +
+      '<div class="cell-no">' + (mystery ? '' : 'NO.' + c.no) + '</div>' +
+      '<div class="cell-name">' + (mystery ? '???' : c.name) + '</div>' +
       (locked ? '<div class="cell-lock">未获得</div>' : '<div class="cell-count">×' + ownedCount + '</div>') +
       '</div></button>';
   }).join('');
@@ -293,7 +300,7 @@ function openViewer(cardId) {
   $id('vfront').innerHTML = frontHTML(c);
   $id('vback').innerHTML = backHTML(c);
   $id('vfront-wrap').className = 'vface-wrap ' + frameClass(c);
-  $id('vback-wrap').className = 'vface-wrap ' + frameClass(c);
+  $id('vback-wrap').className = 'vface-wrap vback-wrap ' + frameClass(c);
   $id('viewer').classList.remove('hidden');
   viewerOpen = true;
   document.body.style.overflow = 'hidden';

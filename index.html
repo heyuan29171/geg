@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>挂机集卡</title>
+<title>geg</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23e2e8f0'/%3E%3Cellipse cx='32' cy='37' rx='15' ry='20' fill='%23ffffff' stroke='%2394a3b8' stroke-width='3'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <header class="topbar">
-  <div class="brand">挂机集卡</div>
+  <div class="brand">geg</div>
   <div class="top-stats">
     <span class="stat">战力 <b id="ts-power">0</b></span>
     <span class="stat">间隔 <b id="ts-interval">--</b></span>
@@ -95,7 +95,8 @@
       <h3>玩法说明</h3>
       <p>每张卡片都有唯一编号和需求编队：集齐编队成员后，该卡才能与编队一同出战（编队可只有自己）。中心卡位于出战队列中央，偶数张时中心靠右。</p>
       <p>战斗会自动进行：怪物血量按当前战力缩放，击杀怪物掉落一张随机卡片。战斗间隔随编队战力提升而缩短（初始约 10 秒）。</p>
-      <p>初始拥有六颗白卡蛋：金木水火土，以及炫彩蛋。炫彩蛋的编队正是另外五颗蛋。</p>
+      <p>初始拥有六颗白卡蛋：金木水火土，以及炫彩蛋。炫彩蛋的编队正是另外五颗蛋。炫彩蛋每个账号仅一张，获得后不会再掉落。</p>
+      <p>金卡及以上（金/红/黑/炫彩）在未获得前，图鉴中保持神秘，获得后才会显示内容。</p>
       <p>黑卡与炫彩卡极稀有：黑卡约 100 万场出一张，炫彩卡约 500 万场出一张，大部分玩家一生都见不到。</p>
     </div>
   </section>
@@ -108,10 +109,10 @@
   <div class="viewer-stage" id="viewer-stage">
     <div class="vcard" id="viewer-card">
       <div class="vface-wrap" id="vfront-wrap">
-        <div class="frame-inner vface vfront" id="vfront"></div>
+        <div class="frame-inner vface" id="vfront"></div>
       </div>
-      <div class="vface-wrap" id="vback-wrap">
-        <div class="frame-inner vface vback" id="vback"></div>
+      <div class="vface-wrap vback-wrap" id="vback-wrap">
+        <div class="frame-inner vface" id="vback"></div>
       </div>
     </div>
   </div>

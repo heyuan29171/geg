@@ -42,7 +42,8 @@ function rollRarity() {
 }
 
 function pickCard(rarityId) {
-  const pool = CARDS.filter(c => c.rarity === rarityId);
+  const pool = CARDS.filter(c => c.rarity === rarityId && !(c.unique && (S.owned[c.id] || 0) > 0));
+  if (!pool.length) pool.push(CARDS[Math.floor(Math.random() * CARDS.length)]);
   return pool[Math.floor(Math.random() * pool.length)];
 }
 

@@ -61,7 +61,12 @@ function bindEvents() {
 
   $id('codex-grid').addEventListener('click', e => {
     const cell = e.target.closest('[data-view]');
-    if (cell) openViewer(cell.dataset.view);
+    if (!cell) return;
+    if (cell.dataset.mystery) {
+      toast('获得后才能解锁图鉴内容', 'rc-gold');
+      return;
+    }
+    openViewer(cell.dataset.view);
   });
 
   $id('bag-list').addEventListener('click', e => {
