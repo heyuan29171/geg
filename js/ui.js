@@ -199,6 +199,8 @@ function updateBattle() {
   const pct = Math.max(0, Math.min(100, monsterHp / maxHp * 100));
   $id('monster-hp').style.width = pct + '%';
   $id('monster-level').textContent = 'Lv.' + S.monsterLevel;
+  const p = activePower();
+  $id('monster-left').textContent = (p > 0 ? Math.max(0, monsterHp / p) : 0).toFixed(1);
   const size = Math.min(120 + S.monsterLevel * 1.5, 240);
   const hue = (S.monsterLevel * 13) % 360;
   const img = $id('monster-img');
@@ -370,7 +372,7 @@ function renderSettings() {
     '<td>' + r.frag + '</td></tr>'
   ).join('');
   $id('settings-rates').innerHTML =
-    '<div class="formula">离线收益按线上抽卡速度的 1/10 折算为碎片发放，最多累积 ' + CONFIG.OFFLINE_CAP_HOURS + ' 小时。</div>' +
+    '<div class="formula">离线收益按线上抽卡速度的 1/10 折算为碎片发放，关闭页面或切走标签页都会累计，最多累积 ' + CONFIG.OFFLINE_CAP_HOURS + ' 小时。点击怪物每次缩短下一抽 0.5 秒。</div>' +
     '<table class="rate-table"><thead><tr><th>稀有度</th><th>单抽概率</th><th>基础战力</th><th>重复→碎片</th></tr></thead><tbody>' + rows + '</tbody></table>';
 }
 

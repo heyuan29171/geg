@@ -78,6 +78,10 @@ function doDraw(opts) {
 
 function spawnMonster() { monsterHp = monsterMaxHp(); }
 
+function clickMonster() {
+  monsterHp -= activePower() * 0.5;
+}
+
 function tick(now) {
   if (!S) return;
   if (!lastTick) lastTick = now;
@@ -94,16 +98,19 @@ function tick(now) {
   updateBattle();
 }
 
-function offlineAccrue() {
-  const elapsed = (Date.now() - S.updatedAt) / 1000;
+function accrueSince(t0) {
+  const elapsed = (Date.now() - t0) / 1000;
   if (elapsed < 90) return null;
   const secs = Math.min(elapsed, CONFIG.OFFLINE_CAP_HOURS * 3600);
   const pulls = secs / battleInterval();
   const frags = Math.floor(pulls * 0.1 * CONFIG.FRAG_COST_PER_DRAW);
   if (frags <= 0) return null;
   S.fragments += frags;
+  S.updatedAt = Date.now();
   return { frags: frags, secs: Math.round(secs) };
 }
+
+function offlineAccrue() { return accrueSince(S.updatedAt); }
 
 function spendFragments() {
   if (S.fragments < CONFIG.FRAG_COST_PER_DRAW) return false;

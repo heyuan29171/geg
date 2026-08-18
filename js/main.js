@@ -34,6 +34,17 @@
   setInterval(() => Save.write(S), 5000);
   onPageHide = () => Save.write(S);
   window.addEventListener('pagehide', onPageHide);
+
+  let hiddenAt = null;
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      hiddenAt = Date.now();
+    } else if (hiddenAt !== null) {
+      const off = accrueSince(hiddenAt);
+      hiddenAt = null;
+      if (off) toast('离线归来：碎片收益 +' + off.frags + '（相当于 ' + Math.floor(off.frags / CONFIG.FRAG_COST_PER_DRAW) + ' 抽）', '', 6000);
+    }
+  });
 })();
 
 function bindEvents() {
@@ -45,6 +56,14 @@ function bindEvents() {
       currentTab = btn.dataset.tab;
       $id('tab-' + currentTab).classList.add('active');
     });
+  });
+
+  $id('monster-img').addEventListener('click', () => {
+    clickMonster();
+    const img = $id('monster-img');
+    img.classList.remove('m-hit');
+    void img.offsetWidth;
+    img.classList.add('m-hit');
   });
 
   $id('codex-filters').addEventListener('click', e => {

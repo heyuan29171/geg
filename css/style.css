@@ -134,8 +134,21 @@ h3 { font-size: 15px; color: var(--text); margin: 14px 0 8px; }
   width: 150px;
   height: 150px;
   object-fit: contain;
+  cursor: pointer;
   transition: width .5s, height .5s;
 }
+
+#monster-img.m-hit { animation: mHit .3s ease; }
+
+@keyframes mHit {
+  0% { transform: scale(1); }
+  40% { transform: scale(.82); }
+  100% { transform: scale(1); }
+}
+
+.monster-timer { margin: 8px 0 2px; font-size: 13px; color: var(--muted); }
+
+.monster-timer b { color: var(--text); }
 
 .monster-name { margin: 6px 0; color: var(--muted); font-size: 14px; }
 
