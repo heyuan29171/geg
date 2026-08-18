@@ -59,6 +59,7 @@ const Tutorial = (function () {
       sel: null,
       title: '观赏视图',
       body: '拖动可以旋转卡片，滚轮可以缩放。<br>点右上角的 <b>×</b> 关闭它，就能继续了。',
+      bubblePos: 'top',
     },
     settings: {
       sel: '.tab-btn[data-tab="settings"]',
@@ -114,7 +115,7 @@ const Tutorial = (function () {
     const bw = bubble.offsetWidth || Math.min(vw - 24, 340);
     const bh = bubble.offsetHeight || 160;
     bubble.style.left = Math.max(8, (vw - bw) / 2) + 'px';
-    bubble.style.top = Math.max(16, vh / 3) + 'px';
+    bubble.style.top = (current && T[current].bubblePos === 'top' ? 12 : Math.max(16, vh / 3)) + 'px';
   }
 
   function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
