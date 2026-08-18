@@ -1,7 +1,9 @@
-const SAVE_KEY = 'geg_save_v1';
+const INSTANCE = new URLSearchParams(location.search).get('save');
+const SAVE_KEY = 'geg_save_v1' + (INSTANCE ? '_' + INSTANCE : '');
 const SAVE_MAGIC = 'GEG1';
 const XOR_SEED = 137;
 const XOR_KEY = 0x5A;
+let lastWritten = null;
 
 function encodeSave(obj) {
   const bytes = new TextEncoder().encode(JSON.stringify(obj));
@@ -66,7 +68,7 @@ function num(v, def, min, max) {
 
 function sanitize(raw) {
   const d = defaultSave();
-  if (!raw || typeof raw !== 'object') return d;
+  if (!raw || typeof raw !== 'object' || raw.v !== 1) return d;
   const s = {
     v: 1,
     owned: {},
@@ -100,13 +102,16 @@ const Save = {
   },
   write(S) {
     S.updatedAt = Date.now();
-    try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { }
+    const json = JSON.stringify(S);
+    if (json === lastWritten) return;
+    lastWritten = json;
+    try { localStorage.setItem(SAVE_KEY, json); } catch (e) { }
   },
   export(S) {
     const blob = new Blob([encodeSave(S)], { type: 'text/plain' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'geg-save.geg';
+    a.download = 'geg-save' + (INSTANCE ? '-' + INSTANCE : '') + '.geg';
     a.click();
     URL.revokeObjectURL(a.href);
   },
@@ -127,5 +132,6 @@ const Save = {
   },
   reset() {
     localStorage.removeItem(SAVE_KEY);
+    lastWritten = null;
   },
 };

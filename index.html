@@ -82,11 +82,13 @@
       <h3>存档说明</h3>
       <p>存档保存在浏览器 localStorage（键名 <code>geg_save_v1</code>），不会写入任何文件，与游戏代码完全隔离。换浏览器或清理缓存前请先导出存档。</p>
       <p>导出的存档文件为乱码编码格式，导入时会校验，被修改或损坏的存档会被拒绝。</p>
+      <p>重置存档需连点两次按钮确认；重置和导入都会立即生效，不会被页面自动保存覆盖。</p>
+      <p>同一浏览器多个副本共享存档；如需完全独立的存档，可在网址后加 <code>?save=名字</code>（如 <code>index.html?save=test</code>），每个名字一套独立存档。</p>
       <div class="btn-row">
         <button class="btn" id="btn-export">导出存档</button>
         <button class="btn" id="btn-import">导入存档</button>
         <input type="file" id="import-file" accept="application/json" hidden>
-        <button class="btn danger" id="btn-reset">重置存档</button>
+        <button class="btn danger" id="btn-reset">重置存档（点两次确认）</button>
       </div>
     </div>
     <div class="panel">

@@ -1,4 +1,5 @@
 (function () {
+  let onPageHide = null;
   S = Save.load();
   gameInit();
   spawnMonster();
@@ -31,7 +32,8 @@
 
   setInterval(() => tick(performance.now()), 100);
   setInterval(() => Save.write(S), 5000);
-  window.addEventListener('pagehide', () => Save.write(S));
+  onPageHide = () => Save.write(S);
+  window.addEventListener('pagehide', onPageHide);
 })();
 
 function bindEvents() {
@@ -142,6 +144,8 @@ function bindEvents() {
     if (!f) return;
     Save.importFile(f, ok => {
       if (ok) {
+        S = Save.load();
+        window.removeEventListener('pagehide', onPageHide);
         toast('导入成功，页面刷新');
         setTimeout(() => location.reload(), 800);
       } else {
@@ -150,10 +154,22 @@ function bindEvents() {
       e.target.value = '';
     });
   });
+  let resetArmed = false;
   $id('btn-reset').addEventListener('click', () => {
-    if (confirm('确定要清空所有存档吗？此操作不可恢复。')) {
-      Save.reset();
-      location.reload();
+    const btn = $id('btn-reset');
+    if (!resetArmed) {
+      resetArmed = true;
+      btn.textContent = '再次点击确认清空';
+      setTimeout(() => {
+        resetArmed = false;
+        btn.textContent = '重置存档';
+      }, 4000);
+      return;
     }
+    resetArmed = false;
+    Save.reset();
+    S = defaultSave();
+    window.removeEventListener('pagehide', onPageHide);
+    location.reload();
   });
 }
