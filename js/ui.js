@@ -145,14 +145,22 @@ function formationLineHTML(cardId) {
     '</div>';
 }
 
+let rbCache = { row: null, rate: false };
 function renderBattle() {
-  $id('battle-row').innerHTML = battleRowHTML();
-  const c = CARD_MAP[S.activeCenter];
-  const ownedCount = formationCardsOf(S.activeCenter).filter(cm => (S.owned[cm.id] || 0) > 0).length;
-  const total = formationCardsOf(S.activeCenter).length;
-  $id('row-caption').textContent = (ownedCount === total ? '出战编队 · 中心 ' + c.name + ' · 共 ' + total + ' 张' : (ownedCount > 1 ? '出战编队（' + ownedCount + '/' + total + '）· 中心 ' + c.name : '单独出战 · 中心 ' + c.name));
-  $id('formation-info').innerHTML = formationInfoHTML();
-  $id('rate-panel').innerHTML = rateRowsHTML();
+  const rowHTML = battleRowHTML();
+  if (rbCache.row !== rowHTML) {
+    rbCache.row = rowHTML;
+    $id('battle-row').innerHTML = rowHTML;
+    const c = CARD_MAP[S.activeCenter];
+    const ownedCount = formationCardsOf(S.activeCenter).filter(cm => (S.owned[cm.id] || 0) > 0).length;
+    const total = formationCardsOf(S.activeCenter).length;
+    $id('row-caption').textContent = (ownedCount === total ? '出战编队 · 中心 ' + c.name + ' · 共 ' + total + ' 张' : (ownedCount > 1 ? '出战编队（' + ownedCount + '/' + total + '）· 中心 ' + c.name : '单独出战 · 中心 ' + c.name));
+    $id('formation-info').innerHTML = formationInfoHTML();
+  }
+  if (!rbCache.rate) {
+    rbCache.rate = true;
+    $id('rate-panel').innerHTML = rateRowsHTML();
+  }
   $id('st-pulls').textContent = S.totalPulls;
   $id('st-kills').textContent = S.kills;
   const lc = S.rarityCounts;
@@ -183,20 +191,23 @@ function rateRowsHTML() {
   ).join('');
 }
 
+let logCache = null;
 function renderLog() {
   const wrap = $id('battle-log');
-  if (!S.log.length) {
-    wrap.innerHTML = '<div class="log-empty">还没有战利品记录</div>';
-    return;
+  const html = !S.log.length
+    ? '<div class="log-empty">还没有战利品记录</div>'
+    : S.log.map(e => {
+        const c = CARD_MAP[e.cardId];
+        const t = new Date(e.t).toLocaleTimeString('zh-CN', { hour12: false });
+        return '<div class="log-entry"><span class="log-time">' + t + '</span>' +
+          '<span class="r-dot r-' + c.rarity + '"></span>' +
+          '<span>' + c.name + '</span>' +
+          (e.isNew ? '<span class="ok-text">新卡</span>' : '<span class="miss-text">+' + e.frag + ' 碎片</span>') + '</div>';
+      }).join('');
+  if (logCache !== html) {
+    logCache = html;
+    wrap.innerHTML = html;
   }
-  wrap.innerHTML = S.log.map(e => {
-    const c = CARD_MAP[e.cardId];
-    const t = new Date(e.t).toLocaleTimeString('zh-CN', { hour12: false });
-    return '<div class="log-entry"><span class="log-time">' + t + '</span>' +
-      '<span class="r-dot r-' + c.rarity + '"></span>' +
-      '<span>' + c.name + '</span>' +
-      (e.isNew ? '<span class="ok-text">新卡</span>' : '<span class="miss-text">+' + e.frag + ' 碎片</span>') + '</div>';
-  }).join('');
 }
 
 let ubCache = null;
