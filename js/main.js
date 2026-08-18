@@ -57,6 +57,7 @@ function bindEvents() {
       btn.classList.add('active');
       currentTab = btn.dataset.tab;
       $id('tab-' + currentTab).classList.add('active');
+      renderAll();
     });
   });
 

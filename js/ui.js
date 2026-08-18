@@ -431,9 +431,9 @@ function renderAll() {
   if (!S) return;
   renderTopbar();
   renderBattle();
-  renderCodex();
-  renderBackpack();
-  renderSettings();
+  if (currentTab === 'codex') renderCodex();
+  else if (currentTab === 'backpack') renderBackpack();
+  else if (currentTab === 'settings') renderSettings();
 }
 
 let vRotX = -15, vRotY = 0, vScale = 1, vDragging = false, vtx = 0, vty = 0;
