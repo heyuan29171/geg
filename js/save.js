@@ -63,6 +63,7 @@ function defaultSave() {
     rarityCounts: rarityCounts,
     log: [],
     tutorial: 0,
+    theme: 'light',
     updatedAt: Date.now(),
   };
 }
@@ -87,6 +88,7 @@ function sanitize(raw) {
     rarityCounts: {},
     log: Array.isArray(raw.log) ? raw.log.slice(0, 12) : [],
     tutorial: raw.tutorial != null ? num(raw.tutorial, 0, 0, 4) : ((raw.totalPulls || 0) > 0 ? 4 : 0),
+    theme: raw.theme === 'dark' ? 'dark' : 'light',
     updatedAt: num(raw.updatedAt, Date.now(), 0, Date.now()),
   };
   CARDS.forEach(c => {

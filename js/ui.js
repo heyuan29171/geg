@@ -199,19 +199,32 @@ function renderLog() {
   }).join('');
 }
 
+let ubCache = null;
 function updateBattle() {
   const maxHp = monsterMaxHp();
   const pct = Math.max(0, Math.min(100, monsterHp / maxHp * 100));
-  $id('monster-hp').style.width = pct + '%';
-  $id('monster-level').textContent = 'Lv.' + S.monsterLevel;
+  const level = S.monsterLevel;
   const p = activePower();
-  $id('monster-left').textContent = (p > 0 ? Math.max(0, monsterHp / p) : 0).toFixed(1);
-  const size = Math.min(120 + S.monsterLevel * 1.5, 240);
-  const hue = (S.monsterLevel * 13) % 360;
-  const img = $id('monster-img');
-  img.style.width = size + 'px';
-  img.style.height = size + 'px';
-  img.style.filter = 'hue-rotate(' + hue + 'deg) drop-shadow(0 10px 16px rgba(15,23,42,.15))';
+  const leftTxt = (p > 0 ? Math.max(0, monsterHp / p) : 0).toFixed(1);
+  const c = ubCache || (ubCache = {});
+  if (c.level !== level) {
+    c.level = level;
+    $id('monster-level').textContent = 'Lv.' + level;
+    const size = Math.min(120 + level * 1.5, 240);
+    const hue = (level * 13) % 360;
+    const img = $id('monster-img');
+    img.style.width = size + 'px';
+    img.style.height = size + 'px';
+    img.style.filter = 'hue-rotate(' + hue + 'deg) drop-shadow(0 10px 16px rgba(15,23,42,.15))';
+  }
+  if (c.pct !== pct) {
+    c.pct = pct;
+    $id('monster-hp').style.width = pct + '%';
+  }
+  if (c.leftTxt !== leftTxt) {
+    c.leftTxt = leftTxt;
+    $id('monster-left').textContent = leftTxt;
+  }
   renderTopbar();
 }
 

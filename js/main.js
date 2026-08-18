@@ -28,10 +28,11 @@
   initViewer();
   bindEvents();
   renderAll();
+  applyTheme();
   Tutorial.begin();
   if (off) toast('离线归来：碎片收益 +' + off.frags + '（相当于 ' + Math.floor(off.frags / CONFIG.FRAG_COST_PER_DRAW) + ' 抽）', '', 6000);
 
-  setInterval(() => { tick(performance.now()); Tutorial.check(); }, 100);
+  setInterval(() => { tick(performance.now()); Tutorial.check(); }, 250);
   setInterval(() => Save.write(S), 5000);
   onPageHide = () => Save.write(S);
   window.addEventListener('pagehide', onPageHide);
@@ -141,20 +142,36 @@ function bindEvents() {
     if (ok) renderAll();
   });
 
-  $id('btn-spend-all-frag').addEventListener('click', () => {
-    const res = spendAllFragments();
-    if (!res) {
-      toast('碎片不足（10 碎片 / 抽）', 'rc-white');
-      return;
+  $id('btn-spend-all-frag').addEventListener('click', handleSpendAllFrag);
+
+  $id('btn-theme').addEventListener('click', () => {
+    S.theme = S.theme === 'dark' ? 'light' : 'dark';
+    applyTheme();
+    Save.write(S);
+  });
+
+  $id('boss-strongest').addEventListener('click', () => {
+    const best = strongestCard();
+    if (best) {
+      setActiveCard(best);
+      renderAll();
+      updateBossPanel();
     }
-    const parts = [];
-    const rc = RARITY_LIST.filter(r => (res.byRarity[r.id] || 0) > 0)
-      .map(r => r.name.replace('卡', '') + '×' + res.byRarity[r.id]).join(' ');
-    parts.push(rc);
-    if (res.newCards.length) parts.push('新卡：' + res.newCards.join('、'));
-    if (res.fragGain) parts.push('重复转化碎片 +' + res.fragGain);
-    toast('碎片抽卡 ×' + res.draws + '：' + parts.join('；'), '', 6000);
-    renderAll();
+  });
+
+  $id('boss-frag-all').addEventListener('click', handleSpendAllFrag);
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      if (!bossOpen) {
+        const v = $id('viewer');
+        if (v && !v.classList.contains('hidden')) closeViewer();
+      }
+      toggleBoss();
+    } else if (e.key === 'Escape' && bossOpen) {
+      toggleBoss();
+    }
   });
 
   $id('btn-export').addEventListener('click', () => Save.export(S));
@@ -174,7 +191,8 @@ function bindEvents() {
       e.target.value = '';
     });
   });
-  let tutorialArmed = false;
+
+let tutorialArmed = false;
   $id('btn-tutorial-restart').addEventListener('click', () => {
     const btn = $id('btn-tutorial-restart');
     if (!tutorialArmed) {
@@ -210,4 +228,70 @@ function bindEvents() {
     window.removeEventListener('pagehide', onPageHide);
     location.reload();
   });
+}
+
+function handleSpendAllFrag() {
+  const res = spendAllFragments();
+  if (!res) {
+    toast('碎片不足（10 碎片 / 抽）', 'rc-white');
+    return;
+  }
+  const parts = [];
+  const rc = RARITY_LIST.filter(r => (res.byRarity[r.id] || 0) > 0)
+    .map(r => r.name.replace('卡', '') + '×' + res.byRarity[r.id]).join(' ');
+  parts.push(rc);
+  if (res.newCards.length) parts.push('新卡：' + res.newCards.join('、'));
+  if (res.fragGain) parts.push('重复转化碎片 +' + res.fragGain);
+  toast('碎片抽卡 ×' + res.draws + '：' + parts.join('；'), '', 6000);
+  renderAll();
+  if (bossOpen) updateBossPanel();
+}
+
+function strongestCard() {
+  let best = null, bestP = 0;
+  CARDS.forEach(c => {
+    if ((S.owned[c.id] || 0) > 0) {
+      const p = formationPowerOf(c.id);
+      if (p > bestP) { bestP = p; best = c.id; }
+    }
+  });
+  return best;
+}
+
+let bossOpen = false;
+let bossRarity = -1;
+
+function bossNewCard(card) {
+  if (!bossOpen) return;
+  const ri = RARITY_LIST.findIndex(r => r.id === card.rarity);
+  if (ri > bossRarity) bossRarity = ri;
+}
+
+function updateBossPanel() {
+  if (!document || !$id('boss-panel')) return;
+  $id('boss-rate').textContent = (1 / battleInterval()).toFixed(1);
+  $id('boss-frag').textContent = S.fragments.toLocaleString();
+  $id('boss-new').textContent = bossRarity < 0 ? '暂无新卡' : '新卡：' + RARITY_LIST[bossRarity].name;
+}
+
+function toggleBoss() {
+  bossOpen = !bossOpen;
+  document.body.classList.toggle('boss-mode', bossOpen);
+  $id('boss-panel').classList.toggle('hidden', !bossOpen);
+  if (bossOpen) {
+    bossRarity = -1;
+    document.title = '新建文本.txt - 记事本';
+    updateBossPanel();
+  } else {
+    document.title = 'geg';
+  }
+}
+
+setInterval(() => { if (bossOpen) updateBossPanel(); }, 1000);
+
+function applyTheme() {
+  const body = document && document.body;
+  if (body && body.classList) body.classList.toggle('dark', S.theme === 'dark');
+  const b = $id('btn-theme');
+  if (b) b.textContent = S.theme === 'dark' ? '切换到亮色模式' : '切换到深色模式';
 }
