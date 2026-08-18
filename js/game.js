@@ -108,6 +108,22 @@ function spendFragments() {
   return true;
 }
 
+function spendAllFragments() {
+  const draws = Math.floor(S.fragments / CONFIG.FRAG_COST_PER_DRAW);
+  if (draws < 1) return null;
+  S.fragments -= draws * CONFIG.FRAG_COST_PER_DRAW;
+  const newCards = [];
+  const byRarity = {};
+  let fragGain = 0;
+  for (let i = 0; i < draws; i++) {
+    const res = doDraw({ silent: true });
+    if (res.isNew) newCards.push(res.card.name);
+    byRarity[res.r.id] = (byRarity[res.r.id] || 0) + 1;
+    fragGain += res.frag;
+  }
+  return { draws, newCards, byRarity, fragGain };
+}
+
 function setActiveCard(id) {
   if (CARD_MAP[id] && (S.owned[id] || 0) > 0) S.activeCenter = id;
 }

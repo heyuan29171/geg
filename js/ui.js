@@ -65,6 +65,10 @@ function renderTopbar() {
   $id('ts-interval').textContent = battleInterval().toFixed(1) + 's';
   $id('ts-frag').textContent = S.fragments;
   $id('ts-kills').textContent = S.kills;
+  const btn = $id('btn-spend-all-frag');
+  const draws = Math.floor(S.fragments / CONFIG.FRAG_COST_PER_DRAW);
+  btn.textContent = '用全部碎片抽卡（' + S.fragments + ' 碎片 → ' + draws + ' 抽）';
+  btn.disabled = draws < 1;
 }
 
 function miniCardHTML(card, isCenter) {

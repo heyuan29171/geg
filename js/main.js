@@ -86,6 +86,22 @@ function bindEvents() {
     if (ok) renderAll();
   });
 
+  $id('btn-spend-all-frag').addEventListener('click', () => {
+    const res = spendAllFragments();
+    if (!res) {
+      toast('碎片不足（10 碎片 / 抽）', 'rc-white');
+      return;
+    }
+    const parts = [];
+    const rc = RARITY_LIST.filter(r => (res.byRarity[r.id] || 0) > 0)
+      .map(r => r.name.replace('卡', '') + '×' + res.byRarity[r.id]).join(' ');
+    parts.push(rc);
+    if (res.newCards.length) parts.push('新卡：' + res.newCards.join('、'));
+    if (res.fragGain) parts.push('重复转化碎片 +' + res.fragGain);
+    toast('碎片抽卡 ×' + res.draws + '：' + parts.join('；'), '', 6000);
+    renderAll();
+  });
+
   $id('btn-export').addEventListener('click', () => Save.export(S));
   $id('btn-import').addEventListener('click', () => $id('import-file').click());
   $id('import-file').addEventListener('change', e => {
