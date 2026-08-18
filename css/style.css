@@ -202,7 +202,8 @@ h3 { font-size: 15px; color: var(--text); margin: 14px 0 8px; }
 .frame-gold { background: var(--c-gold); }
 .frame-red { background: var(--c-red); }
 .frame-black { background: var(--c-black); }
-.frame-rainbow { position: relative; overflow: hidden; padding: 7px; }
+.frame-rainbow { position: relative; overflow: hidden; }
+.codex-cell.frame-rainbow { padding: 7px; }
 
 .frame-rainbow::before {
   content: '';
