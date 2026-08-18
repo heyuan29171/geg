@@ -281,6 +281,8 @@ function toggleBoss() {
   if (bossOpen) {
     bossRarity = -1;
     document.title = '新建文本.txt - 记事本';
+    const note = $id('boss-note');
+    if (note) { note.value = ''; note.focus(); }
     updateBossPanel();
   } else {
     document.title = 'geg';
