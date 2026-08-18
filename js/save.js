@@ -1,4 +1,44 @@
 const SAVE_KEY = 'geg_save_v1';
+const SAVE_MAGIC = 'GEG1';
+const XOR_SEED = 137;
+const XOR_KEY = 0x5A;
+
+function encodeSave(obj) {
+  const bytes = new TextEncoder().encode(JSON.stringify(obj));
+  let seed = XOR_SEED;
+  for (let i = 0; i < bytes.length; i++) {
+    seed = (seed * 31 + 7) & 0xFFFF;
+    bytes[i] ^= (seed ^ XOR_KEY) & 0xFF;
+  }
+  let ck = 0xABCD;
+  for (let i = 0; i < bytes.length; i++) ck = ((ck * 33) ^ bytes[i]) & 0xFFFF;
+  const out = new Uint8Array(bytes.length + 2);
+  out.set(bytes);
+  out[bytes.length] = (ck >> 8) & 0xFF;
+  out[bytes.length + 1] = ck & 0xFF;
+  let bin = '';
+  for (let i = 0; i < out.length; i++) bin += String.fromCharCode(out[i]);
+  return SAVE_MAGIC + btoa(bin);
+}
+
+function decodeSave(str) {
+  if (typeof str !== 'string' || str.slice(0, SAVE_MAGIC.length) !== SAVE_MAGIC) return null;
+  let bin;
+  try { bin = atob(str.slice(SAVE_MAGIC.length)); } catch (e) { return null; }
+  if (bin.length < 2) return null;
+  const n = bin.length - 2;
+  let ck = 0xABCD;
+  for (let i = 0; i < n; i++) ck = ((ck * 33) ^ bin.charCodeAt(i)) & 0xFFFF;
+  if (bin.charCodeAt(n) !== ((ck >> 8) & 0xFF) ||
+      bin.charCodeAt(n + 1) !== (ck & 0xFF)) return null;
+  const bytes = new Uint8Array(n);
+  let seed = XOR_SEED;
+  for (let i = 0; i < n; i++) {
+    seed = (seed * 31 + 7) & 0xFFFF;
+    bytes[i] = bin.charCodeAt(i) ^ ((seed ^ XOR_KEY) & 0xFF);
+  }
+  try { return JSON.parse(new TextDecoder().decode(bytes)); } catch (e) { return null; }
+}
 
 function defaultSave() {
   const owned = {};
@@ -63,23 +103,24 @@ const Save = {
     try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { }
   },
   export(S) {
-    const blob = new Blob([JSON.stringify(S, null, 2)], { type: 'application/json' });
+    const blob = new Blob([encodeSave(S)], { type: 'text/plain' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'geg-save.json';
+    a.download = 'geg-save.geg';
     a.click();
     URL.revokeObjectURL(a.href);
   },
   importFile(file, onDone) {
     const reader = new FileReader();
     reader.onload = () => {
-      try {
-        const s = sanitize(JSON.parse(reader.result));
-        localStorage.setItem(SAVE_KEY, JSON.stringify(s));
-        onDone && onDone(true);
-      } catch (e) {
+      const obj = decodeSave(reader.result);
+      if (!obj) {
         onDone && onDone(false);
+        return;
       }
+      const s = sanitize(obj);
+      localStorage.setItem(SAVE_KEY, JSON.stringify(s));
+      onDone && onDone(true);
     };
     reader.onerror = () => onDone && onDone(false);
     reader.readAsText(file);

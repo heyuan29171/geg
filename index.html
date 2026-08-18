@@ -77,6 +77,7 @@
     <div class="panel">
       <h3>存档说明</h3>
       <p>存档保存在浏览器 localStorage（键名 <code>geg_save_v1</code>），不会写入任何文件，与游戏代码完全隔离。换浏览器或清理缓存前请先导出存档。</p>
+      <p>导出的存档文件为乱码编码格式，导入时会校验，被修改或损坏的存档会被拒绝。</p>
       <div class="btn-row">
         <button class="btn" id="btn-export">导出存档</button>
         <button class="btn" id="btn-import">导入存档</button>
