@@ -1,6 +1,11 @@
 let currentTab = 'battle';
 let codexFilter = 'all';
 let bagFilter = 'all';
+let codexOwned = 'all';
+let codexComplete = 'all';
+let bagComplete = 'all';
+let codexPowerMin = '', codexPowerMax = '', codexQuery = '';
+let bagPowerMin = '', bagPowerMax = '', bagQuery = '';
 let codexSort = { key: 'no', dir: 1 };
 let bagSort = { key: 'no', dir: 1 };
 const PNG_READY = new Set();
@@ -201,6 +206,37 @@ function rarityFilterHTML(el, current, countFn) {
   el.innerHTML = chips.join('');
 }
 
+function setInnerHTML(el, html) { if (el.innerHTML !== html) el.innerHTML = html; }
+
+function chipGroup(label, attr, items, current) {
+  return '<span class="sort-label">' + label + '</span>' + items.map(it =>
+    '<button class="chip' + (current === it[0] ? ' active' : '') + '" data-' + attr + '="' + it[0] + '">' + it[1] + '</button>'
+  ).join('');
+}
+
+function rangeRowHTML(prefix, pMin, pMax, query) {
+  return '<span class="sort-label">战力区间</span>' +
+    '<input class="num-input" id="' + prefix + '-pmin" type="number" placeholder="最小" value="">' +
+    '<span class="range-sep">~</span>' +
+    '<input class="num-input" id="' + prefix + '-pmax" type="number" placeholder="最大" value="">' +
+    '<span class="sort-label">搜索</span>' +
+    '<input class="search-input" id="' + prefix + '-search" type="text" placeholder="输入卡名…" value="">';
+}
+
+function passesFilters(c, f) {
+  const owned = (S.owned[c.id] || 0) > 0;
+  if (f.owned === 'owned' && !owned) return false;
+  if (f.owned === 'missing' && owned) return false;
+  const ready = formationComplete(c.id);
+  if (f.complete === 'ready' && !ready) return false;
+  if (f.complete === 'no' && ready) return false;
+  const p = formationPowerOf(c.id);
+  if (f.pMin !== '' && p < +f.pMin) return false;
+  if (f.pMax !== '' && p > +f.pMax) return false;
+  if (f.query && c.name.indexOf(f.query) < 0) return false;
+  return true;
+}
+
 function countOwned(rarityId) {
   const pool = rarityId === 'all' ? CARDS : CARDS.filter(c => c.rarity === rarityId);
   let count = 0;
@@ -246,11 +282,22 @@ function bindSortRow(el, sort, rerender) {
 
 function renderCodex() {
   rarityFilterHTML($id('codex-filters'), codexFilter, countOwned);
+  setInnerHTML($id('codex-state-filters'),
+    chipGroup('获得', 'own', [['all', '全部'], ['owned', '已获得'], ['missing', '未获得']], codexOwned) +
+    chipGroup('编队', 'cpl', [['all', '全部'], ['ready', '可出战'], ['no', '未集齐']], codexComplete));
+  setInnerHTML($id('codex-range-filters'), rangeRowHTML('codex', codexPowerMin, codexPowerMax, codexQuery));
   const owned = countOwned('all');
   const pct = owned.total ? Math.round(owned.count / owned.total * 100) : 0;
   $id('codex-head').innerHTML = '<div class="codex-progress"><span>收集 ' + owned.count + ' / ' + owned.total + '（' + pct + '%）</span><div class="bar"><div class="bar-fill" style="width:' + pct + '%"></div></div></div>';
-  const pool = sortedCards(CARDS.filter(c => codexFilter === 'all' || c.rarity === codexFilter), codexSort);
+  const pool = sortedCards(CARDS.filter(c =>
+    (codexFilter === 'all' || c.rarity === codexFilter) &&
+    passesFilters(c, { owned: codexOwned, complete: codexComplete, pMin: codexPowerMin, pMax: codexPowerMax, query: codexQuery })
+  ), codexSort);
   renderSortBar($id('codex-sorts'), codexSort, false);
+  if (!pool.length) {
+    $id('codex-grid').innerHTML = '<div class="log-empty">没有符合条件的卡片</div>';
+    return;
+  }
   $id('codex-grid').innerHTML = pool.map(c => {
     const ownedCount = S.owned[c.id] || 0;
     const locked = ownedCount === 0;
@@ -267,10 +314,17 @@ function renderCodex() {
 
 function renderBackpack() {
   rarityFilterHTML($id('bag-filters'), bagFilter, countOwned);
-  const pool = sortedCards(CARDS.filter(c => (S.owned[c.id] || 0) > 0 && (bagFilter === 'all' || c.rarity === bagFilter)), bagSort);
+  setInnerHTML($id('bag-state-filters'),
+    chipGroup('编队', 'cpl', [['all', '全部'], ['ready', '可出战'], ['no', '未集齐']], bagComplete));
+  setInnerHTML($id('bag-range-filters'), rangeRowHTML('bag', bagPowerMin, bagPowerMax, bagQuery));
+  const pool = sortedCards(CARDS.filter(c =>
+    (S.owned[c.id] || 0) > 0 &&
+    (bagFilter === 'all' || c.rarity === bagFilter) &&
+    passesFilters(c, { complete: bagComplete, pMin: bagPowerMin, pMax: bagPowerMax, query: bagQuery })
+  ), bagSort);
   renderSortBar($id('bag-sorts'), bagSort, true);
   if (!pool.length) {
-    $id('bag-list').innerHTML = '<div class="log-empty">背包空空如也</div>';
+    $id('bag-list').innerHTML = '<div class="log-empty">没有符合筛选的卡片</div>';
     return;
   }
   $id('bag-list').innerHTML = pool.map(c => {

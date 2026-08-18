@@ -62,6 +62,36 @@ function bindEvents() {
   bindSortRow($id('codex-sorts'), codexSort, renderCodex);
   bindSortRow($id('bag-sorts'), bagSort, renderBackpack);
 
+  $id('codex-state-filters').addEventListener('click', e => {
+    const own = e.target.closest('[data-own]');
+    if (own) { codexOwned = own.dataset.own; renderCodex(); return; }
+    const cpl = e.target.closest('[data-cpl]');
+    if (cpl) { codexComplete = cpl.dataset.cpl; renderCodex(); }
+  });
+
+  $id('codex-range-filters').addEventListener('input', e => {
+    const t = e.target;
+    if (t.id === 'codex-pmin') codexPowerMin = t.value;
+    else if (t.id === 'codex-pmax') codexPowerMax = t.value;
+    else if (t.id === 'codex-search') codexQuery = t.value;
+    else return;
+    renderCodex();
+  });
+
+  $id('bag-state-filters').addEventListener('click', e => {
+    const cpl = e.target.closest('[data-cpl]');
+    if (cpl) { bagComplete = cpl.dataset.cpl; renderBackpack(); }
+  });
+
+  $id('bag-range-filters').addEventListener('input', e => {
+    const t = e.target;
+    if (t.id === 'bag-pmin') bagPowerMin = t.value;
+    else if (t.id === 'bag-pmax') bagPowerMax = t.value;
+    else if (t.id === 'bag-search') bagQuery = t.value;
+    else return;
+    renderBackpack();
+  });
+
   $id('codex-grid').addEventListener('click', e => {
     const cell = e.target.closest('[data-view]');
     if (!cell) return;

@@ -361,6 +361,12 @@ h3 { font-size: 15px; color: var(--text); margin: 14px 0 8px; }
 
 .chip.dir { min-width: 76px; text-align: center; }
 
+.num-input { width: 76px; padding: 6px 8px; font-size: 12px; border: 1px solid var(--line); border-radius: 8px; }
+
+.search-input { flex: 1; min-width: 150px; max-width: 240px; padding: 6px 10px; font-size: 12px; border: 1px solid var(--line); border-radius: 8px; }
+
+.range-sep { color: var(--muted); font-size: 12px; }
+
 .codex-head { margin-bottom: 14px; }
 
 .codex-progress { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--muted); }
