@@ -43,7 +43,7 @@ function sanitize(raw) {
     const rawOwned = raw.owned && typeof raw.owned === 'object' ? raw.owned : {};
     const def = c.start ? 1 : 0;
     const n = num(rawOwned[c.id], def, 0, 1e9);
-    s.owned[c.id] = c.start && n === 0 ? 1 : n;
+    s.owned[c.id] = c.unique ? 1 : (c.start && n === 0 ? 1 : n);
   });
   RARITY_LIST.forEach(r => {
     const rawRc = raw.rarityCounts && typeof raw.rarityCounts === 'object' ? raw.rarityCounts : {};

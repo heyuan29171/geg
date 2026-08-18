@@ -88,16 +88,13 @@ function tick(now) {
 
 function offlineAccrue() {
   const elapsed = (Date.now() - S.updatedAt) / 1000;
-  if (elapsed < 90) return 0;
-  const iv = battleInterval();
-  const maxN = Math.floor(CONFIG.OFFLINE_CAP_HOURS * 3600 / iv);
-  let n = Math.min(Math.floor(elapsed / iv), maxN);
-  for (let i = 0; i < n; i++) {
-    doDraw({ silent: true });
-    S.kills++;
-    S.monsterLevel = Math.min(S.monsterLevel + 1, 1e7);
-  }
-  return n;
+  if (elapsed < 90) return null;
+  const secs = Math.min(elapsed, CONFIG.OFFLINE_CAP_HOURS * 3600);
+  const pulls = secs / battleInterval();
+  const frags = Math.floor(pulls * 0.1 * CONFIG.FRAG_COST_PER_DRAW);
+  if (frags <= 0) return null;
+  S.fragments += frags;
+  return { frags: frags, secs: Math.round(secs) };
 }
 
 function spendFragments() {

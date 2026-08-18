@@ -27,7 +27,7 @@
   initViewer();
   bindEvents();
   renderAll();
-  if (off > 0) toast('离线归来：自动战斗 ' + off + ' 场', '', 6000);
+  if (off) toast('离线归来：碎片收益 +' + off.frags + '（相当于 ' + Math.floor(off.frags / CONFIG.FRAG_COST_PER_DRAW) + ' 抽）', '', 6000);
 
   setInterval(() => tick(performance.now()), 100);
   setInterval(() => Save.write(S), 5000);
@@ -58,6 +58,9 @@ function bindEvents() {
     bagFilter = chip.dataset.filter;
     renderBackpack();
   });
+
+  bindSortRow($id('codex-sorts'), codexSort, renderCodex);
+  bindSortRow($id('bag-sorts'), bagSort, renderBackpack);
 
   $id('codex-grid').addEventListener('click', e => {
     const cell = e.target.closest('[data-view]');

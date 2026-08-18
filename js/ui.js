@@ -1,6 +1,8 @@
 let currentTab = 'battle';
 let codexFilter = 'all';
 let bagFilter = 'all';
+let codexSort = { key: 'no', dir: 1 };
+let bagSort = { key: 'no', dir: 1 };
 const PNG_READY = new Set();
 let MONSTER_PNG = false;
 let viewerOpen = false;
@@ -187,12 +189,48 @@ function countOwned(rarityId) {
   return { count: count, total: pool.length };
 }
 
+function sortedCards(pool, sort) {
+  const dir = sort.dir;
+  const val = c => {
+    switch (sort.key) {
+      case 'rarity': return RARITIES[c.rarity].order;
+      case 'power': return basePowerOf(c);
+      case 'fp': return formationPowerOf(c.id);
+      case 'count': return S.owned[c.id] || 0;
+      default: return c.no;
+    }
+  };
+  return pool.slice().sort((a, b) => (val(a) - val(b)) * dir || (a.no - b.no) * dir);
+}
+
+function renderSortBar(el, sort, withCount) {
+  const opts = withCount
+    ? [['no', '编号'], ['rarity', '稀有度'], ['power', '战力'], ['fp', '编队战力'], ['count', '持有数']]
+    : [['no', '编号'], ['rarity', '稀有度'], ['power', '战力'], ['fp', '编队战力']];
+  const chips = opts.map(o =>
+    '<button class="chip' + (sort.key === o[0] ? ' active' : '') + '" data-sort="' + o[0] + '">' + o[1] + '</button>'
+  ).join('');
+  el.innerHTML = '<span class="sort-label">排序</span>' + chips +
+    '<button class="chip dir" data-dir="1">' + (sort.dir === 1 ? '↑ 升序' : '↓ 降序') + '</button>';
+}
+
+function bindSortRow(el, sort, rerender) {
+  el.addEventListener('click', e => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    if (chip.dataset.sort) sort.key = chip.dataset.sort;
+    else sort.dir *= -1;
+    rerender();
+  });
+}
+
 function renderCodex() {
   rarityFilterHTML($id('codex-filters'), codexFilter, countOwned);
   const owned = countOwned('all');
   const pct = owned.total ? Math.round(owned.count / owned.total * 100) : 0;
   $id('codex-head').innerHTML = '<div class="codex-progress"><span>收集 ' + owned.count + ' / ' + owned.total + '（' + pct + '%）</span><div class="bar"><div class="bar-fill" style="width:' + pct + '%"></div></div></div>';
-  const pool = CARDS.filter(c => codexFilter === 'all' || c.rarity === codexFilter);
+  const pool = sortedCards(CARDS.filter(c => codexFilter === 'all' || c.rarity === codexFilter), codexSort);
+  renderSortBar($id('codex-sorts'), codexSort, false);
   $id('codex-grid').innerHTML = pool.map(c => {
     const ownedCount = S.owned[c.id] || 0;
     const locked = ownedCount === 0;
@@ -209,7 +247,8 @@ function renderCodex() {
 
 function renderBackpack() {
   rarityFilterHTML($id('bag-filters'), bagFilter, countOwned);
-  const pool = CARDS.filter(c => (S.owned[c.id] || 0) > 0 && (bagFilter === 'all' || c.rarity === bagFilter));
+  const pool = sortedCards(CARDS.filter(c => (S.owned[c.id] || 0) > 0 && (bagFilter === 'all' || c.rarity === bagFilter)), bagSort);
+  renderSortBar($id('bag-sorts'), bagSort, true);
   if (!pool.length) {
     $id('bag-list').innerHTML = '<div class="log-empty">背包空空如也</div>';
     return;
@@ -243,7 +282,7 @@ function renderSettings() {
   $id('settings-rates').innerHTML =
     '<div class="formula"><b>战力</b> = Σ卡片基础战力 ×（1 + 0.2×(n−1) + 0.05×(n−1)²），n = 编队张数（含中心卡）</div>' +
     '<div class="formula"><b>战斗间隔</b> = 10s ×（初始编队战力 / 当前战力）^0.35，下限 2s</div>' +
-    '<div class="formula"><b>离线收益</b> 最多累积 ' + CONFIG.OFFLINE_CAP_HOURS + ' 小时</div>' +
+    '<div class="formula"><b>离线收益</b> 按线上抽卡速度的 1/10 折算为碎片发放，最多累积 ' + CONFIG.OFFLINE_CAP_HOURS + ' 小时</div>' +
     '<table class="rate-table"><thead><tr><th>稀有度</th><th>单抽概率</th><th>基础战力</th><th>重复→碎片</th></tr></thead><tbody>' + rows + '</tbody></table>';
 }
 
