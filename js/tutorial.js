@@ -4,17 +4,21 @@ const Tutorial = (function () {
   let sub = '';
   let clicks = 0;
   let pullBase = 0;
+  let forceRestart = false;
+  let autoTimer = null;
 
   const T = {
     monster: {
       sel: '#monster-img',
       title: '欢迎来到 geg！',
-      body: '这是一个挂机集卡游戏：怪物会一直自动战斗、自动掉落卡片，关掉页面也会离线收益。<br>想更快出卡？<b>点击怪物</b>可以提前击杀（每次缩短 0.5 秒）。<br>点它 20 次，打出你的第一张新卡吧！<span class="tut-progress" id="tut-progress"></span>',
+      body: '这是一个挂机集卡游戏：怪物会一直自动战斗、自动掉落卡片，关掉页面也会离线收益。<br>想更快出卡？<b>点击怪物</b>可以提前击杀（每次缩短 0.5 秒）。<br><b>先点一下它</b>，然后看它掉落第一张卡吧！<span class="tut-progress" id="tut-progress"></span>',
     },
     'frag-wait': {
       sel: null,
       title: '重复卡片 = 碎片',
-      body: '战斗继续中！重复抽到的卡片会自动变成<b>碎片</b>，10 碎片可以抽卡一次。<br>攒到 10 个碎片，我会教你怎么用它。',
+      body: '重复抽到的卡片会自动变成<b>碎片</b>，10 碎片可以抽卡一次。<br>攒到 10 个碎片我会再来教你怎么用。',
+      doneBtn: true,
+      autoHide: 6,
     },
     frag: {
       sel: '#btn-spend-frag',
@@ -24,7 +28,9 @@ const Tutorial = (function () {
     'bag-hint': {
       sel: null,
       title: '编队决定速度',
-      body: '碎片抽卡成功！<b>编队越强，战斗间隔越短，出卡越快</b>。<br>当你拿到更强的编队时，我会带你去换上它。',
+      body: '碎片抽卡成功！<b>编队越强，战斗间隔越短，出卡越快</b>。<br>抽到更强的编队时我会再来提醒你。',
+      doneBtn: true,
+      autoHide: 6,
     },
     'bag-tab': {
       sel: '.tab-btn[data-tab="backpack"]',
@@ -43,6 +49,16 @@ const Tutorial = (function () {
       },
       title: '换上最强编队',
       body: '最上面这一行就是当前<b>战力最高的编队</b>。<br>点击它右边的「<b>设为出战</b>」按钮换上去。',
+    },
+    view: {
+      sel: '.bag-art',
+      title: '看看你的新卡',
+      body: '背包里每张卡都能打开<b>观赏视图</b>，欣赏卡面和背景故事。<br><b>点一下任意一张卡的卡面</b>试试。',
+    },
+    'view-open': {
+      sel: null,
+      title: '观赏视图',
+      body: '拖动可以旋转卡片，滚轮可以缩放。<br>点右上角的 <b>×</b> 关闭它，就能继续了。',
     },
     settings: {
       sel: '.tab-btn[data-tab="settings"]',
@@ -148,9 +164,16 @@ const Tutorial = (function () {
   function setStep(key) {
     current = key;
     render();
+    clearTimeout(autoTimer);
+    if (T[key].autoHide) {
+      autoTimer = setTimeout(() => {
+        if (current === key) hide();
+      }, T[key].autoHide * 1000);
+    }
   }
 
   function hide() {
+    clearTimeout(autoTimer);
     if (mask) { mask.remove(); mask = null; }
     if (ring) { ring.remove(); ring = null; }
     if (bubble) { bubble.remove(); bubble = null; }
@@ -165,13 +188,24 @@ const Tutorial = (function () {
 
   function begin() {
     if (S.tutorial >= 4) return;
-    if (S.tutorial === 0 && S.totalPulls > 0) { S.tutorial = 4; Save.write(S); return; }
+    if (S.tutorial === 0 && S.totalPulls > 0 && !forceRestart) { S.tutorial = 4; Save.write(S); return; }
+    forceRestart = false;
     clicks = 0;
     pullBase = S.totalPulls;
     if (S.tutorial === 0) setStep('monster');
     else if (S.tutorial === 1) setStep('frag-wait');
     else if (S.tutorial === 2) setStep('bag-hint');
     else if (S.tutorial === 3) setStep('settings');
+  }
+
+  function restart() {
+    S.tutorial = 0;
+    forceRestart = true;
+    clicks = 0;
+    pullBase = S.totalPulls;
+    sub = '';
+    setStep('monster');
+    Save.write(S);
   }
 
   function hasStronger() {
@@ -185,17 +219,17 @@ const Tutorial = (function () {
       return;
     }
     if (S.tutorial === 0) {
-      if (clicks >= 20 || S.totalPulls > pullBase) {
+      if ((clicks >= 1 && S.totalPulls > pullBase) || clicks >= 20) {
         S.tutorial = 1;
         Save.write(S);
         setStep('frag-wait');
-      } else if (current !== 'monster') {
+      } else if (!current) {
         setStep('monster');
       }
     } else if (S.tutorial === 1) {
-      if (S.fragments >= 10 && current !== 'frag') setStep('frag');
+      if (S.fragments >= 10 && (current === 'frag-wait' || !current)) setStep('frag');
     } else if (S.tutorial === 2) {
-      if (hasStronger() && current === 'bag-hint') {
+      if (hasStronger() && (current === 'bag-hint' || !current)) {
         sub = '';
         setStep('bag-tab');
       }
@@ -217,6 +251,7 @@ const Tutorial = (function () {
     if (S.tutorial >= 4 || !current) return;
     const t = e.target;
     if (t.closest('#tut-skip')) { finish(); return; }
+    if ((current === 'frag-wait' || current === 'bag-hint') && t.closest('#tut-done')) { hide(); return; }
     if (current === 'done' && t.closest('#tut-done')) { finish(); return; }
     if (S.tutorial === 1 && S.fragments >= 10 && t.closest('#btn-spend-frag')) {
       S.tutorial = 2;
@@ -236,6 +271,15 @@ const Tutorial = (function () {
         return;
       }
       if (sub === 'pick' && t.closest('[data-set-active]')) {
+        sub = 'view';
+        setStep('view');
+        return;
+      }
+      if (sub === 'view' && t.closest('[data-view]')) {
+        setStep('view-open');
+        return;
+      }
+      if (current === 'view-open' && t.closest('#viewer-close')) {
         S.tutorial = 3;
         Save.write(S);
         setStep('settings');
@@ -258,6 +302,7 @@ const Tutorial = (function () {
     begin: begin,
     check: check,
     onMonsterClick: onMonsterClick,
-    _test: { onDocClick: onDocClick, setStep: setStep, current: () => current, sub: () => sub },
+    restart: restart,
+    _test: { onDocClick: onDocClick, setStep: setStep, current: () => current, sub: () => sub, autoHideSec: () => (current && T[current].autoHide) || 0 },
   };
 })();

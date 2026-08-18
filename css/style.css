@@ -547,7 +547,7 @@ h3 { font-size: 15px; color: var(--text); margin: 14px 0 8px; }
 .viewer {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  z-index: 9010;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -696,7 +696,7 @@ h3 { font-size: 15px; color: var(--text); margin: 14px 0 8px; }
 
 #tut-ring {
   position: fixed;
-  z-index: 9002;
+  z-index: 9021;
   pointer-events: none;
   border: 3px solid #3b82f6;
   border-radius: 10px;
@@ -706,7 +706,7 @@ h3 { font-size: 15px; color: var(--text); margin: 14px 0 8px; }
 
 #tut-bubble {
   position: fixed;
-  z-index: 9003;
+  z-index: 9022;
   max-width: min(92vw, 360px);
   background: #fff;
   border: 2px solid #3b82f6;

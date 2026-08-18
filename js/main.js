@@ -174,6 +174,24 @@ function bindEvents() {
       e.target.value = '';
     });
   });
+  let tutorialArmed = false;
+  $id('btn-tutorial-restart').addEventListener('click', () => {
+    const btn = $id('btn-tutorial-restart');
+    if (!tutorialArmed) {
+      tutorialArmed = true;
+      btn.textContent = '再次点击确认重新开始';
+      setTimeout(() => {
+        tutorialArmed = false;
+        btn.textContent = '重新开始新手教程（点两次确认）';
+      }, 4000);
+      return;
+    }
+    tutorialArmed = false;
+    btn.textContent = '重新开始新手教程（点两次确认）';
+    Tutorial.restart();
+    toast('新手教程已重新开始', '');
+  });
+
   let resetArmed = false;
   $id('btn-reset').addEventListener('click', () => {
     const btn = $id('btn-reset');

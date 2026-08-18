@@ -7,7 +7,7 @@ let bagComplete = 'all';
 let codexPowerMin = '', codexPowerMax = '', codexQuery = '';
 let bagPowerMin = '', bagPowerMax = '', bagQuery = '';
 let codexSort = { key: 'no', dir: 1 };
-let bagSort = { key: 'no', dir: 1 };
+let bagSort = { key: 'no', dir: -1 };
 const PNG_READY = new Set();
 let MONSTER_PNG = false;
 let viewerOpen = false;
