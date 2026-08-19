@@ -41,9 +41,9 @@ function eggStyle(card) {
   return "background: radial-gradient(circle at 35% 28%, " + cols[0] + " 0%, " + cols[1] + " 78%);";
 }
 
-function artHTML(card) {
+function artHTML(card, full) {
   if (PNG_READY.has(card.id)) {
-    return '<img class="art-img" src="img/cards/' + card.id + '.jpg" alt="">';
+    return '<img class="art-img" src="img/cards/' + (full ? card.id : 'thumb/' + card.id) + '.jpg" alt="">';
   }
   if (card.art && card.art.type === 'egg') {
     return '<div class="egg-art" style="' + eggStyle(card) + '"></div>';
@@ -546,7 +546,7 @@ function closeViewer() {
 }
 
 function frontHTML(c) {
-  return '<div class="v-art">' + artHTML(c) + '</div>' +
+  return     '<div class="v-art">' + artHTML(c, true) + '</div>' +
     '<div class="v-no">NO.' + c.no + '</div>' +
     '<div class="v-name">' + c.name + '</div>' +
     rarityTagHTML(c.rarity) +

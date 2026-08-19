@@ -12,7 +12,7 @@
         renderAll();
       }
     };
-    im.src = 'img/cards/' + c.id + '.jpg';
+    im.src = 'img/cards/thumb/' + c.id + '.jpg';
   });
   const mi = new Image();
   mi.onload = () => {
