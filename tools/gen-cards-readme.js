@@ -10,7 +10,7 @@ const rname = id => RARITY_LIST.find(r => r.id === id).name;
 const lines = [];
 lines.push('# 卡片图占位说明');
 lines.push('');
-lines.push('把图片命名为 `img/cards/<卡片id>.png` 放入本目录，游戏会自动用它替换占位图。');
+lines.push('把图片命名为 `img/cards/<卡片id>.jpg` 放入本目录，游戏会自动用它替换占位图。');
 lines.push('');
 lines.push('> 本表由 `js/data.js` 自动生成，对应游戏版本 **v' + VERSION + '**。改卡后请重新生成。');
 lines.push('');

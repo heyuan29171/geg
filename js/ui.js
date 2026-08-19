@@ -43,7 +43,7 @@ function eggStyle(card) {
 
 function artHTML(card) {
   if (PNG_READY.has(card.id)) {
-    return '<img class="art-img" src="img/cards/' + card.id + '.png" alt="">';
+    return '<img class="art-img" src="img/cards/' + card.id + '.jpg" alt="">';
   }
   if (card.art && card.art.type === 'egg') {
     return '<div class="egg-art" style="' + eggStyle(card) + '"></div>';
@@ -489,6 +489,7 @@ let vRotX = -15, vRotY = 0, vScale = 1, vDragging = false, vtx = 0, vty = 0;
 function initViewer() {
   const stage = $id('viewer-stage');
   const card = $id('viewer-card');
+  stage.addEventListener('dragstart', e => e.preventDefault());
   stage.addEventListener('pointerdown', e => {
     vDragging = true;
     vtx = e.clientX;
