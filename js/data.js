@@ -142,7 +142,8 @@ const CARDS = [
   { id: 'black-15', name: '虚寂灭', rarity: 'black', art: { type: 'emoji', emoji: '🐂' }, desc: '牛角抵住寂灭的虚影，一步一虚。', flavor: '它走过的地方，声音都认输。', formation: ['black-04', 'black-11', 'black-03', 'storm-lord'] },
   { id: 'black-16', name: '亘天尊', rarity: 'black', art: { type: 'emoji', emoji: '🐰' }, desc: '月宫玉兔演化成的天尊，捣药声震星河。', flavor: '它捣的不是药，是时间。', formation: ['black-09', 'black-05', 'black-12', 'black-13', 'chaos-lord'] },
   { id: 'black-17', name: '无造物', rarity: 'black', art: { type: 'emoji', emoji: '🦫' }, desc: '用倒影筑坝的造物，坝拦的是因果。', flavor: '它咬断的木头，落水即成舟。', formation: ['black-02', 'black-14', 'black-05', 'storm-lord'] },
-  { id: 'black-18', name: '玄太初', rarity: 'black', art: { type: 'emoji', emoji: '⚖️' }, desc: '称量一切的玄天秤，两头是天平。', flavor: '它称过太阳，八两。', formation: ['black-09', 'black-02', 'black-10', 'storm-lord', 'chaos-lord'] },
+{ id: 'black-18', name: '玄太初', rarity: 'black', art: { type: 'emoji', emoji: '⚖️' }, desc: '称量一切的玄天秤，两头是天平。', flavor: '它称过太阳，八两。', formation: ['black-09', 'black-02', 'black-10', 'storm-lord', 'chaos-lord'] },
+  { id: 'qinghuan-miao', name: '晴幻喵', rarity: 'rainbow', unique: true, art: { type: 'emoji', emoji: '🐱' }, desc: '一只神秘的小猫。', flavor: '第一个获得创世神的玩家。', formation: ['creator'] },
 ];
 
 CARDS.forEach((c, i) => { c.no = i + 1; });
@@ -151,7 +152,7 @@ const CARD_MAP = {};
 CARDS.forEach(c => { CARD_MAP[c.id] = c; });
 
 const CONFIG = {
-  VERSION: '1.4.2',
+  VERSION: '1.5.0',
   INTERVAL_BASE: 10,
   INTERVAL_EXP: 0.4956,
   MIN_INTERVAL: 0.005,

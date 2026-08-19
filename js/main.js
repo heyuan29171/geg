@@ -249,11 +249,14 @@ function handleSpendAllFrag() {
 }
 
 function strongestCard() {
-  let best = null, bestP = 0;
+  let best = null, bestP = -1;
   CARDS.forEach(c => {
     if ((S.owned[c.id] || 0) > 0) {
       const p = formationPowerOf(c.id);
-      if (p > bestP) { bestP = p; best = c.id; }
+      if (p > bestP || (p === bestP && best && basePowerOf(c) > basePowerOf(CARD_MAP[best]))) {
+        bestP = p;
+        best = c.id;
+      }
     }
   });
   return best;
