@@ -80,7 +80,11 @@ function doDraw(opts) {
 
 function spawnMonster() { monsterHp = monsterMaxHp(); }
 
+let lastClickAt = 0;
 function clickMonster() {
+  const now = Date.now();
+  if (now - lastClickAt < 12.5) return;
+  lastClickAt = now;
   monsterHp -= activePower() * 0.5;
   if (typeof Tutorial !== 'undefined') Tutorial.onMonsterClick();
 }
