@@ -506,11 +506,12 @@ let achFilter = 'all';
 
 function achievementCardHTML(cfg) {
   const isDone = !!S.achievements[cfg.id];
-  const secret = cfg.hidden && !isDone;
+  const secret = !isDone;
   const p = achievementProgress(cfg);
   const pct = Math.min(100, Math.max(0, Math.round(p.cur / p.goal * 100)));
   const name = secret ? '？？？' : cfg.name;
   const desc = secret ? '？？？' : cfg.desc;
+  const reward = secret ? '？？？' : '+' + cfg.reward.toLocaleString() + ' 碎片';
   const bar = secret
     ? '<div class="ach-bar"><div class="ach-bar-fill" style="width:0%"></div></div><div class="ach-foot">？？？</div>'
     : '<div class="ach-bar"><div class="ach-bar-fill" style="width:' + pct + '%"></div></div><div class="ach-foot">' + p.cur.toLocaleString() + ' / ' + p.goal.toLocaleString() + '</div>';
@@ -518,7 +519,7 @@ function achievementCardHTML(cfg) {
     ? '<span class="ach-badge done">✓ 达成' + (S.achievements[cfg.id] ? ' · ' + new Date(S.achievements[cfg.id]).toLocaleString() : '') + '</span>'
     : '<span class="ach-badge">未达成</span>';
   return '<div class="ach-card' + (isDone ? ' done' : '') + (secret ? ' secret' : '') + '">' +
-    '<div class="ach-top"><span class="ach-name">' + name + '</span><span class="ach-reward">+' + cfg.reward.toLocaleString() + ' 碎片</span></div>' +
+    '<div class="ach-top"><span class="ach-name">' + name + '</span><span class="ach-reward">' + reward + '</span></div>' +
     '<div class="ach-desc">' + desc + '</div>' + bar +
     '<div class="ach-badge-row">' + badge + '</div></div>';
 }

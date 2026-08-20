@@ -184,7 +184,7 @@ const CONFIG = {
     { id: 'power-1e6', name: '战力百万', desc: '当前出战编队战力达到 100 万', type: 'power', goal: 1000000, reward: 2000 },
     { id: 'frags-10000', name: '碎片富翁', desc: '累计获得 1 万碎片', type: 'frags', goal: 10000, reward: 500 },
     { id: 'offline-10000', name: '离线暴富', desc: '单次离线收益达到 1 万碎片', type: 'offline', goal: 10000, reward: 1000 },
-    { id: 'nest-1', name: '宝宝出生了', desc: '开启第一枚蛋', type: 'nest', goal: 1, reward: 200, hidden: true },
-    { id: 'secret-egg', name: '幻蛋之秘', desc: '触发神秘的炫彩幻蛋', type: 'secret', goal: 1, reward: 6666, hidden: true },
+    { id: 'nest-1', name: '宝宝出生了', desc: '开启第一枚蛋', type: 'nest', goal: 1, reward: 200 },
+    { id: 'secret-egg', name: '幻蛋之秘', desc: '触发神秘的炫彩幻蛋', type: 'secret', goal: 1, reward: 6666 },
   ],
 };
