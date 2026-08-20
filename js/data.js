@@ -145,6 +145,9 @@ const CARDS = [
 { id: 'black-18', name: '玄太初', rarity: 'black', art: { type: 'emoji', emoji: '⚖️' }, desc: '称量一切的玄天秤，两头是天平。', flavor: '它称过太阳，八两。', formation: ['black-09', 'black-02', 'black-10', 'storm-lord', 'chaos-lord'] },
   { id: 'qinghuan-miao', name: '晴幻喵', rarity: 'rainbow', art: { type: 'emoji', emoji: '🐱' }, desc: '一只神秘的小猫。', flavor: '第一个获得创世神的玩家。', formation: ['creator'] },
   { id: 'egg-rainbow-x', name: '炫彩幻蛋', rarity: 'rainbow', hidden: true, art: { type: 'egg', colors: 'rainbow' }, desc: '', flavor: '', formation: [] },
+  { id: 'egg-zhenzhen', name: '珍珍蛋', rarity: 'white', art: { type: 'egg', colors: ['#FFD1DC', '#F5A9BE'] }, desc: '', flavor: '', formation: ['egg-tongtong', 'egg-runrun'] },
+  { id: 'egg-tongtong', name: '桐桐蛋', rarity: 'white', art: { type: 'egg', colors: ['#D0E7F5', '#9FC8E8'] }, desc: '', flavor: '', formation: ['egg-zhenzhen', 'egg-runrun'] },
+  { id: 'egg-runrun', name: '润润蛋', rarity: 'white', art: { type: 'egg', colors: ['#C8B3E6', '#9E82CF'] }, desc: '', flavor: '', formation: ['egg-zhenzhen', 'egg-tongtong'] },
 ];
 
 CARDS.forEach((c, i) => { c.no = i + 1; });
