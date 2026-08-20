@@ -72,6 +72,7 @@ function doDraw(opts) {
   if (Math.random() < CONFIG.SECRET_EGG_RATE) {
     const wasUpgraded = isEggUpgraded();
     if (!wasUpgraded) S.eggUpgraded = true;
+    S.rarityCounts.rainbow = (S.rarityCounts.rainbow || 0) + 1;
     return { card: CARD_MAP['egg-rainbow-x'], r: RARITIES.rainbow, isNew: !wasUpgraded, frag: 0, secret: true };
   }
   const r = rollRarity();
@@ -152,14 +153,15 @@ function spendAllFragments() {
   const byRarity = {};
   let fragGain = 0;
   let secretCount = 0;
+  let secretNew = false;
   for (let i = 0; i < draws; i++) {
     const res = doDraw({ silent: true });
-    if (res.secret) { secretCount++; continue; }
+    if (res.secret) { secretCount++; if (res.isNew) secretNew = true; continue; }
     if (res.isNew) newCards.push(res.card.name);
     byRarity[res.r.id] = (byRarity[res.r.id] || 0) + 1;
     fragGain += res.frag;
   }
-  return { draws, newCards, byRarity, fragGain, secretCount };
+  return { draws, newCards, byRarity, fragGain, secretCount, secretNew };
 }
 
 function setActiveCard(id) {

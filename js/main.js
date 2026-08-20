@@ -170,16 +170,25 @@ function bindEvents() {
 
   $id('boss-frag-all').addEventListener('click', handleSpendAllFrag);
 
+  $id('egg-modal-close').addEventListener('click', hideEggModal);
+  $id('egg-modal').addEventListener('click', e => {
+    if (e.target.classList.contains('egg-modal-backdrop')) hideEggModal();
+  });
+
   document.addEventListener('keydown', e => {
     if (e.key === 'Tab') {
       e.preventDefault();
+      const m = $id('egg-modal');
+      if (m && !m.classList.contains('hidden')) hideEggModal();
       if (!bossOpen) {
         const v = $id('viewer');
         if (v && !v.classList.contains('hidden')) closeViewer();
       }
       toggleBoss();
-    } else if (e.key === 'Escape' && bossOpen) {
-      toggleBoss();
+    } else if (e.key === 'Escape') {
+      const m = $id('egg-modal');
+      if (m && !m.classList.contains('hidden')) { hideEggModal(); return; }
+      if (bossOpen) toggleBoss();
     }
   });
 
@@ -251,7 +260,7 @@ function handleSpendAllFrag() {
   parts.push(rc);
   if (res.newCards.length) parts.push('新卡：' + res.newCards.join('、'));
   if (res.fragGain) parts.push('重复转化碎片 +' + res.fragGain);
-  if (res.secretCount) parts.push('✨ 炫彩蛋进化了！我相信我的梦，让白超越炫彩');
+  if (res.secretNew) showEggUpgradeNotice();
   toast('碎片抽卡 ×' + res.draws + '：' + parts.join('；'), '', 6000);
   renderAll();
   if (bossOpen) updateBossPanel();

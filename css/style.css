@@ -1005,3 +1005,48 @@ body.boss-mode { background: #fff !important; }
 #boss-panel .boss-link:hover { text-decoration: underline; }
 
 #boss-panel .boss-status span { white-space: nowrap; }
+
+#boss-egg-hint {
+  color: #b45309;
+  font-weight: 700;
+  animation: egg-hint-blink 1.2s ease-in-out infinite;
+}
+
+#boss-egg-hint.hidden { display: none; }
+
+@keyframes egg-hint-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .35; }
+}
+
+.egg-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9015;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.egg-modal.hidden { display: none; }
+
+.egg-modal-backdrop { position: absolute; inset: 0; background: rgba(15, 23, 42, .55); }
+
+.egg-modal-box {
+  position: relative;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 26px 34px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .35);
+  max-width: 320px;
+}
+
+.egg-modal-emoji { font-size: 44px; margin-bottom: 10px; }
+
+.egg-modal-title { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+
+.egg-modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+
+body.boss-mode .egg-modal { display: none; }

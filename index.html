@@ -160,6 +160,7 @@
     <span>抽速 <b id="boss-rate">--</b>/s</span>
     <span>碎片 <b id="boss-frag">0</b></span>
     <span id="boss-new">暂无新卡</span>
+    <span id="boss-egg-hint" class="hidden">✨ 炫彩蛋有变化！</span>
     <button class="boss-link" id="boss-strongest">上最强</button>
     <button class="boss-link" id="boss-frag-all">抽碎片</button>
   </div>
@@ -179,6 +180,16 @@
   </div>
   <div class="viewer-hint">拖拽旋转 · 滚轮缩放 · 双击复位 · ESC 关闭</div>
   <button class="btn viewer-close" id="viewer-close">✕</button>
+</div>
+
+<div id="egg-modal" class="egg-modal hidden">
+  <div class="egg-modal-backdrop"></div>
+  <div class="egg-modal-box">
+    <div class="egg-modal-emoji">🥚✨</div>
+    <div class="egg-modal-title">炫彩蛋发生了某种变化</div>
+    <div class="egg-modal-sub">快去图鉴看看吧！</div>
+    <button class="btn primary" id="egg-modal-close">知道了</button>
+  </div>
 </div>
 
 <script src="js/data.js"></script>

@@ -74,9 +74,28 @@ function renderSoon() {
   setTimeout(() => { renderQueued = false; renderAll(); }, 400);
 }
 
+function showEggModal() {
+  const m = $id('egg-modal');
+  if (m) m.classList.remove('hidden');
+}
+
+function hideEggModal() {
+  const m = $id('egg-modal');
+  if (m) m.classList.add('hidden');
+}
+
+function showEggUpgradeNotice() {
+  if (document.body.classList.contains('boss-mode')) {
+    const h = $id('boss-egg-hint');
+    if (h) h.classList.remove('hidden');
+    return;
+  }
+  showEggModal();
+}
+
 function onReward(res) {
   if (res.secret) {
-    if (res.isNew) toast('✨ 白卡炫彩蛋进化了！我相信我的梦，让白超越炫彩', 'rc-rainbow', 5000);
+    if (res.isNew) showEggUpgradeNotice();
     renderSoon();
     return;
   }
