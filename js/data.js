@@ -147,7 +147,7 @@ const CARDS = [
   { id: 'egg-rainbow-x', name: '炫彩幻蛋', rarity: 'rainbow', hidden: true, art: { type: 'egg', colors: 'rainbow' }, desc: '', flavor: '', formation: [] },
   { id: 'egg-zhenzhen', name: '珍珍蛋', rarity: 'white', art: { type: 'egg', colors: ['#FFD1DC', '#F5A9BE'] }, desc: '', flavor: '', formation: ['egg-tongtong', 'egg-runrun'] },
   { id: 'egg-tongtong', name: '桐桐蛋', rarity: 'white', art: { type: 'egg', colors: ['#D0E7F5', '#9FC8E8'] }, desc: '镜框半垂的桐蛋，总在暗处憋住笑意。', flavor: '表面不动声色，肚子已经笑到发抖。', formation: ['egg-zhenzhen', 'egg-runrun'] },
-  { id: 'egg-runrun', name: '润润蛋', rarity: 'white', art: { type: 'egg', colors: ['#C8B3E6', '#9E82CF'] }, desc: '', flavor: '', formation: ['egg-zhenzhen', 'egg-tongtong'] },
+  { id: 'egg-runrun', name: '润润蛋', rarity: 'white', art: { type: 'egg', colors: ['#C8B3E6', '#9E82CF'] }, desc: '无比神圣的蛋，比其他两个华丽许多。', flavor: '桐桐和珍珍的蛋妈。', formation: ['egg-zhenzhen', 'egg-tongtong'] },
 ];
 
 CARDS.forEach((c, i) => { c.no = i + 1; });
