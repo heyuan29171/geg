@@ -66,6 +66,8 @@ function defaultSave() {
     theme: 'light',
     artMode: 'img',
     eggUpgraded: false,
+    achievements: {},
+    fragEarnedTotal: 0,
     updatedAt: Date.now(),
   };
 }
@@ -93,6 +95,8 @@ function sanitize(raw) {
     theme: raw.theme === 'dark' ? 'dark' : 'light',
     artMode: raw.artMode === 'emoji' ? 'emoji' : 'img',
     eggUpgraded: !!raw.eggUpgraded,
+    achievements: raw.achievements && typeof raw.achievements === 'object' ? raw.achievements : {},
+    fragEarnedTotal: num(raw.fragEarnedTotal, 0, 0, 1e15),
     updatedAt: num(raw.updatedAt, Date.now(), 0, Date.now()),
   };
   CARDS.forEach(c => {

@@ -102,6 +102,21 @@ function eggModalOpen() {
   return !!(m && !m.classList.contains('hidden'));
 }
 
+function onAchievement(cfg) {
+  const label = cfg.hidden ? '幻蛋之秘' : cfg.name;
+  if (document.body.classList.contains('boss-mode')) {
+    const h = $id('boss-ach-hint');
+    if (h) {
+      h.textContent = '🏆 ' + label + ' +' + cfg.reward + ' 碎片';
+      h.classList.remove('hidden');
+      clearTimeout(h._t);
+      h._t = setTimeout(() => h.classList.add('hidden'), 6000);
+    }
+    return;
+  }
+  toast('🏆 成就达成「' + label + '」 +' + cfg.reward + ' 碎片', 'rc-gold', 5000);
+}
+
 function showEggUpgradeNotice() {
   if (document.body.classList.contains('boss-mode')) {
     const h = $id('boss-egg-hint');
@@ -487,6 +502,43 @@ function renderBackpack() {
   keepFocus(focus);
 }
 
+let achFilter = 'all';
+
+function achievementCardHTML(cfg) {
+  const isDone = !!S.achievements[cfg.id];
+  const secret = cfg.hidden && !isDone;
+  const p = achievementProgress(cfg);
+  const pct = Math.min(100, Math.max(0, Math.round(p.cur / p.goal * 100)));
+  const name = secret ? '？？？' : cfg.name;
+  const desc = secret ? '？？？' : cfg.desc;
+  const bar = secret
+    ? '<div class="ach-bar"><div class="ach-bar-fill" style="width:0%"></div></div><div class="ach-foot">？？？</div>'
+    : '<div class="ach-bar"><div class="ach-bar-fill" style="width:' + pct + '%"></div></div><div class="ach-foot">' + p.cur.toLocaleString() + ' / ' + p.goal.toLocaleString() + '</div>';
+  const badge = isDone
+    ? '<span class="ach-badge done">✓ 达成' + (S.achievements[cfg.id] ? ' · ' + new Date(S.achievements[cfg.id]).toLocaleString() : '') + '</span>'
+    : '<span class="ach-badge">未达成</span>';
+  return '<div class="ach-card' + (isDone ? ' done' : '') + (secret ? ' secret' : '') + '">' +
+    '<div class="ach-top"><span class="ach-name">' + name + '</span><span class="ach-reward">+' + cfg.reward.toLocaleString() + ' 碎片</span></div>' +
+    '<div class="ach-desc">' + desc + '</div>' + bar +
+    '<div class="ach-badge-row">' + badge + '</div></div>';
+}
+
+function renderAchievements() {
+  const head = $id('ach-head');
+  const fl = $id('ach-filters');
+  const grid = $id('ach-grid');
+  if (!head || !fl || !grid) return;
+  const list = CONFIG.ACHIEVEMENTS || [];
+  const done = list.filter(c => S.achievements[c.id]).length;
+  const totalReward = list.reduce((a, c) => a + c.reward, 0);
+  const pct = list.length ? Math.round(done / list.length * 100) : 0;
+  head.innerHTML = '<div class="codex-progress"><span>成就 ' + done + ' / ' + list.length + '（' + pct + '%）· 全部奖励碎片合计 ' + totalReward.toLocaleString() + '</span><div class="bar"><div class="bar-fill" style="width:' + pct + '%"></div></div></div>';
+  fl.innerHTML = chipGroup('状态', 'achf', [['all', '全部'], ['done', '已达成'], ['todo', '未达成']], achFilter);
+  const pool = list.filter(c => achFilter === 'all' ? true : achFilter === 'done' ? !!S.achievements[c.id] : !S.achievements[c.id]);
+  if (!pool.length) { grid.innerHTML = '<div class="log-empty">没有符合条件的成就</div>'; return; }
+  updateGrid(grid, pool.map(achievementCardHTML));
+}
+
 function renderSettings() {
   const b = $id('btn-art-mode');
   if (b) b.textContent = S.artMode === 'emoji' ? '切换到 AI 立绘卡面' : '切换到 emoji 卡面';
@@ -510,13 +562,14 @@ let heavyPending = false;
 function renderHeavy() {
   if (currentTab === 'codex') renderCodex();
   else if (currentTab === 'backpack') renderBackpack();
+  else if (currentTab === 'achievements') renderAchievements();
   else if (currentTab === 'settings') renderSettings();
 }
 function renderAll() {
   if (!S) return;
   renderTopbar();
   renderBattle();
-  if (currentTab === 'codex' || currentTab === 'backpack' || currentTab === 'settings') {
+  if (currentTab === 'codex' || currentTab === 'backpack' || currentTab === 'achievements' || currentTab === 'settings') {
     const now = Date.now();
     if (now - heavyRenderAt >= 1200) {
       heavyRenderAt = now;

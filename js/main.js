@@ -83,6 +83,13 @@ function bindEvents() {
     renderBackpack();
   });
 
+  $id('ach-filters').addEventListener('click', e => {
+    const chip = e.target.closest('[data-achf]');
+    if (!chip) return;
+    achFilter = chip.dataset.achf;
+    renderAchievements();
+  });
+
   bindSortRow($id('codex-sorts'), codexSort, renderCodex);
   bindSortRow($id('bag-sorts'), bagSort, renderBackpack);
 
@@ -258,6 +265,8 @@ function handleSpendAllFrag() {
   if (res.newCards.length) parts.push('新卡：' + res.newCards.join('、'));
   if (res.fragGain) parts.push('重复转化碎片 +' + res.fragGain);
   if (res.secretNew) showEggUpgradeNotice();
+  const achN = checkAchievements();
+  if (achN > 0) parts.push('成就 +' + achN + ' 项');
   toast('碎片抽卡 ×' + res.draws + '：' + parts.join('；'), '', 6000);
   renderAll();
   if (bossOpen) updateBossPanel();

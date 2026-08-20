@@ -69,11 +69,10 @@ function pickCard(rarityId) {
 function doDraw(opts) {
   const silent = opts && opts.silent;
   S.totalPulls++;
-  if (Math.random() < CONFIG.SECRET_EGG_RATE) {
-    const wasUpgraded = isEggUpgraded();
-    if (!wasUpgraded) S.eggUpgraded = true;
+  if (!isEggUpgraded() && Math.random() < CONFIG.SECRET_EGG_RATE) {
+    S.eggUpgraded = true;
     S.rarityCounts.rainbow = (S.rarityCounts.rainbow || 0) + 1;
-    return { card: CARD_MAP['egg-rainbow-x'], r: RARITIES.rainbow, isNew: !wasUpgraded, frag: 0, secret: true };
+    return { card: CARD_MAP['egg-rainbow-x'], r: RARITIES.rainbow, isNew: true, frag: 0, secret: true };
   }
   const r = rollRarity();
   const card = pickCard(r.id);
@@ -87,6 +86,7 @@ function doDraw(opts) {
   if (!isNew) {
     frag = RARITIES[r.id].frag;
     S.fragments += frag;
+    S.fragEarnedTotal = (S.fragEarnedTotal || 0) + frag;
   }
   if (!silent) {
     S.log.unshift({ t: Date.now(), cardId: card.id, isNew, frag });
@@ -121,6 +121,63 @@ function tick(now) {
     onReward(res);
   }
   updateBattle();
+  checkAchievements();
+}
+
+function ownedCardCount() {
+  let n = 0;
+  CARDS.forEach(c => { if (!c.hidden && (S.owned[c.id] || 0) > 0) n++; });
+  return n;
+}
+
+function hasRarityOf(rarityId) {
+  return CARDS.some(c => !c.hidden && effRarity(c) === rarityId && (S.owned[c.id] || 0) > 0);
+}
+
+function achievementProgress(cfg) {
+  switch (cfg.type) {
+    case 'pulls': return { cur: S.totalPulls, goal: cfg.goal };
+    case 'kills': return { cur: S.kills || 0, goal: cfg.goal };
+    case 'owned': return { cur: ownedCardCount(), goal: cfg.goal };
+    case 'power': return { cur: activePower(), goal: cfg.goal };
+    case 'rarity': return { cur: hasRarityOf(cfg.goal) ? 1 : 0, goal: 1 };
+    case 'frags': return { cur: S.fragEarnedTotal || 0, goal: cfg.goal };
+    case 'offline': return { cur: S.achievements[cfg.id] ? 1 : 0, goal: 1 };
+    case 'secret': return { cur: isEggUpgraded() ? 1 : 0, goal: 1 };
+  }
+  return { cur: 0, goal: 1 };
+}
+
+function unlockAchievement(cfg) {
+  if (S.achievements[cfg.id]) return false;
+  S.achievements[cfg.id] = Date.now();
+  S.fragments += cfg.reward;
+  S.fragEarnedTotal = (S.fragEarnedTotal || 0) + cfg.reward;
+  S.updatedAt = Date.now();
+  if (typeof onAchievement === 'function') onAchievement(cfg);
+  return true;
+}
+
+function checkAchievements() {
+  if (!S.achievements) S.achievements = {};
+  let n = 0;
+  (CONFIG.ACHIEVEMENTS || []).forEach(cfg => {
+    if (cfg.type === 'offline') return;
+    if (S.achievements[cfg.id]) return;
+    const p = achievementProgress(cfg);
+    if (p.cur >= p.goal) { if (unlockAchievement(cfg)) n++; }
+  });
+  return n;
+}
+
+function checkOfflineAchievements(frags) {
+  if (!S.achievements) S.achievements = {};
+  let n = 0;
+  (CONFIG.ACHIEVEMENTS || []).forEach(cfg => {
+    if (cfg.type !== 'offline' || S.achievements[cfg.id]) return;
+    if (frags >= cfg.goal) { if (unlockAchievement(cfg)) n++; }
+  });
+  return n;
 }
 
 function accrueSince(t0) {
@@ -131,7 +188,9 @@ function accrueSince(t0) {
   const frags = Math.floor(pulls / 3 * CONFIG.FRAG_COST_PER_DRAW);
   if (frags <= 0) return null;
   S.fragments += frags;
+  S.fragEarnedTotal = (S.fragEarnedTotal || 0) + frags;
   S.updatedAt = Date.now();
+  checkOfflineAchievements(frags);
   return { frags: frags, secs: Math.round(secs) };
 }
 
@@ -161,6 +220,7 @@ function spendAllFragments() {
     byRarity[res.r.id] = (byRarity[res.r.id] || 0) + 1;
     fragGain += res.frag;
   }
+  S.fragEarnedTotal = (S.fragEarnedTotal || 0) + fragGain;
   return { draws, newCards, byRarity, fragGain, secretCount, secretNew };
 }
 

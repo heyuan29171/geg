@@ -1050,3 +1050,57 @@ body.boss-mode { background: #fff !important; }
 .egg-modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
 
 body.boss-mode .egg-modal { display: none; }
+
+/* ===== 成就系统 ===== */
+
+.ach-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+  padding: 4px 2px 40px;
+}
+
+.ach-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.ach-card.done { border-color: #86efac; background: #f0fdf4; }
+
+.ach-card.secret .ach-name { letter-spacing: 3px; }
+
+.ach-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+
+.ach-name { font-weight: 700; font-size: 15px; color: var(--text); }
+
+.ach-reward { font-size: 12px; font-weight: 700; color: #b45309; white-space: nowrap; }
+
+.ach-desc { font-size: 12px; color: var(--muted); margin: 4px 0 8px; }
+
+.ach-bar { height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; }
+
+.ach-bar-fill { height: 100%; background: var(--accent); border-radius: 99px; }
+
+.ach-card.done .ach-bar-fill { background: #22c55e; }
+
+.ach-foot { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+.ach-badge { font-size: 11px; color: var(--muted); }
+
+.ach-badge.done { color: #16a34a; font-weight: 700; }
+
+.ach-badge-row { margin-top: 8px; }
+
+#boss-ach-hint { color: #b45309; font-weight: 700; }
+
+#boss-ach-hint.hidden { display: none; }
+
+body.dark .ach-card { background: #1e293b; border-color: #334155; }
+body.dark .ach-card.done { background: #052e16; border-color: #166534; }
+body.dark .ach-card.done .ach-bar-fill { background: #4ade80; }
+body.dark .ach-badge.done { color: #4ade80; }
+body.dark .ach-reward { color: #fbbf24; }
+body.dark .ach-bar { background: #334155; }
+body.dark #boss-ach-hint { color: #fbbf24; }

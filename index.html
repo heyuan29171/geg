@@ -21,6 +21,7 @@
     <button class="tab-btn active" data-tab="battle">战斗</button>
     <button class="tab-btn" data-tab="codex">图鉴</button>
     <button class="tab-btn" data-tab="backpack">背包</button>
+    <button class="tab-btn" data-tab="achievements">成就</button>
     <button class="tab-btn" data-tab="settings">设置</button>
   </nav>
 </header>
@@ -76,6 +77,12 @@
     <div class="filter-row" id="bag-range-filters"></div>
     <div class="filter-row" id="bag-sorts"></div>
     <div class="bag-list" id="bag-list"></div>
+  </section>
+
+  <section id="tab-achievements" class="tab">
+    <div class="filter-row" id="ach-head"></div>
+    <div class="filter-row" id="ach-filters"></div>
+    <div class="ach-grid" id="ach-grid"></div>
   </section>
 
   <section id="tab-settings" class="tab">
@@ -161,6 +168,7 @@
     <span>碎片 <b id="boss-frag">0</b></span>
     <span id="boss-new">暂无新卡</span>
     <span id="boss-egg-hint" class="hidden">✨ 炫彩蛋有变化！</span>
+    <span id="boss-ach-hint" class="hidden"></span>
     <button class="boss-link" id="boss-strongest">上最强</button>
     <button class="boss-link" id="boss-frag-all">抽碎片</button>
   </div>
