@@ -156,6 +156,7 @@ function achievementProgress(cfg) {
     case 'frags': return { cur: S.fragEarnedTotal || 0, goal: cfg.goal };
     case 'offline': return { cur: S.achievements[cfg.id] ? 1 : 0, goal: 1 };
     case 'secret': return { cur: isEggUpgraded() ? 1 : 0, goal: 1 };
+    case 'nest': return { cur: S.nestHatches || 0, goal: cfg.goal };
   }
   return { cur: 0, goal: 1 };
 }
@@ -328,6 +329,7 @@ function hatchEgg() {
   const n = S.homeNest;
   if (!n.ready) return null;
   const res = doNestDraw();
+  S.nestHatches = (S.nestHatches || 0) + 1;
   resetNestTimer();
   checkAchievements();
   return res;

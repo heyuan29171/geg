@@ -69,6 +69,7 @@ function defaultSave() {
     achievements: {},
     fragEarnedTotal: 0,
     homeNest: { a: null, b: null, startedAt: 0, hatchAt: 0, ready: false },
+    nestHatches: 0,
     updatedAt: Date.now(),
   };
 }
@@ -99,6 +100,7 @@ function sanitize(raw) {
     achievements: raw.achievements && typeof raw.achievements === 'object' ? raw.achievements : {},
     fragEarnedTotal: num(raw.fragEarnedTotal, 0, 0, 1e15),
     homeNest: sanitizeNest(raw.homeNest),
+    nestHatches: num(raw.nestHatches, 0, 0, 1e9),
     updatedAt: num(raw.updatedAt, Date.now(), 0, Date.now()),
   };
   CARDS.forEach(c => {
