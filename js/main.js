@@ -90,6 +90,42 @@ function bindEvents() {
     renderAchievements();
   });
 
+  const nestSlotClick = slot => e => {
+    if (e.target.closest('[data-remove]')) {
+      nestRemove(slot);
+      renderHome();
+      Save.write(S);
+      return;
+    }
+    openNestPicker(slot);
+  };
+  $id('nest-a').addEventListener('click', nestSlotClick('a'));
+  $id('nest-b').addEventListener('click', nestSlotClick('b'));
+
+  $id('nest-picker').addEventListener('click', e => {
+    if (e.target.classList.contains('nest-picker-backdrop') || e.target.closest('#nest-picker-close')) {
+      closeNestPicker();
+      return;
+    }
+    const row = e.target.closest('[data-pick]');
+    if (!row || !pickerSlot) return;
+    if (nestSet(pickerSlot, row.dataset.pick)) {
+      closeNestPicker();
+      renderHome();
+      Save.write(S);
+    }
+  });
+
+  $id('nest-egg').addEventListener('click', e => {
+    if (!e.target.closest('#btn-hatch')) return;
+    const res = hatchEgg();
+    if (res) {
+      toast('开蛋获得：' + res.card.name + ' ' + RARITIES[res.r.id].name + (res.isNew ? '（新卡！）' : '（重复 +' + res.frag + ' 碎片）'), res.isNew ? 'rc-' + res.r.id : '', 5000);
+      renderAll();
+      Save.write(S);
+    }
+  });
+
   bindSortRow($id('codex-sorts'), codexSort, renderCodex);
   bindSortRow($id('bag-sorts'), bagSort, renderBackpack);
 

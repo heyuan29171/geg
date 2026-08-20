@@ -5,6 +5,8 @@ let lastTick = 0;
 
 function isEggUpgraded() { return !!(S && S.eggUpgraded); }
 
+function isEggCard(c) { return c.id === 'egg-rainbow' || c.id === 'egg-rainbow-x'; }
+
 function effRarity(c) { return (c.id === 'egg-rainbow' && isEggUpgraded()) ? 'rainbow' : c.rarity; }
 
 function effName(c) { return (c.id === 'egg-rainbow' && isEggUpgraded()) ? '炫彩炫彩蛋' : c.name; }
@@ -122,6 +124,17 @@ function tick(now) {
   }
   updateBattle();
   checkAchievements();
+  nestTickCheck();
+  if (typeof updateHomeProgress === 'function') updateHomeProgress();
+}
+
+function nestTickCheck() {
+  const n = S.homeNest;
+  if (!n || !n.a || !n.b || n.ready) return;
+  if (Date.now() >= n.hatchAt) {
+    n.ready = true;
+    if (typeof renderSoon === 'function') renderSoon();
+  }
 }
 
 function ownedCardCount() {
@@ -225,7 +238,100 @@ function spendAllFragments() {
 }
 
 function setActiveCard(id) {
-  if (CARD_MAP[id] && (S.owned[id] || 0) > 0) S.activeCenter = id;
+  if (CARD_MAP[id] && (S.owned[id] || 0) > 0) {
+    S.activeCenter = id;
+    if (S.homeNest) {
+      const n = S.homeNest;
+      let changed = false;
+      if (n.a === id) { n.a = null; changed = true; }
+      if (n.b === id) { n.b = null; changed = true; }
+      if (changed) resetNestTimer();
+    }
+  }
+}
+
+function nestCardOK(card) {
+  return !!card && !isEggCard(card) && (S.owned[card.id] || 0) > 0 && card.id !== S.activeCenter;
+}
+
+function nestSet(slot, cardId) {
+  const n = S.homeNest;
+  if (!nestCardOK(CARD_MAP[cardId])) return false;
+  if (slot === 'a') {
+    if (n.b === cardId) return false;
+    n.a = cardId;
+  } else {
+    if (n.a === cardId) return false;
+    n.b = cardId;
+  }
+  resetNestTimer();
+  return true;
+}
+
+function nestRemove(slot) {
+  const n = S.homeNest;
+  if (slot === 'a') n.a = null; else n.b = null;
+  resetNestTimer();
+}
+
+function resetNestTimer() {
+  const n = S.homeNest;
+  if (!n.a || !n.b) { n.startedAt = 0; n.hatchAt = 0; n.ready = false; return; }
+  n.ready = false;
+  n.startedAt = Date.now();
+  n.hatchAt = n.startedAt + (CONFIG.HOME_EGG_MIN + Math.random() * (CONFIG.HOME_EGG_MAX - CONFIG.HOME_EGG_MIN)) * 1000;
+}
+
+function rollNestRarity() {
+  const eligible = RARITY_LIST.filter(r => CARDS.some(c => c.rarity === r.id && !c.hidden && !isEggCard(c)));
+  if (Math.random() < CONFIG.HOME_EGG_BOOST) {
+    const oa = RARITIES[CARD_MAP[S.homeNest.a].rarity].order;
+    const ob = RARITIES[CARD_MAP[S.homeNest.b].rarity].order;
+    const pool = eligible.filter(r => r.order >= Math.min(oa, ob));
+    const total = pool.reduce((a, r) => a + r.weight, 0);
+    let x = Math.random() * total;
+    for (const r of pool) { x -= r.weight; if (x <= 0) return r; }
+    return pool[pool.length - 1];
+  }
+  const total = eligible.reduce((a, r) => a + r.weight, 0);
+  let x = Math.random() * total;
+  for (const r of eligible) { x -= r.weight; if (x <= 0) return r; }
+  return eligible[eligible.length - 1];
+}
+
+function pickNestCard(rarityId) {
+  const pool = CARDS.filter(c => c.rarity === rarityId && !c.hidden && !isEggCard(c));
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function doNestDraw() {
+  S.totalPulls++;
+  const r = rollNestRarity();
+  const card = pickNestCard(r.id);
+  const before = S.owned[card.id] || 0;
+  const isNew = before === 0;
+  S.owned[card.id] = before + 1;
+  if (isNew) S.ownedAt[card.id] = Date.now();
+  if (isNew && typeof bossNewCard === 'function') bossNewCard(card);
+  S.rarityCounts[r.id]++;
+  let frag = 0;
+  if (!isNew) {
+    frag = RARITIES[r.id].frag;
+    S.fragments += frag;
+    S.fragEarnedTotal = (S.fragEarnedTotal || 0) + frag;
+  }
+  S.log.unshift({ t: Date.now(), cardId: card.id, isNew, frag });
+  S.log = S.log.slice(0, 12);
+  return { card, r, isNew, frag };
+}
+
+function hatchEgg() {
+  const n = S.homeNest;
+  if (!n.ready) return null;
+  const res = doNestDraw();
+  resetNestTimer();
+  checkAchievements();
+  return res;
 }
 
 function gameInit() {

@@ -68,6 +68,7 @@ function defaultSave() {
     eggUpgraded: false,
     achievements: {},
     fragEarnedTotal: 0,
+    homeNest: { a: null, b: null, startedAt: 0, hatchAt: 0, ready: false },
     updatedAt: Date.now(),
   };
 }
@@ -97,6 +98,7 @@ function sanitize(raw) {
     eggUpgraded: !!raw.eggUpgraded,
     achievements: raw.achievements && typeof raw.achievements === 'object' ? raw.achievements : {},
     fragEarnedTotal: num(raw.fragEarnedTotal, 0, 0, 1e15),
+    homeNest: sanitizeNest(raw.homeNest),
     updatedAt: num(raw.updatedAt, Date.now(), 0, Date.now()),
   };
   CARDS.forEach(c => {
@@ -116,6 +118,21 @@ function sanitize(raw) {
     s.rarityCounts[r.id] = num(rawRc[r.id], 0, 0, 1e12);
   });
   return s;
+}
+
+function sanitizeNest(raw) {
+  const n = { a: null, b: null, startedAt: 0, hatchAt: 0, ready: false };
+  if (!raw || typeof raw !== 'object') return n;
+  const ok = id => typeof id === 'string' && CARD_MAP[id] && CARD_MAP[id].id !== 'egg-rainbow' && CARD_MAP[id].id !== 'egg-rainbow-x';
+  const a = ok(raw.a) ? raw.a : null;
+  const b = ok(raw.b) && raw.b !== a ? raw.b : null;
+  n.a = a;
+  n.b = b;
+  n.startedAt = num(raw.startedAt, 0, 0, Date.now());
+  n.hatchAt = num(raw.hatchAt, 0, 0, Date.now() + 1e8);
+  n.ready = !!raw.ready;
+  if (!a || !b) { n.startedAt = 0; n.hatchAt = 0; n.ready = false; }
+  return n;
 }
 
 const Save = {

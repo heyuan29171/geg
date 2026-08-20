@@ -161,6 +161,9 @@ const CONFIG = {
   FRAG_COST_PER_DRAW: 10,
   MAX_FRAG_DRAWS: 50000,
   SECRET_EGG_RATE: 1e-7,
+  HOME_EGG_MIN: 900,
+  HOME_EGG_MAX: 7200,
+  HOME_EGG_BOOST: 0.3,
   ACHIEVEMENTS: [
     { id: 'pulls-100', name: '初出茅庐', desc: '累计抽卡 100 次', type: 'pulls', goal: 100, reward: 100 },
     { id: 'pulls-1000', name: '抽卡学徒', desc: '累计抽卡 1 千次', type: 'pulls', goal: 1000, reward: 300 },

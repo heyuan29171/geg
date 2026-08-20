@@ -539,6 +539,80 @@ function renderAchievements() {
   updateGrid(grid, pool.map(achievementCardHTML));
 }
 
+let pickerSlot = null;
+
+function openNestPicker(slot) {
+  pickerSlot = slot;
+  const n = S.homeNest;
+  const picker = $id('nest-picker');
+  if (!picker) return;
+  const list = CARDS.filter(c =>
+    !c.hidden && !isEggCard(c) && (S.owned[c.id] || 0) > 0 && c.id !== S.activeCenter
+  );
+  const other = slot === 'a' ? n.b : n.a;
+  $id('nest-picker-list').innerHTML = list.map(c => {
+    const disabled = c.id === other;
+    const tag = c.id === other
+      ? '<span class="r-tag">已在窝里</span>'
+      : '<span class="r-tag r-' + effRarity(c) + '">' + RARITIES[effRarity(c)].name + '</span>';
+    return '<div class="nest-pick-row' + (disabled ? ' disabled' : '') + '" data-pick="' + c.id + '">' +
+      '<span class="nest-pick-name">' + effName(c) + '</span>' + tag +
+      '<span class="nest-pick-count">持有 ×' + S.owned[c.id] + '</span>' +
+      '</div>';
+  }).join('');
+  picker.classList.remove('hidden');
+}
+
+function closeNestPicker() {
+  const picker = $id('nest-picker');
+  if (picker) picker.classList.add('hidden');
+  pickerSlot = null;
+}
+
+function slotCardHTML(cardId) {
+  const c = CARD_MAP[cardId];
+  if (!c) return '<span class="nest-placeholder">点击放入</span>';
+  return '<div class="nest-card ' + frameClass(c) + '">' +
+    '<div class="nest-card-name">' + effName(c) + '</div>' +
+    '<span class="r-tag r-' + effRarity(c) + '">' + RARITIES[effRarity(c)].name + '</span>' +
+    '<button class="btn nest-remove" data-remove="1">移除</button>' +
+    '</div>';
+}
+
+function updateHomeProgress() {
+  const n = S.homeNest;
+  const bar = $id('nest-progress');
+  if (!bar || !n) return;
+  if (!n.a || !n.b) { bar.style.width = '0%'; return; }
+  if (n.ready) { bar.style.width = '100%'; return; }
+  const total = n.hatchAt - n.startedAt;
+  const pct = total > 0 ? Math.min(99, Math.max(0, (Date.now() - n.startedAt) / total * 100)) : 0;
+  bar.style.width = pct.toFixed(1) + '%';
+}
+
+function renderHome() {
+  const n = S.homeNest;
+  const slotA = $id('nest-a');
+  const slotB = $id('nest-b');
+  const st = $id('nest-status');
+  const egg = $id('nest-egg');
+  if (!n || !slotA || !slotB || !st || !egg) return;
+  slotA.innerHTML = n.a ? slotCardHTML(n.a) : '<span class="nest-placeholder">点击放入</span>';
+  slotB.innerHTML = n.b ? slotCardHTML(n.b) : '<span class="nest-placeholder">点击放入</span>';
+  if (!n.a || !n.b) {
+    st.textContent = '未开始：再放一张卡片开始生蛋';
+    egg.innerHTML = '';
+  } else if (n.ready) {
+    st.textContent = '蛋生好了！';
+    egg.innerHTML = '<div class="nest-egg-box"><span>🥚</span><div class="nest-egg-title">蛋生好了，随时可以开启</div>' +
+      '<button class="btn primary" id="btn-hatch">开启</button></div>';
+  } else {
+    st.textContent = '孵化中…（时长随机 15 分钟 ~ 2 小时，具体时间保密）';
+    egg.innerHTML = '';
+  }
+  updateHomeProgress();
+}
+
 function renderSettings() {
   const b = $id('btn-art-mode');
   if (b) b.textContent = S.artMode === 'emoji' ? '切换到 AI 立绘卡面' : '切换到 emoji 卡面';
@@ -563,13 +637,14 @@ function renderHeavy() {
   if (currentTab === 'codex') renderCodex();
   else if (currentTab === 'backpack') renderBackpack();
   else if (currentTab === 'achievements') renderAchievements();
+  else if (currentTab === 'home') renderHome();
   else if (currentTab === 'settings') renderSettings();
 }
 function renderAll() {
   if (!S) return;
   renderTopbar();
   renderBattle();
-  if (currentTab === 'codex' || currentTab === 'backpack' || currentTab === 'achievements' || currentTab === 'settings') {
+  if (currentTab === 'codex' || currentTab === 'backpack' || currentTab === 'achievements' || currentTab === 'home' || currentTab === 'settings') {
     const now = Date.now();
     if (now - heavyRenderAt >= 1200) {
       heavyRenderAt = now;
@@ -667,7 +742,7 @@ function backHTML(c) {
       (has ? '' : ' ✗') +
       '</span>';
   }).join('');
-  return '<div class="v-sec">掉落概率 <b>' + (c.id === 'egg-rainbow' ? '0%' : fmtRate(ratePct(RARITIES[effRarity(c)]))) + '</b></div>' +
+  return '<div class="v-sec">掉落概率 <b>' + (c.id === 'egg-rainbow' ? (isEggUpgraded() ? fmtRate(CONFIG.SECRET_EGG_RATE * 100) : '0%') : fmtRate(ratePct(RARITIES[effRarity(c)]))) + '</b></div>' +
     '<div class="v-sec">重复获得 → 碎片 +' + RARITIES[effRarity(c)].frag + '</div>' +
     '<div class="v-sec">战力：单独 ' + basePowerOf(c) +
     (c.formation.length ? ' / 编队 ' + Math.round(formationPowerOf(c.id)) + (complete ? '' : '（未集齐）') : '') + '</div>' +

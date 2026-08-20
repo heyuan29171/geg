@@ -22,6 +22,7 @@
     <button class="tab-btn" data-tab="codex">图鉴</button>
     <button class="tab-btn" data-tab="backpack">背包</button>
     <button class="tab-btn" data-tab="achievements">成就</button>
+    <button class="tab-btn" data-tab="home">家园</button>
     <button class="tab-btn" data-tab="settings">设置</button>
   </nav>
 </header>
@@ -83,6 +84,32 @@
     <div class="filter-row" id="ach-head"></div>
     <div class="filter-row" id="ach-filters"></div>
     <div class="ach-grid" id="ach-grid"></div>
+  </section>
+
+  <section id="tab-home" class="tab">
+    <div class="home-layout">
+      <div class="panel">
+        <h3>生蛋窝</h3>
+        <div class="nest-slots">
+          <div class="nest-slot" id="nest-a"><span class="nest-placeholder">点击放入</span></div>
+          <div class="nest-x">×</div>
+          <div class="nest-slot" id="nest-b"><span class="nest-placeholder">点击放入</span></div>
+        </div>
+        <div class="nest-status" id="nest-status">未开始：再放一张卡片开始生蛋</div>
+        <div class="nest-progress-row">
+          <div class="bar nest-progress-bar"><div class="bar-fill" id="nest-progress"></div></div>
+        </div>
+        <div class="nest-egg" id="nest-egg"></div>
+      </div>
+      <div class="panel">
+        <h3>生蛋规则</h3>
+        <p>放入<b>两张卡片</b>开始生蛋，孵化时长在 15 分钟到 2 小时之间随机，具体时长保密；重新编辑卡片会重新计时。</p>
+        <p>蛋生好后<b>不会提示</b>，随时可以开启；开启相当于一次抽卡，开完立刻开始生下一窝。</p>
+        <p>每次开蛋有 <b>30% 概率</b>开出稀有度不低于两张亲代中较不稀有者的卡。</p>
+        <p>炫彩蛋系列（炫彩蛋 / 炫彩炫彩蛋 / 炫彩幻蛋）不参与生蛋。</p>
+        <p>正在出战的卡不能放入；窝里的卡被设为出战时，会立即停止生蛋并移出家园。</p>
+      </div>
+    </div>
   </section>
 
   <section id="tab-settings" class="tab">
@@ -197,6 +224,17 @@
     <div class="egg-modal-title">炫彩蛋发生了某种变化</div>
     <div class="egg-modal-sub">快去图鉴看看吧！</div>
     <button class="btn primary" id="egg-modal-close">知道了</button>
+  </div>
+</div>
+
+<div id="nest-picker" class="nest-picker hidden">
+  <div class="nest-picker-backdrop"></div>
+  <div class="nest-picker-box">
+    <div class="nest-picker-head">
+      <span>选择放入生蛋的卡片</span>
+      <button class="btn nest-picker-close" id="nest-picker-close">✕</button>
+    </div>
+    <div class="nest-picker-list" id="nest-picker-list"></div>
   </div>
 </div>
 

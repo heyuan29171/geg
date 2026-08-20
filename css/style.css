@@ -1104,3 +1104,105 @@ body.dark .ach-badge.done { color: #4ade80; }
 body.dark .ach-reward { color: #fbbf24; }
 body.dark .ach-bar { background: #334155; }
 body.dark #boss-ach-hint { color: #fbbf24; }
+
+/* ===== 家园生蛋 ===== */
+
+.home-layout { display: flex; flex-direction: column; gap: 14px; max-width: 760px; }
+
+.nest-slots { display: flex; align-items: center; gap: 14px; margin: 8px 0; }
+
+.nest-slot {
+  flex: 1;
+  min-height: 96px;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.nest-slot:hover { border-color: var(--accent); }
+
+.nest-placeholder { color: var(--muted); font-size: 13px; }
+
+.nest-x { color: var(--muted); font-size: 18px; }
+
+.nest-card { text-align: center; padding: 8px 10px; }
+
+.nest-card-name { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+
+.nest-remove { margin-top: 6px; font-size: 12px; padding: 2px 10px; }
+
+.nest-status { font-size: 13px; color: var(--muted); margin: 4px 0 8px; }
+
+.nest-progress-bar { height: 8px; }
+
+.nest-progress-row { margin: 8px 0; }
+
+.nest-egg { text-align: center; padding: 10px 0 4px; }
+
+.nest-egg-box { display: inline-block; }
+
+.nest-egg-box .nest-egg-title { font-size: 15px; font-weight: 800; margin: 4px 0 10px; }
+
+.nest-egg-box > span { font-size: 46px; display: block; }
+
+.nest-picker {
+  position: fixed;
+  inset: 0;
+  z-index: 9015;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nest-picker.hidden { display: none; }
+
+.nest-picker-backdrop { position: absolute; inset: 0; background: rgba(15, 23, 42, .55); }
+
+.nest-picker-box {
+  position: relative;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  width: min(480px, 92vw);
+  max-height: 72vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .35);
+}
+
+.nest-picker-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  font-weight: 700;
+  border-bottom: 1px solid var(--line);
+}
+
+.nest-picker-close { padding: 0 10px; }
+
+.nest-picker-list { overflow-y: auto; padding: 8px; }
+
+.nest-pick-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.nest-pick-row:hover { background: rgba(59, 130, 246, .08); }
+
+.nest-pick-row.disabled { opacity: .45; cursor: not-allowed; }
+
+.nest-pick-name { flex: 1; font-weight: 600; font-size: 14px; }
+
+.nest-pick-count { font-size: 12px; color: var(--muted); }
+
+body.dark .nest-slot { border-color: #334155; }
+body.dark .nest-pick-row:hover { background: rgba(59, 130, 246, .15); }
