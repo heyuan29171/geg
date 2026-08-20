@@ -42,7 +42,7 @@ function eggStyle(card) {
 }
 
 function artHTML(card, full) {
-  if (PNG_READY.has(card.id)) {
+  if (S && S.artMode !== 'emoji' && PNG_READY.has(card.id)) {
     return '<img class="art-img" src="img/cards/' + (full ? card.id : 'thumb/' + card.id) + '.jpg" alt="">';
   }
   if (card.art && card.art.type === 'egg') {
@@ -442,6 +442,8 @@ function renderBackpack() {
 }
 
 function renderSettings() {
+  const b = $id('btn-art-mode');
+  if (b) b.textContent = S.artMode === 'emoji' ? '切换到 AI 立绘卡面' : '切换到 emoji 卡面';
   const rows = RARITY_LIST.map(r =>
     '<tr><td><span class="rate-name rn-' + r.id + '"><span class="r-dot r-' + r.id + '"></span>' + r.name + '</span></td>' +
     '<td>' + fmtRate(ratePct(r)) + '</td>' +
@@ -453,7 +455,7 @@ function renderSettings() {
     '<div class="formula">战力 = Σ 已拥有成员基础战力 ×（1 + 0.2×(n−1) + 0.05×(n−1)²），n = 已拥有成员数。编队未集齐时按已有成员出战。</div>' +
     '<div class="formula">战斗间隔 = 10s ×（初始蛋队 13 战力 / 当前战力）^0.4956，最短 0.005s。编队越强抽得越快。</div>' +
     '<div class="formula">重复卡片自动转碎片：白 1 / 绿 2；蓝及以上 = 该稀有度期望抽数 × 0.65。10 碎片 = 1 抽，平均每抽回本约一半。</div>' +
-    '<div class="formula">离线收益：关闭页面或切走标签页期间，按线上抽卡速度的 1/10 折算为碎片，最多累计 ' + CONFIG.OFFLINE_CAP_HOURS + ' 小时，回到页面自动入账。点击怪物每次缩短下一抽 0.5 秒。</div>' +
+    '<div class="formula">离线收益：关闭页面或切走标签页期间，按线上抽卡速度的 1/3 折算为碎片，最多累计 ' + CONFIG.OFFLINE_CAP_HOURS + ' 小时，回到页面自动入账。点击怪物每次缩短下一抽 0.5 秒。</div>' +
     '<table class="rate-table"><thead><tr><th>稀有度</th><th>单抽概率</th><th>基础战力</th><th>重复→碎片</th></tr></thead><tbody>' + rows + '</tbody></table>';
 }
 

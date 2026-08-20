@@ -111,7 +111,7 @@ function accrueSince(t0) {
   if (elapsed < 90) return null;
   const secs = Math.min(elapsed, CONFIG.OFFLINE_CAP_HOURS * 3600);
   const pulls = secs / battleInterval();
-  const frags = Math.floor(pulls * 0.1 * CONFIG.FRAG_COST_PER_DRAW);
+  const frags = Math.floor(pulls / 3 * CONFIG.FRAG_COST_PER_DRAW);
   if (frags <= 0) return null;
   S.fragments += frags;
   S.updatedAt = Date.now();
