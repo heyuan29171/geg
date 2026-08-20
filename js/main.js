@@ -178,7 +178,6 @@ function bindEvents() {
   document.addEventListener('keydown', e => {
     if (e.key === 'Tab') {
       e.preventDefault();
-      if (eggModalOpen()) return;
       if (!bossOpen) {
         const v = $id('viewer');
         if (v && !v.classList.contains('hidden')) closeViewer();
