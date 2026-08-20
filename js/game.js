@@ -169,5 +169,8 @@ function setActiveCard(id) {
 }
 
 function gameInit() {
+  const up = S.eggUpgraded;
+  S.eggUpgraded = false;
   P0 = formationPowerOf('egg-rainbow');
+  S.eggUpgraded = up;
 }
