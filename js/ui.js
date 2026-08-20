@@ -572,22 +572,14 @@ function closeNestPicker() {
 function slotCardHTML(cardId) {
   const c = CARD_MAP[cardId];
   if (!c) return '<span class="nest-placeholder">点击放入</span>';
-  return '<div class="nest-card ' + frameClass(c) + '">' +
+  return '<div class="nest-card">' +
+    '<div class="nest-card-art">' + artHTML(c) + '</div>' +
+    '<div class="nest-card-info">' +
     '<div class="nest-card-name">' + effName(c) + '</div>' +
     '<span class="r-tag r-' + effRarity(c) + '">' + RARITIES[effRarity(c)].name + '</span>' +
+    '</div>' +
     '<button class="btn nest-remove" data-remove="1">移除</button>' +
     '</div>';
-}
-
-function updateHomeProgress() {
-  const n = S.homeNest;
-  const bar = $id('nest-progress');
-  if (!bar || !n) return;
-  if (!n.a || !n.b) { bar.style.width = '0%'; return; }
-  if (n.ready) { bar.style.width = '100%'; return; }
-  const total = n.hatchAt - n.startedAt;
-  const pct = total > 0 ? Math.min(99, Math.max(0, (Date.now() - n.startedAt) / total * 100)) : 0;
-  bar.style.width = pct.toFixed(1) + '%';
 }
 
 function renderHome() {
@@ -597,20 +589,24 @@ function renderHome() {
   const st = $id('nest-status');
   const egg = $id('nest-egg');
   if (!n || !slotA || !slotB || !st || !egg) return;
-  slotA.innerHTML = n.a ? slotCardHTML(n.a) : '<span class="nest-placeholder">点击放入</span>';
-  slotB.innerHTML = n.b ? slotCardHTML(n.b) : '<span class="nest-placeholder">点击放入</span>';
+  const htmlA = n.a ? slotCardHTML(n.a) : '<span class="nest-placeholder">点击放入</span>';
+  const htmlB = n.b ? slotCardHTML(n.b) : '<span class="nest-placeholder">点击放入</span>';
+  if (slotA.innerHTML !== htmlA) slotA.innerHTML = htmlA;
+  if (slotB.innerHTML !== htmlB) slotB.innerHTML = htmlB;
+  let stText, eggHTML;
   if (!n.a || !n.b) {
-    st.textContent = '未开始：再放一张卡片开始生蛋';
-    egg.innerHTML = '';
+    stText = '未开始：再放一张卡片开始生蛋';
+    eggHTML = '';
   } else if (n.ready) {
-    st.textContent = '蛋生好了！';
-    egg.innerHTML = '<div class="nest-egg-box"><span>🥚</span><div class="nest-egg-title">蛋生好了，随时可以开启</div>' +
+    stText = '蛋生好了！';
+    eggHTML = '<div class="nest-egg-box"><span>🥚</span><div class="nest-egg-title">蛋生好了，随时可以开启</div>' +
       '<button class="btn primary" id="btn-hatch">开启</button></div>';
   } else {
-    st.textContent = '孵化中…（时长随机 15 分钟 ~ 2 小时，具体时间保密）';
-    egg.innerHTML = '';
+    stText = '孵化中…（时长随机 15 分钟 ~ 2 小时，具体时间保密）';
+    eggHTML = '';
   }
-  updateHomeProgress();
+  if (st.textContent !== stText) st.textContent = stText;
+  if (egg.innerHTML !== eggHTML) egg.innerHTML = eggHTML;
 }
 
 function renderSettings() {

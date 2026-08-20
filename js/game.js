@@ -125,7 +125,6 @@ function tick(now) {
   updateBattle();
   checkAchievements();
   nestTickCheck();
-  if (typeof updateHomeProgress === 'function') updateHomeProgress();
 }
 
 function nestTickCheck() {
