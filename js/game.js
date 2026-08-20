@@ -105,7 +105,9 @@ function clickMonster() {
   if (now - lastClickAt < 12.5) return;
   lastClickAt = now;
   monsterHp -= activePower() * 0.5;
+  S.monsterClicks = (S.monsterClicks || 0) + 1;
   if (typeof Tutorial !== 'undefined') Tutorial.onMonsterClick();
+  checkAchievements();
 }
 
 function tick(now) {
@@ -150,6 +152,7 @@ function achievementProgress(cfg) {
   switch (cfg.type) {
     case 'pulls': return { cur: S.totalPulls, goal: cfg.goal };
     case 'kills': return { cur: S.kills || 0, goal: cfg.goal };
+    case 'clicks': return { cur: S.monsterClicks || 0, goal: cfg.goal };
     case 'owned': return { cur: ownedCardCount(), goal: cfg.goal };
     case 'power': return { cur: activePower(), goal: cfg.goal };
     case 'rarity': return { cur: hasRarityOf(cfg.goal) ? 1 : 0, goal: 1 };

@@ -169,6 +169,7 @@ const CONFIG = {
     { id: 'pulls-1000', name: '抽卡学徒', desc: '累计抽卡 1 千次', type: 'pulls', goal: 1000, reward: 300 },
     { id: 'pulls-10000', name: '抽卡大师', desc: '累计抽卡 1 万次', type: 'pulls', goal: 10000, reward: 1000 },
     { id: 'kills-100', name: '猎蛋新手', desc: '累计击杀 100 只怪物', type: 'kills', goal: 100, reward: 100 },
+    { id: 'clicks-100', name: '兔拉米拉米比啾豆', desc: '点击小怪兽 100 次', type: 'clicks', goal: 100, reward: 150 },
     { id: 'kills-5000', name: '猎蛋达人', desc: '累计击杀 5 千只怪物', type: 'kills', goal: 5000, reward: 500 },
     { id: 'kills-50000', name: '猎蛋狂魔', desc: '累计击杀 5 万只怪物', type: 'kills', goal: 50000, reward: 2000 },
     { id: 'owned-20', name: '集卡入门', desc: '拥有 20 种卡片', type: 'owned', goal: 20, reward: 200 },
@@ -183,7 +184,7 @@ const CONFIG = {
     { id: 'power-1e6', name: '战力百万', desc: '当前出战编队战力达到 100 万', type: 'power', goal: 1000000, reward: 2000 },
     { id: 'frags-10000', name: '碎片富翁', desc: '累计获得 1 万碎片', type: 'frags', goal: 10000, reward: 500 },
     { id: 'offline-10000', name: '离线暴富', desc: '单次离线收益达到 1 万碎片', type: 'offline', goal: 10000, reward: 1000 },
-    { id: 'nest-1', name: '宝宝出生了', desc: '开启第一枚蛋', type: 'nest', goal: 1, reward: 200 },
+    { id: 'nest-1', name: '宝宝出生了', desc: '开启第一枚蛋', type: 'nest', goal: 1, reward: 200, hidden: true },
     { id: 'secret-egg', name: '幻蛋之秘', desc: '触发神秘的炫彩幻蛋', type: 'secret', goal: 1, reward: 6666, hidden: true },
   ],
 };
