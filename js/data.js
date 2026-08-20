@@ -144,6 +144,7 @@ const CARDS = [
   { id: 'black-17', name: '无造物', rarity: 'black', art: { type: 'emoji', emoji: '🦫' }, desc: '用倒影筑坝的造物，坝拦的是因果。', flavor: '它咬断的木头，落水即成舟。', formation: ['black-02', 'black-14', 'black-05', 'storm-lord'] },
 { id: 'black-18', name: '玄太初', rarity: 'black', art: { type: 'emoji', emoji: '⚖️' }, desc: '称量一切的玄天秤，两头是天平。', flavor: '它称过太阳，八两。', formation: ['black-09', 'black-02', 'black-10', 'storm-lord', 'chaos-lord'] },
   { id: 'qinghuan-miao', name: '晴幻喵', rarity: 'rainbow', art: { type: 'emoji', emoji: '🐱' }, desc: '一只神秘的小猫。', flavor: '第一个获得创世神的玩家。', formation: ['creator'] },
+  { id: 'egg-rainbow-x', name: '炫彩幻蛋', rarity: 'rainbow', hidden: true, art: { type: 'egg', colors: 'rainbow' }, desc: '', flavor: '', formation: [] },
 ];
 
 CARDS.forEach((c, i) => { c.no = i + 1; });
@@ -152,11 +153,12 @@ const CARD_MAP = {};
 CARDS.forEach(c => { CARD_MAP[c.id] = c; });
 
 const CONFIG = {
-  VERSION: '1.6.2',
+  VERSION: '1.7.0',
   INTERVAL_BASE: 10,
   INTERVAL_EXP: 0.4956,
   MIN_INTERVAL: 0.005,
   OFFLINE_CAP_HOURS: 8,
   FRAG_COST_PER_DRAW: 10,
   MAX_FRAG_DRAWS: 50000,
+  SECRET_EGG_RATE: 1e-7,
 };

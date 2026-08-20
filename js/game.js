@@ -3,7 +3,18 @@ let P0 = 20;
 let monsterHp = 1;
 let lastTick = 0;
 
-function basePowerOf(card) { return RARITIES[card.rarity].basePower; }
+function isEggUpgraded() { return !!(S && S.eggUpgraded); }
+
+function effRarity(c) { return (c.id === 'egg-rainbow' && isEggUpgraded()) ? 'rainbow' : c.rarity; }
+
+function effName(c) { return (c.id === 'egg-rainbow' && isEggUpgraded()) ? '炫彩炫彩蛋' : c.name; }
+
+function effDesc(c) { return (c.id === 'egg-rainbow' && isEggUpgraded()) ? '我相信我的梦，让白超越炫彩' : c.desc; }
+
+function basePowerOf(card) {
+  if (card.id === 'egg-rainbow' && isEggUpgraded()) return RARITIES.rainbow.basePower * 2;
+  return RARITIES[card.rarity].basePower;
+}
 
 function formationCardsOf(cardId) {
   const c = CARD_MAP[cardId];
@@ -50,7 +61,7 @@ function rollRarity() {
 }
 
 function pickCard(rarityId) {
-  const pool = CARDS.filter(c => c.rarity === rarityId && !(c.unique && (S.owned[c.id] || 0) > 0));
+  const pool = CARDS.filter(c => c.rarity === rarityId && !c.hidden && !(c.unique && (S.owned[c.id] || 0) > 0));
   if (!pool.length) pool.push(CARDS.find(c => c.rarity === rarityId) || CARDS[0]);
   return pool[Math.floor(Math.random() * pool.length)];
 }
@@ -58,6 +69,11 @@ function pickCard(rarityId) {
 function doDraw(opts) {
   const silent = opts && opts.silent;
   S.totalPulls++;
+  if (Math.random() < CONFIG.SECRET_EGG_RATE) {
+    const wasUpgraded = isEggUpgraded();
+    if (!wasUpgraded) S.eggUpgraded = true;
+    return { card: CARD_MAP['egg-rainbow-x'], r: RARITIES.rainbow, isNew: !wasUpgraded, frag: 0, secret: true };
+  }
   const r = rollRarity();
   const card = pickCard(r.id);
   const before = S.owned[card.id] || 0;
@@ -135,13 +151,15 @@ function spendAllFragments() {
   const newCards = [];
   const byRarity = {};
   let fragGain = 0;
+  let secretCount = 0;
   for (let i = 0; i < draws; i++) {
     const res = doDraw({ silent: true });
+    if (res.secret) { secretCount++; continue; }
     if (res.isNew) newCards.push(res.card.name);
     byRarity[res.r.id] = (byRarity[res.r.id] || 0) + 1;
     fragGain += res.frag;
   }
-  return { draws, newCards, byRarity, fragGain };
+  return { draws, newCards, byRarity, fragGain, secretCount };
 }
 
 function setActiveCard(id) {

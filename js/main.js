@@ -4,7 +4,7 @@
   gameInit();
   spawnMonster();
 
-  CARDS.forEach(c => {
+  CARDS.filter(c => !c.hidden).forEach(c => {
     const im = new Image();
     im.onload = () => {
       if (im.naturalWidth > 0) {
@@ -251,6 +251,7 @@ function handleSpendAllFrag() {
   parts.push(rc);
   if (res.newCards.length) parts.push('新卡：' + res.newCards.join('、'));
   if (res.fragGain) parts.push('重复转化碎片 +' + res.fragGain);
+  if (res.secretCount) parts.push('✨ 炫彩蛋进化了！我相信我的梦，让白超越炫彩');
   toast('碎片抽卡 ×' + res.draws + '：' + parts.join('；'), '', 6000);
   renderAll();
   if (bossOpen) updateBossPanel();

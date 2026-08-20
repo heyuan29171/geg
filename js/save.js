@@ -65,6 +65,7 @@ function defaultSave() {
     tutorial: 0,
     theme: 'light',
     artMode: 'img',
+    eggUpgraded: false,
     updatedAt: Date.now(),
   };
 }
@@ -91,6 +92,7 @@ function sanitize(raw) {
     tutorial: raw.tutorial != null ? num(raw.tutorial, 0, 0, 4) : ((raw.totalPulls || 0) > 0 ? 4 : 0),
     theme: raw.theme === 'dark' ? 'dark' : 'light',
     artMode: raw.artMode === 'emoji' ? 'emoji' : 'img',
+    eggUpgraded: !!raw.eggUpgraded,
     updatedAt: num(raw.updatedAt, Date.now(), 0, Date.now()),
   };
   CARDS.forEach(c => {

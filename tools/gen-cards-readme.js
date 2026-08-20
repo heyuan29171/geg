@@ -18,7 +18,7 @@ lines.push('## 卡片清单（共 ' + CARDS.length + ' 张）');
 lines.push('');
 lines.push('| NO. | id | 名字 | 稀有度 | 基础战力 | 重复→碎片 | 编队（含中心，共 N 张） | 描述 | 彩蛋文案 |');
 lines.push('| --- | --- | --- | --- | --- | --- | --- | --- | --- |');
-CARDS.forEach(c => {
+CARDS.filter(c => !c.hidden).forEach(c => {
   const fmt = c.formation.map(f => CARD_MAP_NAME[f]).join('、');
   const mem = (c.formation.length ? '『' + CARD_MAP_NAME[c.id] + '（中心）』+ ' + fmt : '独行（只有自己）');
   lines.push('| ' + String(c.no).padStart(3, '0') + ' | `' + c.id + '` | ' + c.name + ' | ' + rname(c.rarity) + (c.unique ? '（唯一）' : '') + ' | ' + RARITY_MAP[c.rarity].basePower + ' | ' + RARITY_MAP[c.rarity].frag + ' | ' + mem + ' | ' + c.desc + ' | 「' + c.flavor + '」 |');

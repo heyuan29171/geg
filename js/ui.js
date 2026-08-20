@@ -29,7 +29,7 @@ const RATE_TOTAL = RARITY_LIST.reduce((a, r) => a + r.weight, 0);
 
 function ratePct(r) { return r.weight / RATE_TOTAL * 100; }
 
-function frameClass(card) { return 'frame frame-' + card.rarity; }
+function frameClass(card) { return 'frame frame-' + effRarity(card); }
 
 function rarityTagHTML(r) { return '<span class="r-tag r-' + r + '">' + RARITIES[r].name + '</span>'; }
 
@@ -75,6 +75,11 @@ function renderSoon() {
 }
 
 function onReward(res) {
+  if (res.secret) {
+    if (res.isNew) toast('✨ 白卡炫彩蛋进化了！我相信我的梦，让白超越炫彩', 'rc-rainbow', 5000);
+    renderSoon();
+    return;
+  }
   const order = res.r.order;
   const now = Date.now();
   if (res.isNew || order >= 3) {
@@ -105,7 +110,7 @@ function renderTopbar() {
 function miniCardHTML(card, isCenter) {
   return '<div class="mini-card' + (isCenter ? ' center' : '') + ' ' + frameClass(card) + '">' +
     '<div class="frame-inner"><div class="mini-art">' + artHTML(card) + '</div>' +
-    '<div class="mini-name">' + card.name + '</div></div></div>';
+    '<div class="mini-name">' + effName(card) + '</div></div></div>';
 }
 
 function battleRowHTML() {
@@ -124,8 +129,8 @@ function battleRowHTML() {
 function memberChipHTML(cm, isSelf) {
   const has = (S.owned[cm.id] || 0) > 0;
   return '<span class="f-mem' + (has ? '' : ' miss') + '">' +
-    '<span class="r-dot r-' + cm.rarity + '"></span>' +
-    '<span class="rn-' + cm.rarity + '">' + cm.name + '</span>' +
+    '<span class="r-dot r-' + effRarity(cm) + '"></span>' +
+    '<span class="rn-' + effRarity(cm) + '">' + effName(cm) + '</span>' +
     (isSelf ? '（中心）' : '') +
     (has ? '' : ' ✗') +
     '</span>';
@@ -154,7 +159,7 @@ function renderBattle() {
     const c = CARD_MAP[S.activeCenter];
     const ownedCount = formationCardsOf(S.activeCenter).filter(cm => (S.owned[cm.id] || 0) > 0).length;
     const total = formationCardsOf(S.activeCenter).length;
-    $id('row-caption').textContent = (ownedCount === total ? '出战编队 · 中心 ' + c.name + ' · 共 ' + total + ' 张' : (ownedCount > 1 ? '出战编队（' + ownedCount + '/' + total + '）· 中心 ' + c.name : '单独出战 · 中心 ' + c.name));
+    $id('row-caption').textContent = (ownedCount === total ? '出战编队 · 中心 ' + effName(c) + ' · 共 ' + total + ' 张' : (ownedCount > 1 ? '出战编队（' + ownedCount + '/' + total + '）· 中心 ' + effName(c) : '单独出战 · 中心 ' + effName(c)));
     $id('formation-info').innerHTML = formationInfoHTML();
   }
   if (!rbCache.rate) {
@@ -177,9 +182,9 @@ function formationInfoHTML() {
   const rows = cards.map(cm => {
     const has = (S.owned[cm.id] || 0) > 0;
     const isSelf = cm.id === S.activeCenter;
-    return '<div class="frow ' + (has ? 'ok' : 'miss') + '">' + (has ? '✓' : '✗') + ' ' + cm.name + (isSelf ? '（中心）' : '') + ' · 基础战力 ' + basePowerOf(cm) + '</div>';
+    return '<div class="frow ' + (has ? 'ok' : 'miss') + '">' + (has ? '✓' : '✗') + ' ' + effName(cm) + (isSelf ? '（中心）' : '') + ' · 基础战力 ' + basePowerOf(cm) + '</div>';
   }).join('');
-  return '<div class="fhead">' + CARD_MAP[S.activeCenter].name + ' ' + rarityTagHTML(CARD_MAP[S.activeCenter].rarity) + '</div>' +
+  return '<div class="fhead">' + effName(CARD_MAP[S.activeCenter]) + ' ' + rarityTagHTML(effRarity(CARD_MAP[S.activeCenter])) + '</div>' +
     '<div class="fbody">' + rows + '</div>' +
     '<div class="fnote">' + (complete ? '编队战力 ' + Math.round(formationPowerOf(S.activeCenter))
       : '编队未集齐（' + formationCardsOf(S.activeCenter).filter(cm => (S.owned[cm.id] || 0) > 0).length + '/' + formationCardsOf(S.activeCenter).length + '）· 战力 ' + Math.round(formationPowerOf(S.activeCenter)) + ' · 集齐后 ' + Math.round(formationPowerFull(S.activeCenter))) + ' · 战斗间隔 ' + fmtInterval(battleInterval()) + '</div>';
@@ -200,8 +205,8 @@ function renderLog() {
         const c = CARD_MAP[e.cardId];
         const t = new Date(e.t).toLocaleTimeString('zh-CN', { hour12: false });
         return '<div class="log-entry"><span class="log-time">' + t + '</span>' +
-          '<span class="r-dot r-' + c.rarity + '"></span>' +
-          '<span>' + c.name + '</span>' +
+          '<span class="r-dot r-' + effRarity(c) + '"></span>' +
+          '<span>' + effName(c) + '</span>' +
           (e.isNew ? '<span class="ok-text">新卡</span>' : '<span class="miss-text">+' + e.frag + ' 碎片</span>') + '</div>';
       }).join('');
   if (logCache !== html) {
@@ -304,12 +309,14 @@ function passesFilters(c, f) {
   const p = formationPowerOf(c.id);
   if (f.pMin !== '' && p < +f.pMin) return false;
   if (f.pMax !== '' && p > +f.pMax) return false;
-  if (f.query && c.name.indexOf(f.query) < 0) return false;
+  if (f.query && effName(c).indexOf(f.query) < 0) return false;
   return true;
 }
 
 function countOwned(rarityId) {
-  const pool = rarityId === 'all' ? CARDS : CARDS.filter(c => c.rarity === rarityId);
+  const pool = rarityId === 'all'
+    ? CARDS.filter(c => !c.hidden)
+    : CARDS.filter(c => !c.hidden && effRarity(c) === rarityId);
   let count = 0;
   pool.forEach(c => { if ((S.owned[c.id] || 0) > 0) count++; });
   return { count: count, total: pool.length };
@@ -319,7 +326,7 @@ function sortedCards(pool, sort) {
   const dir = sort.dir;
   const val = c => {
     switch (sort.key) {
-      case 'rarity': return RARITIES[c.rarity].order;
+      case 'rarity': return RARITIES[effRarity(c)].order;
       case 'power': return basePowerOf(c);
       case 'fp': return formationPowerOf(c.id);
       case 'count': return S.owned[c.id] || 0;
@@ -382,7 +389,8 @@ function renderCodex() {
   const pct = owned.total ? Math.round(owned.count / owned.total * 100) : 0;
   $id('codex-head').innerHTML = '<div class="codex-progress"><span>收集 ' + owned.count + ' / ' + owned.total + '（' + pct + '%）</span><div class="bar"><div class="bar-fill" style="width:' + pct + '%"></div></div></div>';
   const pool = sortedCards(CARDS.filter(c =>
-    (codexFilter === 'all' || c.rarity === codexFilter) &&
+    !c.hidden &&
+    (codexFilter === 'all' || effRarity(c) === codexFilter) &&
     passesFilters(c, { owned: codexOwned, complete: codexComplete, pMin: codexPowerMin, pMax: codexPowerMax, query: codexQuery })
   ), codexSort);
   renderSortBar($id('codex-sorts'), codexSort, false);
@@ -393,12 +401,12 @@ function renderCodex() {
   updateGrid($id('codex-grid'), pool.map(c => {
     const ownedCount = S.owned[c.id] || 0;
     const locked = ownedCount === 0;
-    const mystery = locked && RARITIES[c.rarity].order >= 4;
+    const mystery = locked && RARITIES[effRarity(c)].order >= 4;
     return '<button class="codex-cell ' + frameClass(c) + '" data-view="' + c.id + '"' + (mystery ? ' data-mystery="1"' : '') + '>' +
       '<div class="frame-inner' + (locked ? ' locked' : '') + '">' +
       '<div class="cell-art">' + (mystery ? '<div class="emoji-art">?</div>' : artHTML(c)) + '</div>' +
       '<div class="cell-no">' + (mystery ? '' : 'NO.' + c.no) + '</div>' +
-      '<div class="cell-name">' + (mystery ? '???' : c.name) + '</div>' +
+      '<div class="cell-name">' + (mystery ? '???' : effName(c)) + '</div>' +
       (locked ? '<div class="cell-lock">未获得</div>' : '<div class="cell-count">×' + ownedCount + '</div>') +
       '</div></button>';
   }));
@@ -412,8 +420,9 @@ function renderBackpack() {
     chipGroup('编队', 'cpl', [['all', '全部'], ['ready', '可出战'], ['no', '未集齐']], bagComplete));
   setInnerHTML($id('bag-range-filters'), rangeRowHTML('bag', bagPowerMin, bagPowerMax, bagQuery));
   const pool = sortedCards(CARDS.filter(c =>
+    !c.hidden &&
     (S.owned[c.id] || 0) > 0 &&
-    (bagFilter === 'all' || c.rarity === bagFilter) &&
+    (bagFilter === 'all' || effRarity(c) === bagFilter) &&
     passesFilters(c, { complete: bagComplete, pMin: bagPowerMin, pMax: bagPowerMax, query: bagQuery })
   ), bagSort);
   renderSortBar($id('bag-sorts'), bagSort, true);
@@ -428,8 +437,8 @@ function renderBackpack() {
       '<div class="frame-inner bag-inner">' +
       '<div class="bag-art" data-view="' + c.id + '">' + artHTML(c) + '</div>' +
       '<div class="bag-info">' +
-      '<div class="bag-title">NO.' + c.no + ' ' + c.name + ' ' + rarityTagHTML(c.rarity) + (active ? '<span class="active-tag">出战</span>' : '') + '</div>' +
-      '<div class="bag-sub">持有 ×' + count + ' · 基础战力 ' + basePowerOf(c) + ' · 重复转化 ' + RARITIES[c.rarity].frag + ' 碎片</div>' +
+      '<div class="bag-title">NO.' + c.no + ' ' + effName(c) + ' ' + rarityTagHTML(effRarity(c)) + (active ? '<span class="active-tag">出战</span>' : '') + '</div>' +
+      '<div class="bag-sub">持有 ×' + count + ' · 基础战力 ' + basePowerOf(c) + ' · 重复转化 ' + RARITIES[effRarity(c)].frag + ' 碎片</div>' +
       '<div class="bag-formation">' + formationLineHTML(c.id) + '</div>' +
       '</div>' +
       '<div class="bag-actions">' +
@@ -550,8 +559,8 @@ function closeViewer() {
 function frontHTML(c) {
   return     '<div class="v-art">' + artHTML(c, true) + '</div>' +
     '<div class="v-no">NO.' + c.no + '</div>' +
-    '<div class="v-name">' + c.name + '</div>' +
-    rarityTagHTML(c.rarity) +
+    '<div class="v-name">' + effName(c) + '</div>' +
+    rarityTagHTML(effRarity(c)) +
     '<div class="v-line">基础战力 <b>' + basePowerOf(c) + '</b></div>' +
     '<div class="v-line">编队 ' + (1 + c.formation.length) + ' 张' + (c.formation.length ? '' : ' · 独行') + '</div>';
 }
@@ -562,19 +571,19 @@ function backHTML(c) {
   const members = formationCardsOf(c.id).map(cm => {
     const has = (S.owned[cm.id] || 0) > 0;
     return '<span class="v-mem ' + (has ? 'ok' : 'miss') + '">' +
-      '<span class="r-dot r-' + cm.rarity + '"></span>' +
-      '<span class="rn-' + cm.rarity + '">' + cm.name + '</span>' +
+      '<span class="r-dot r-' + effRarity(cm) + '"></span>' +
+      '<span class="rn-' + effRarity(cm) + '">' + effName(cm) + '</span>' +
       (cm.id === c.id ? '（中心）' : '') +
       (has ? '' : ' ✗') +
       '</span>';
   }).join('');
-  return '<div class="v-sec">掉落概率 <b>' + fmtRate(ratePct(RARITIES[c.rarity])) + '</b></div>' +
-    '<div class="v-sec">重复获得 → 碎片 +' + RARITIES[c.rarity].frag + '</div>' +
+  return '<div class="v-sec">掉落概率 <b>' + (c.id === 'egg-rainbow' ? '0%' : fmtRate(ratePct(RARITIES[effRarity(c)]))) + '</b></div>' +
+    '<div class="v-sec">重复获得 → 碎片 +' + RARITIES[effRarity(c)].frag + '</div>' +
     '<div class="v-sec">战力：单独 ' + basePowerOf(c) +
     (c.formation.length ? ' / 编队 ' + Math.round(formationPowerOf(c.id)) + (complete ? '' : '（未集齐）') : '') + '</div>' +
     '<div class="v-sec-title">编队成员（共 ' + (1 + c.formation.length) + ' 张）</div>' +
     '<div class="v-mems">' + members + '</div>' +
-    '<div class="v-desc">' + c.desc + '</div>' +
+    '<div class="v-desc">' + effDesc(c) + '</div>' +
     '<div class="v-flavor">「' + c.flavor + '」</div>' +
     (owned ? '' : '<div class="v-unowned">尚未获得</div>');
 }
