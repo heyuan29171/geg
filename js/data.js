@@ -145,7 +145,7 @@ const CARDS = [
 { id: 'black-18', name: '玄太初', rarity: 'black', art: { type: 'emoji', emoji: '⚖️' }, desc: '称量一切的玄天秤，两头是天平。', flavor: '它称过太阳，八两。', formation: ['black-09', 'black-02', 'black-10', 'storm-lord', 'chaos-lord'] },
   { id: 'qinghuan-miao', name: '晴幻喵', rarity: 'rainbow', art: { type: 'emoji', emoji: '🐱' }, desc: '一只神秘的小猫。', flavor: '第一个获得创世神的玩家。', formation: ['creator'] },
   { id: 'egg-rainbow-x', name: '炫彩幻蛋', rarity: 'rainbow', hidden: true, art: { type: 'egg', colors: 'rainbow' }, desc: '', flavor: '', formation: [] },
-  { id: 'egg-zhenzhen', name: '珍珍蛋', rarity: 'white', art: { type: 'egg', colors: ['#FFD1DC', '#F5A9BE'] }, desc: '', flavor: '', formation: ['egg-tongtong', 'egg-runrun'] },
+  { id: 'egg-zhenzhen', name: '珍珍蛋', rarity: 'white', art: { type: 'egg', colors: ['#FFD1DC', '#F5A9BE'] }, desc: '敦实的珍珍蛋，抬眼望向上方。', flavor: '往上瞅，满腹小盘算藏不住。', formation: ['egg-tongtong', 'egg-runrun'] },
   { id: 'egg-tongtong', name: '桐桐蛋', rarity: 'white', art: { type: 'egg', colors: ['#D0E7F5', '#9FC8E8'] }, desc: '镜框半垂的桐蛋，总在暗处憋住笑意。', flavor: '表面不动声色，肚子已经笑到发抖。', formation: ['egg-zhenzhen', 'egg-runrun'] },
   { id: 'egg-runrun', name: '润润蛋', rarity: 'white', art: { type: 'egg', colors: ['#C8B3E6', '#9E82CF'] }, desc: '无比神圣的蛋，比其他两个华丽许多。', flavor: '桐桐和珍珍的蛋妈。', formation: ['egg-zhenzhen', 'egg-tongtong'] },
 ];
