@@ -105,12 +105,6 @@ function sanitize(raw) {
       ? num(rawOwnedAt[c.id], 0, 0, Date.now())
       : (c.start ? s.updatedAt : 0);
   });
-  CARDS.forEach(c => {
-    if (!c.start && s.owned[c.id] > 0 && rawOwnedAt[c.id] == null) {
-      delete s.owned[c.id];
-      delete s.ownedAt[c.id];
-    }
-  });
   RARITY_LIST.forEach(r => {
     const rawRc = raw.rarityCounts && typeof raw.rarityCounts === 'object' ? raw.rarityCounts : {};
     s.rarityCounts[r.id] = num(rawRc[r.id], 0, 0, 1e12);
