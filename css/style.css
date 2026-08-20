@@ -1051,6 +1051,16 @@ body.boss-mode { background: #fff !important; }
 
 body.boss-mode .egg-modal { display: none; }
 
+.nest-modal-card { margin-bottom: 12px; }
+
+.nest-modal-art { width: 110px; height: 130px; margin: 0 auto 8px; overflow: hidden; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); }
+
+.nest-modal-art .art-img, .nest-modal-art .egg-art { width: 100%; height: 100%; }
+
+.nest-modal-art .emoji-art { font-size: 56px; line-height: 130px; text-align: center; }
+
+.nest-modal-name { font-size: 17px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+
 /* ===== 成就系统 ===== */
 
 .ach-grid {

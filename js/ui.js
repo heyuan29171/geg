@@ -102,6 +102,30 @@ function eggModalOpen() {
   return !!(m && !m.classList.contains('hidden'));
 }
 
+function showNestModal(res) {
+  const m = $id('nest-modal');
+  if (!m || !res) return;
+  const c = res.card && CARD_MAP[res.card.id] ? CARD_MAP[res.card.id] : null;
+  const rid = res.r ? res.r.id : 'white';
+  const cardEl = $id('nest-modal-card');
+  if (cardEl) cardEl.innerHTML = '<div class="nest-modal-art">' + (c ? artHTML(c) : '') + '</div>' +
+    '<div class="nest-modal-name">' + (c ? effName(c) : '???') + '</div>' +
+    '<span class="r-tag r-' + rid + '">' + (res.r ? res.r.name : '') + '</span>';
+  const sub = $id('nest-modal-sub');
+  if (sub) sub.textContent = res.isNew ? '新卡！已加入图鉴' : '重复卡，获得 +' + res.frag + ' 碎片';
+  m.classList.remove('hidden');
+}
+
+function hideNestModal() {
+  const m = $id('nest-modal');
+  if (m) m.classList.add('hidden');
+}
+
+function nestModalOpen() {
+  const m = $id('nest-modal');
+  return !!(m && !m.classList.contains('hidden'));
+}
+
 function onAchievement(cfg) {
   const label = cfg.hidden ? '幻蛋之秘' : cfg.name;
   if (document.body.classList.contains('boss-mode')) {

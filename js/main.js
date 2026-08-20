@@ -120,7 +120,7 @@ function bindEvents() {
     if (!e.target.closest('#btn-hatch')) return;
     const res = hatchEgg();
     if (res) {
-      toast('开蛋获得：' + res.card.name + ' ' + RARITIES[res.r.id].name + (res.isNew ? '（新卡！）' : '（重复 +' + res.frag + ' 碎片）'), res.isNew ? 'rc-' + res.r.id : '', 5000);
+      showNestModal(res);
       renderAll();
       Save.write(S);
     }
@@ -217,6 +217,10 @@ function bindEvents() {
   $id('egg-modal').addEventListener('click', e => {
     if (e.target.classList.contains('egg-modal-backdrop')) hideEggModal();
   });
+  $id('nest-modal-close').addEventListener('click', () => { if (!nestModalOpen()) return; hideNestModal(); });
+  $id('nest-modal').addEventListener('click', e => {
+    if (e.target.classList.contains('egg-modal-backdrop')) hideNestModal();
+  });
 
   document.addEventListener('keydown', e => {
     if (e.key === 'Tab') {
@@ -228,6 +232,7 @@ function bindEvents() {
       toggleBoss();
     } else if (e.key === 'Escape') {
       if (eggModalOpen()) { hideEggModal(); return; }
+      if (nestModalOpen()) { hideNestModal(); return; }
       if (bossOpen) toggleBoss();
     }
   });
