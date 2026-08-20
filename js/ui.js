@@ -74,14 +74,32 @@ function renderSoon() {
   setTimeout(() => { renderQueued = false; renderAll(); }, 400);
 }
 
+let eggModalLockUntil = 0;
+
 function showEggModal() {
   const m = $id('egg-modal');
-  if (m) m.classList.remove('hidden');
+  if (!m) return;
+  m.classList.remove('hidden');
+  eggModalLockUntil = Date.now() + 3000;
+  const btn = $id('egg-modal-close');
+  if (btn) btn.disabled = true;
+  setTimeout(() => {
+    const b = $id('egg-modal-close');
+    if (b && !m.classList.contains('hidden')) b.disabled = false;
+  }, 3000);
 }
 
 function hideEggModal() {
+  if (Date.now() < eggModalLockUntil) return;
   const m = $id('egg-modal');
   if (m) m.classList.add('hidden');
+  const btn = $id('egg-modal-close');
+  if (btn) btn.disabled = false;
+}
+
+function eggModalOpen() {
+  const m = $id('egg-modal');
+  return !!(m && !m.classList.contains('hidden'));
 }
 
 function showEggUpgradeNotice() {

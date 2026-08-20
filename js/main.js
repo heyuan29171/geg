@@ -170,7 +170,7 @@ function bindEvents() {
 
   $id('boss-frag-all').addEventListener('click', handleSpendAllFrag);
 
-  $id('egg-modal-close').addEventListener('click', hideEggModal);
+  $id('egg-modal-close').addEventListener('click', () => { if (!eggModalOpen()) return; hideEggModal(); });
   $id('egg-modal').addEventListener('click', e => {
     if (e.target.classList.contains('egg-modal-backdrop')) hideEggModal();
   });
@@ -178,16 +178,14 @@ function bindEvents() {
   document.addEventListener('keydown', e => {
     if (e.key === 'Tab') {
       e.preventDefault();
-      const m = $id('egg-modal');
-      if (m && !m.classList.contains('hidden')) hideEggModal();
+      if (eggModalOpen()) return;
       if (!bossOpen) {
         const v = $id('viewer');
         if (v && !v.classList.contains('hidden')) closeViewer();
       }
       toggleBoss();
     } else if (e.key === 'Escape') {
-      const m = $id('egg-modal');
-      if (m && !m.classList.contains('hidden')) { hideEggModal(); return; }
+      if (eggModalOpen()) { hideEggModal(); return; }
       if (bossOpen) toggleBoss();
     }
   });
