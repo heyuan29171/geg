@@ -142,13 +142,13 @@ function bindEvents() {
     let ok = false, msg = '购买失败';
     if (key === 'nest-slot') {
       ok = buyNestSlot();
-      msg = ok ? '新窝建好了！去家园放卡开孵' : '碎片不足';
+      msg = ok ? '新窝位建好了！' : '碎片不足';
     } else if (key === 'cosmetic-frame') {
       ok = buyCosmeticFrame();
-      msg = ok ? '毕业纪念框已到手，全图鉴镀金！' : '碎片不足';
+      msg = ok ? '毕业纪念框已解锁，全图鉴镀金边！' : '碎片不足';
     } else if (key.indexOf('pity-') === 0) {
       ok = buyPity(key.slice(5));
-      msg = ok ? '保底券已入袋，下一抽生效' : '碎片不足';
+      msg = ok ? '保底券已持有，下一抽生效' : '碎片不足';
     }
     if (ok) Save.write(S);
     toast(msg, ok ? '' : 'rc-white');

@@ -620,7 +620,10 @@ function nestBlockHTML(idx, n) {
   const htmlA = n.a ? slotCardHTML(n.a) : '<span class="nest-placeholder">点击放入</span>';
   const htmlB = n.b ? slotCardHTML(n.b) : '<span class="nest-placeholder">点击放入</span>';
   let stText, eggHTML, actionsHTML = '';
-  if (!n.a || !n.b) {
+  if (!n.a && !n.b) {
+    stText = '未开始：放入两张卡片开始生蛋';
+    eggHTML = '';
+  } else if (!n.a || !n.b) {
     stText = '未开始：再放一张卡片开始生蛋';
     eggHTML = '';
   } else if (n.ready) {
@@ -631,7 +634,7 @@ function nestBlockHTML(idx, n) {
     stText = '孵化中…（时长随机 15 分钟 ~ 2 小时，具体时间保密）';
     const left = CONFIG.SHOP.SPEEDUP_MAX - (n.speedups || 0);
     actionsHTML = '<div class="nest-actions">' +
-      '<button class="btn btn-sm" data-speedup="' + idx + '"' + (left <= 0 ? ' disabled' : '') + '>加速生蛋 ' + fmtFrag(CONFIG.SHOP.SPEEDUP_COST) + '</button>' +
+      '<button class="btn btn-sm" data-speedup="' + idx + '"' + (left <= 0 ? ' disabled' : '') + '>加速生蛋 ' + fmtFrag(CONFIG.SHOP.SPEEDUP_COST) + ' 碎片</button>' +
       '<span class="nest-action-note">剩余时间 −25%，本周期还能加速 ' + left + ' 次</span></div>';
     eggHTML = '';
   }
