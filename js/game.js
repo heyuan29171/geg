@@ -397,8 +397,7 @@ function pickNestCard(rarityId) {
 
 function doNestDraw(nest) {
   S.totalPulls++;
-  let r = rollNestRarity(nest);
-  r = applyPity(r);
+  const r = rollNestRarity(nest);
   const card = pickNestCard(r.id);
   const before = S.owned[card.id] || 0;
   const isNew = before === 0;

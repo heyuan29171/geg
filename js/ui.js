@@ -671,13 +671,16 @@ function fmtFrag(n) {
 }
 
 const SHOP_ITEMS = [
-  { key: 'pity-purple', name: '紫卡保底券', tier: 'purple', desc: '下一抽必出紫色稀有度以上，买后自动生效，用完才失效。普通抽卡和开蛋都算。',
+  { key: 'pity-purple', name: '紫卡保底券', tier: 'purple',
+    desc: '持有期间每一抽自动消耗一张，保证那一抽必出<b>紫卡</b>及以上；只对普通抽卡生效，开蛋不看保底。',
     meta: () => '持有 ' + (S.pityStock.purple || 0) + ' 张 · 已买过 ' + (S.pityBought.purple || 0) + ' 次',
     cost: () => pityCost('purple'), can: () => true },
-  { key: 'pity-gold', name: '金卡保底券', tier: 'gold', desc: '下一抽必出金色稀有度以上。同时有低阶和高阶保底券时，先用高阶的。',
+  { key: 'pity-gold', name: '金卡保底券', tier: 'gold',
+    desc: '持有期间每一抽自动消耗一张，保证那一抽必出<b>金卡</b>及以上；只对普通抽卡生效，开蛋不看保底。',
     meta: () => '持有 ' + (S.pityStock.gold || 0) + ' 张 · 已买过 ' + (S.pityBought.gold || 0) + ' 次',
     cost: () => pityCost('gold'), can: () => true },
-  { key: 'pity-black', name: '黑卡保底券', tier: 'black', desc: '下一抽必出黑色稀有度。彩蛋惊喜不受影响，碰到彩蛋不会消耗保底券。',
+  { key: 'pity-black', name: '黑卡保底券', tier: 'black',
+    desc: '持有期间每一抽自动消耗一张，保证那一抽必出<b>黑卡</b>及以上；只对普通抽卡生效，开蛋不看保底。',
     meta: () => '持有 ' + (S.pityStock.black || 0) + ' 张 · 已买过 ' + (S.pityBought.black || 0) + ' 次',
     cost: () => pityCost('black'), can: () => true },
   { key: 'nest-slot', name: '扩建窝位', tier: null,
