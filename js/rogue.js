@@ -71,14 +71,14 @@ function rogueMechEffect(m, layer) {
   const M = CONFIG.ROGUE.MECHANICS[m];
   if (!layer) return M.desc;
   switch (m) {
-    case 'growth': return '全队伤害 ×' + Math.pow(1.5, layer).toFixed(2);
+    case 'growth': return '全队伤害 ×' + Math.pow(1.44, layer).toFixed(2);
     case 'combo': return '连击链：攻击次数期望 ×' + Math.pow(1.4, layer).toFixed(2);
-    case 'crit': return '暴击率 ×' + Math.pow(1.5, layer).toFixed(2) + '（以局外养成为基础）';
-    case 'smash': return '每 5 秒附加 ' + (2 * layer) + ' 次重击';
+    case 'crit': return '暴击伤害 ×' + Math.pow(1.4, layer).toFixed(2) + ' · 暴击率 ' + (rogueStats().critRate * 100).toFixed(1) + '%';
+    case 'smash': return '每 5 秒附加 ' + (2 * Math.pow(1.5, layer - 1)).toFixed(1) + ' 次重击';
     case 'raid': return '开局将怪血量降至 ×' + Math.pow(0.7, layer).toFixed(2);
-    case 'delay': return '限时 +' + (5 * layer) + ' 秒';
+    case 'delay': return '限时 +' + (5 * Math.pow(1.5, layer - 1)).toFixed(1) + ' 秒';
     case 'haste': return '攻击频率 ×' + Math.pow(1.4, layer).toFixed(2);
-    case 'press': return '怪物血量 ×' + Math.pow(0.75, layer).toFixed(2);
+    case 'press': return '怪物血量 ×' + Math.pow(0.71, layer).toFixed(2);
   }
   return M.desc;
 }
@@ -107,15 +107,16 @@ function rogueStats() {
     haste: rogueMechLayer('haste'),
     press: rogueMechLayer('press'),
   };
-  if (lv.growth) st.dmgMult *= Math.pow(1.5, lv.growth);
-  const rawCrit = 0.01 * (u.crit || 0) * Math.pow(1.5, lv.crit);
+  if (lv.growth) st.dmgMult *= Math.pow(1.44, lv.growth);
+  const rawCrit = 0.01 * (u.crit || 0) * Math.pow(1.5, lv.crit) + 0.02 * lv.crit;
   st.critRate = Math.min(0.9, rawCrit);
   if (rawCrit > 0.9) st.dmgMult *= 1 + (rawCrit - 0.9) * 0.1;
-  if (lv.smash) st.smashDmg = 2 * lv.smash;
+  if (lv.smash) st.smashDmg = 2 * Math.pow(1.5, lv.smash - 1);
   if (lv.raid) st.raidCut = Math.pow(0.7, lv.raid);
-  st.hpCut *= Math.pow(0.75, lv.press);
+  st.hpCut *= Math.pow(0.71, lv.press);
   st.atkPerSec *= Math.pow(1.4, lv.haste);
-  st.timeBonus += 5 * lv.delay;
+  st.timeBonus += 5 * Math.pow(1.5, lv.delay - 1);
+  st.critMult *= Math.pow(1.4, lv.crit);
   st.dmgMult *= 1 + 0.02 * (u.damage || 0);
   st.critMult *= 1 + 0.05 * (u.critd || 0);
   st.timeBonus += 0.5 * (u.time || 0);
