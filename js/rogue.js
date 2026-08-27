@@ -72,7 +72,7 @@ function rogueMechEffect(m, layer) {
   if (!layer) return M.desc;
   switch (m) {
     case 'growth': return '全队伤害 ×' + Math.pow(1.5, layer).toFixed(2);
-    case 'combo': return '攻击 ' + (15 * layer) + '% 概率连击一次';
+    case 'combo': return '连击链：攻击次数期望 ×' + Math.pow(1.4, layer).toFixed(2);
     case 'crit': return '暴击率 ×' + Math.pow(1.5, layer).toFixed(2) + '（以局外养成为基础）';
     case 'smash': return '每 5 秒附加 ' + (2 * layer) + ' 次重击';
     case 'raid': return '开局将怪血量降至 ×' + Math.pow(0.7, layer).toFixed(2);
@@ -458,10 +458,19 @@ function rogueApplyEvent(ev) {
 function rogueAttack(now) {
   const R = S.rogue;
   const st = rogueStats();
+  const comboL = rogueMechLayer('combo');
   let hits = 0;
   const doHit = () => { rogueBaseHit(st); hits++; };
   doHit();
-  if (Math.random() < 0.15 * rogueMechLayer('combo')) doHit();
+  // 连击：链式追加，整段期望攻击次数 = ×1.4^层（对齐攻速口径，无封顶）
+  if (comboL) {
+    const pStop = Math.pow(1.4, -comboL);
+    let guard = 0;
+    while (guard++ < 5000) {
+      if (Math.random() < pStop) break;
+      doHit();
+    }
+  }
   if (R.smashT >= 5) {
     R.smashT = 0;
     doHit();

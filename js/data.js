@@ -214,7 +214,7 @@ const CONFIG = {
     },
     MECHANICS: {
       growth: { label: '生长', desc: '每层：全队伤害 ×1.5' },
-      combo: { label: '连击', desc: '每层：攻击 +15% 概率连击' },
+      combo: { label: '连击', desc: '每层：连击链攻击次数期望 ×1.4' },
       crit: { label: '暴击', desc: '每层：暴击率 ×1.5（以局外养成为基础）' },
       smash: { label: '强击', desc: '每层：每 5 秒附加 2 次重击' },
       raid: { label: '突袭', desc: '每层：开局将怪血量降至 ×0.7' },
