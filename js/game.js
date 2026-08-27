@@ -83,6 +83,7 @@ function doDraw(opts) {
   S.owned[card.id] = before + 1;
   if (isNew) S.ownedAt[card.id] = Date.now();
   if (isNew && typeof bossNewCard === 'function') bossNewCard(card);
+  const shiny = rollShiny(card);
   S.rarityCounts[r.id]++;
   let frag = 0;
   if (!isNew) {
@@ -94,7 +95,7 @@ function doDraw(opts) {
     S.log.unshift({ t: Date.now(), cardId: card.id, isNew, frag });
     S.log = S.log.slice(0, 12);
   }
-  return { card, r, isNew, frag };
+  return { card, r, isNew, frag, shiny };
 }
 
 function spawnMonster() { monsterHp = monsterMaxHp(); }
@@ -339,6 +340,25 @@ function buyCosmeticFrame() {
 
 const PITY_TIERS = ['purple', 'gold', 'black'];
 
+function isShiny(id) { return !!(S.shiny && S.shiny[id]); }
+
+function shinyCountOf() { return S.shiny ? Object.keys(S.shiny).length : 0; }
+
+function rollShiny(card) {
+  if (!card || isEggCard(card)) return false;
+  if (isShiny(card.id)) return false;
+  if (Math.random() >= CONFIG.SHINY_RATE) return false;
+  S.shiny = S.shiny || {};
+  S.shiny[card.id] = Date.now();
+  if (!S.shinySeen) {
+    S.shinySeen = true;
+    if (typeof showShinyModal === 'function') showShinyModal(card);
+  } else if (typeof toast === 'function') {
+    toast('「' + effName(card) + '」闪出了异色光！', 'rc-gold');
+  }
+  return true;
+}
+
 function pityFloorOrder() {
   const stock = S.pityStock || {};
   let order = -1;
@@ -404,6 +424,7 @@ function doNestDraw(nest) {
   S.owned[card.id] = before + 1;
   if (isNew) S.ownedAt[card.id] = Date.now();
   if (isNew && typeof bossNewCard === 'function') bossNewCard(card);
+  const shiny = rollShiny(card);
   S.rarityCounts[r.id]++;
   let frag = 0;
   if (!isNew) {
@@ -413,7 +434,7 @@ function doNestDraw(nest) {
   }
   S.log.unshift({ t: Date.now(), cardId: card.id, isNew, frag });
   S.log = S.log.slice(0, 12);
-  return { card, r, isNew, frag };
+  return { card, r, isNew, frag, shiny };
 }
 
 function hatchEgg(idx) {

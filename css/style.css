@@ -1215,6 +1215,26 @@ body.dark #boss-ach-hint { color: #fbbf24; }
   to { background-position: 56px 0; }
 }
 
+/* ===== 异色卡（淡银主体，亮暗同色） ===== */
+
+.frame.shiny {
+  background: linear-gradient(160deg, #f7f8fa, #c9ccd3 42%, #eef0f3 68%, #b4b7c1);
+  box-shadow: 0 0 10px rgba(176, 180, 190, .6);
+}
+
+.frame.shiny .frame-inner { border-color: #b9bcc4; }
+
+body.dark .frame.shiny .frame-inner { border-color: #cdd0d7; }
+
+.viewer-shiny-btn {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 56px;
+  z-index: 2;
+}
+
+
 
 .nest-picker {
   position: fixed;

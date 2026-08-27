@@ -168,6 +168,7 @@ const CONFIG = {
   HOME_EGG_MIN: 900,
   HOME_EGG_MAX: 7200,
   HOME_EGG_BOOST: 0.5,
+  SHINY_RATE: 0.00001,
   SHOP: {
     PITY: {
       purple: { baseCost: 50000, growth: 5 },

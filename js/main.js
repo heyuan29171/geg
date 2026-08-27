@@ -249,6 +249,11 @@ function bindEvents() {
     if (e.target.classList.contains('egg-modal-backdrop')) hideEggModal();
   });
   $id('nest-modal-close').addEventListener('click', () => { if (!nestModalOpen()) return; hideNestModal(); });
+  $id('shiny-modal-close').addEventListener('click', () => { if (!shinyModalOpen()) return; hideShinyModal(); });
+  $id('shiny-modal').addEventListener('click', e => {
+    if (e.target.classList.contains('egg-modal-backdrop')) hideShinyModal();
+  });
+  $id('viewer-shiny-toggle').addEventListener('click', toggleViewerShiny);
   $id('nest-modal').addEventListener('click', e => {
     if (e.target.classList.contains('egg-modal-backdrop')) hideNestModal();
   });

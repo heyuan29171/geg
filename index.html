@@ -57,6 +57,7 @@
           <div class="kv"><span>白 / 绿 / 蓝</span><b id="st-lower">-</b></div>
           <div class="kv"><span>紫 / 金 / 红</span><b id="st-upper">-</b></div>
           <div class="kv"><span>黑 / 炫彩</span><b id="st-top">-</b></div>
+<div class="kv"><span>异色 / 彩蛋</span><b id="st-shiny">0 / 0</b></div>
         </div>
         <h3>掉落概率</h3>
         <div class="panel" id="rate-panel"></div>
@@ -212,6 +213,7 @@
     </div>
   </div>
   <div class="viewer-hint">拖拽旋转 · 滚轮缩放 · 双击复位 · ESC 关闭</div>
+  <button class="btn viewer-shiny-btn hidden" id="viewer-shiny-toggle">看普通色</button>
   <button class="btn viewer-close" id="viewer-close">✕</button>
 </div>
 
@@ -233,6 +235,17 @@
     <div class="nest-modal-card" id="nest-modal-card"></div>
     <div class="egg-modal-sub" id="nest-modal-sub"></div>
     <button class="btn primary" id="nest-modal-close">收下</button>
+  </div>
+</div>
+
+<div id="shiny-modal" class="egg-modal hidden">
+  <div class="egg-modal-backdrop" data-shiny-close="1"></div>
+  <div class="egg-modal-box">
+    <div class="egg-modal-emoji">✨</div>
+    <div class="egg-modal-title">闪出了异色卡！</div>
+    <div class="nest-modal-card" id="shiny-modal-card"></div>
+    <div class="egg-modal-sub">极难得的淡银之姿，此后这张卡永远是异色</div>
+    <button class="btn primary" id="shiny-modal-close">收下了</button>
   </div>
 </div>
 

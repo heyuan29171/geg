@@ -75,6 +75,8 @@ function defaultSave() {
     pityStock: { purple: 0, gold: 0, black: 0 },
     pityBought: { purple: 0, gold: 0, black: 0 },
     cosmetics: { gradFrame: false },
+    shiny: {},
+    shinySeen: false,
     updatedAt: Date.now(),
   };
 }
@@ -113,6 +115,8 @@ function sanitize(raw) {
     cosmetics: {
       gradFrame: !!(raw.cosmetics && raw.cosmetics.gradFrame),
     },
+    shiny: sanitizeShiny(raw.shiny),
+    shinySeen: !!raw.shinySeen,
     updatedAt: num(raw.updatedAt, Date.now(), 0, Date.now()),
   };
   CARDS.forEach(c => {
@@ -163,6 +167,18 @@ function sanitizePityCounts(raw) {
   if (!raw || typeof raw !== 'object') return out;
   ['purple', 'gold', 'black'].forEach(k => {
     out[k] = num(raw[k], 0, 0, 1e9);
+  });
+  return out;
+}
+
+function sanitizeShiny(raw) {
+  const out = {};
+  if (!raw || typeof raw !== 'object') return out;
+  Object.keys(raw).forEach(id => {
+    if (CARD_MAP[id] && CARD_MAP[id].id !== 'egg-rainbow' && CARD_MAP[id].id !== 'egg-rainbow-x') {
+      const t = num(raw[id], 0, 0, Date.now());
+      if (t > 0) out[id] = t;
+    }
   });
   return out;
 }

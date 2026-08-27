@@ -29,9 +29,10 @@ const RATE_TOTAL = RARITY_LIST.reduce((a, r) => a + r.weight, 0);
 
 function ratePct(r) { return r.weight / RATE_TOTAL * 100; }
 
-function frameClass(card) {
+function frameClass(card, forcePlain) {
+  const sh = !forcePlain && S && S.shiny && S.shiny[card.id] ? ' shiny' : '';
   const grad = S && S.cosmetics && S.cosmetics.gradFrame ? ' frame-grad' : '';
-  return 'frame frame-' + effRarity(card) + grad;
+  return 'frame frame-' + effRarity(card) + sh + grad;
 }
 
 function rarityTagHTML(r) { return '<span class="r-tag r-' + r + '">' + RARITIES[r].name + '</span>'; }
@@ -102,6 +103,26 @@ function hideEggModal() {
 
 function eggModalOpen() {
   const m = $id('egg-modal');
+  return !!(m && !m.classList.contains('hidden'));
+}
+
+function showShinyModal(card) {
+  const m = $id('shiny-modal');
+  if (!m || !card) return;
+  const cardEl = $id('shiny-modal-card');
+  if (cardEl) cardEl.innerHTML = '<div class="nest-modal-art">' + artHTML(card, true) + '</div>' +
+    '<div class="nest-modal-name">' + effName(card) + '</div>' +
+    '<span class="r-tag r-' + effRarity(card) + '">' + RARITIES[effRarity(card)].name + '</span>';
+  m.classList.remove('hidden');
+}
+
+function hideShinyModal() {
+  const m = $id('shiny-modal');
+  if (m) m.classList.add('hidden');
+}
+
+function shinyModalOpen() {
+  const m = $id('shiny-modal');
   return !!(m && !m.classList.contains('hidden'));
 }
 
@@ -251,6 +272,7 @@ function renderBattle() {
   $id('st-lower').textContent = (lc.white || 0) + ' / ' + (lc.green || 0) + ' / ' + (lc.blue || 0);
   $id('st-upper').textContent = (lc.purple || 0) + ' / ' + (lc.gold || 0) + ' / ' + (lc.red || 0);
   $id('st-top').textContent = (lc.black || 0) + ' / ' + (lc.rainbow || 0);
+  $id('st-shiny').textContent = shinyCountOf() + ' / ' + ((S.owned['egg-rainbow'] || 0) > 0 ? 1 : 0);
   renderLog();
   updateBattle();
 }
@@ -767,6 +789,7 @@ function renderAll() {
 }
 
 let vRotX = -15, vRotY = 0, vScale = 1, vDragging = false, vtx = 0, vty = 0;
+let viewerCardNow = null;
 
 function initViewer() {
   const stage = $id('viewer-stage');
@@ -806,16 +829,36 @@ function vloop() {
   requestAnimationFrame(vloop);
 }
 
+let viewerShinyHide = false;
+
+function applyViewerFrame(c) {
+  const plain = viewerShinyHide;
+  $id('vfront-wrap').className = 'vface-wrap ' + frameClass(c, plain);
+  $id('vback-wrap').className = 'vface-wrap vback-wrap ' + frameClass(c, plain);
+  const btn = $id('viewer-shiny-toggle');
+  if (btn) {
+    const shinyOwned = !!(S.shiny && S.shiny[c.id]);
+    btn.classList.toggle('hidden', !shinyOwned);
+    btn.textContent = shinyOwned ? (plain ? '看异色' : '看普通色') : '';
+  }
+}
+
+function toggleViewerShiny() {
+  viewerShinyHide = !viewerShinyHide;
+  if (viewerCardNow) applyViewerFrame(viewerCardNow);
+}
+
 function openViewer(cardId) {
   const c = CARD_MAP[cardId];
   if (!c) return;
+  viewerShinyHide = false;
+  viewerCardNow = c;
   vRotX = -15;
   vRotY = 0;
   vScale = 1;
   $id('vfront').innerHTML = frontHTML(c);
   $id('vback').innerHTML = backHTML(c);
-  $id('vfront-wrap').className = 'vface-wrap ' + frameClass(c);
-  $id('vback-wrap').className = 'vface-wrap vback-wrap ' + frameClass(c);
+  applyViewerFrame(c);
   $id('viewer').classList.remove('hidden');
   viewerOpen = true;
   document.body.style.overflow = 'hidden';
