@@ -2,8 +2,10 @@ let currentTab = 'battle';
 let codexFilter = 'all';
 let bagFilter = 'all';
 let codexOwned = 'all';
+let codexShiny = 'all';
 let codexComplete = 'all';
 let bagComplete = 'all';
+let bagShiny = 'all';
 let codexPowerMin = '', codexPowerMax = '', codexQuery = '';
 let bagPowerMin = '', bagPowerMax = '', bagQuery = '';
 let codexSort = { key: 'no', dir: 1 };
@@ -404,6 +406,7 @@ function passesFilters(c, f) {
   const owned = (S.owned[c.id] || 0) > 0;
   if (f.owned === 'owned' && !owned) return false;
   if (f.owned === 'missing' && owned) return false;
+  if (f.shiny === 'only' && !isShiny(c.id)) return false;
   const ready = formationComplete(c.id);
   if (f.complete === 'ready' && !ready) return false;
   if (f.complete === 'no' && ready) return false;
@@ -484,7 +487,8 @@ function renderCodex() {
   rarityFilterHTML($id('codex-filters'), codexFilter, countOwned);
   setInnerHTML($id('codex-state-filters'),
     chipGroup('获得', 'own', [['all', '全部'], ['owned', '已获得'], ['missing', '未获得']], codexOwned) +
-    chipGroup('编队', 'cpl', [['all', '全部'], ['ready', '可出战'], ['no', '未集齐']], codexComplete));
+    chipGroup('编队', 'cpl', [['all', '全部'], ['ready', '可出战'], ['no', '未集齐']], codexComplete) +
+    (shinyCountOf() > 0 ? chipGroup('异色', 'shiny', [['all', '全部'], ['only', '异色']], codexShiny) : ''));
   setInnerHTML($id('codex-range-filters'), rangeRowHTML('codex', codexPowerMin, codexPowerMax, codexQuery));
   const owned = countOwned('all');
   const pct = owned.total ? Math.round(owned.count / owned.total * 100) : 0;
@@ -492,7 +496,7 @@ function renderCodex() {
   const pool = sortedCards(CARDS.filter(c =>
     !c.hidden &&
     (codexFilter === 'all' || effRarity(c) === codexFilter) &&
-    passesFilters(c, { owned: codexOwned, complete: codexComplete, pMin: codexPowerMin, pMax: codexPowerMax, query: codexQuery })
+    passesFilters(c, { owned: codexOwned, complete: codexComplete, shiny: codexShiny, pMin: codexPowerMin, pMax: codexPowerMax, query: codexQuery })
   ), codexSort);
   renderSortBar($id('codex-sorts'), codexSort, false);
   if (!pool.length) {
@@ -518,13 +522,14 @@ function renderBackpack() {
   const focus = captureFocus();
   rarityFilterHTML($id('bag-filters'), bagFilter, countOwned);
   setInnerHTML($id('bag-state-filters'),
-    chipGroup('编队', 'cpl', [['all', '全部'], ['ready', '可出战'], ['no', '未集齐']], bagComplete));
+    chipGroup('编队', 'cpl', [['all', '全部'], ['ready', '可出战'], ['no', '未集齐']], bagComplete) +
+    (shinyCountOf() > 0 ? chipGroup('异色', 'shiny', [['all', '全部'], ['only', '异色']], bagShiny) : ''));
   setInnerHTML($id('bag-range-filters'), rangeRowHTML('bag', bagPowerMin, bagPowerMax, bagQuery));
   const pool = sortedCards(CARDS.filter(c =>
     !c.hidden &&
     (S.owned[c.id] || 0) > 0 &&
     (bagFilter === 'all' || effRarity(c) === bagFilter) &&
-    passesFilters(c, { complete: bagComplete, pMin: bagPowerMin, pMax: bagPowerMax, query: bagQuery })
+    passesFilters(c, { complete: bagComplete, shiny: bagShiny, pMin: bagPowerMin, pMax: bagPowerMax, query: bagQuery })
   ), bagSort);
   renderSortBar($id('bag-sorts'), bagSort, true);
   if (!pool.length) {

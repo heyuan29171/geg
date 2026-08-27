@@ -163,6 +163,8 @@ function bindEvents() {
   $id('codex-state-filters').addEventListener('click', e => {
     const own = e.target.closest('[data-own]');
     if (own) { codexOwned = own.dataset.own; renderCodex(); return; }
+    const sh = e.target.closest('[data-shiny]');
+    if (sh) { codexShiny = sh.dataset.shiny; renderCodex(); return; }
     const cpl = e.target.closest('[data-cpl]');
     if (cpl) { codexComplete = cpl.dataset.cpl; renderCodex(); }
   });
@@ -177,6 +179,8 @@ function bindEvents() {
   });
 
   $id('bag-state-filters').addEventListener('click', e => {
+    const sh = e.target.closest('[data-shiny]');
+    if (sh) { bagShiny = sh.dataset.shiny; renderBackpack(); return; }
     const cpl = e.target.closest('[data-cpl]');
     if (cpl) { bagComplete = cpl.dataset.cpl; renderBackpack(); }
   });
