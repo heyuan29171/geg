@@ -69,7 +69,7 @@ function defaultSave() {
     eggUpgraded: false,
     achievements: {},
     fragEarnedTotal: 0,
-    homeNest: { a: null, b: null, startedAt: 0, hatchAt: 0, ready: false, speedups: 0, dur: 0 },
+    homeNest: { a: null, b: null, startedAt: 0, hatchAt: 0, ready: false },
     extraNests: [],
     nestHatches: 0,
     pityStock: { purple: 0, gold: 0, black: 0 },
@@ -147,7 +147,7 @@ function sanitize(raw) {
 }
 
 function sanitizeNest(raw) {
-  const n = { a: null, b: null, startedAt: 0, hatchAt: 0, ready: false, speedups: 0, dur: 0 };
+  const n = { a: null, b: null, startedAt: 0, hatchAt: 0, ready: false };
   if (!raw || typeof raw !== 'object') return n;
   const ok = id => typeof id === 'string' && CARD_MAP[id] && CARD_MAP[id].id !== 'egg-rainbow' && CARD_MAP[id].id !== 'egg-rainbow-x';
   const a = ok(raw.a) ? raw.a : null;
@@ -157,11 +157,7 @@ function sanitizeNest(raw) {
   n.startedAt = num(raw.startedAt, 0, 0, Date.now());
   n.hatchAt = num(raw.hatchAt, 0, 0, Date.now() + 1e8);
   n.ready = !!raw.ready;
-  n.speedups = num(raw.speedups, 0, 0, CONFIG.SHOP.SPEEDUP_MAX);
-  n.dur = typeof raw.dur === 'number' && isFinite(raw.dur)
-    ? num(raw.dur, 0, 0, 1e9)
-    : (n.hatchAt > n.startedAt ? Math.min(n.hatchAt - n.startedAt, 1e9) : 0);
-  if (!a || !b) { n.startedAt = 0; n.hatchAt = 0; n.ready = false; n.speedups = 0; n.dur = 0; }
+  if (!a || !b) { n.startedAt = 0; n.hatchAt = 0; n.ready = false; }
   return n;
 }
 

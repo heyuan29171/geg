@@ -91,15 +91,6 @@ function bindEvents() {
   });
 
   $id('nest-list').addEventListener('click', e => {
-    const sp = e.target.closest('[data-speedup]');
-    if (sp && !sp.disabled) {
-      const ok = nestSpeedup(+sp.dataset.speedup);
-      toast(ok ? '加速成功！孵化时长 −25%' : '碎片不足或次数用完', ok ? '' : 'rc-white');
-      renderHome();
-      renderTopbar();
-      Save.write(S);
-      return;
-    }
     const ht = e.target.closest('[data-hatch]');
     if (ht) {
       const res = hatchEgg(+ht.dataset.hatch);
