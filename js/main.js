@@ -90,17 +90,36 @@ function bindEvents() {
     renderAchievements();
   });
 
-  const nestSlotClick = slot => e => {
-    if (e.target.closest('[data-remove]')) {
-      nestRemove(slot);
+  $id('nest-list').addEventListener('click', e => {
+    const sp = e.target.closest('[data-speedup]');
+    if (sp && !sp.disabled) {
+      const ok = nestSpeedup(+sp.dataset.speedup);
+      toast(ok ? '加速成功！剩余时间 −25%' : '碎片不足或次数用完', ok ? '' : 'rc-white');
       renderHome();
       Save.write(S);
       return;
     }
-    openNestPicker(slot);
-  };
-  $id('nest-a').addEventListener('click', nestSlotClick('a'));
-  $id('nest-b').addEventListener('click', nestSlotClick('b'));
+    const ht = e.target.closest('[data-hatch]');
+    if (ht) {
+      const res = hatchEgg(+ht.dataset.hatch);
+      if (res) {
+        showNestModal(res);
+        renderAll();
+        Save.write(S);
+      }
+      return;
+    }
+    const rm = e.target.closest('[data-remove]');
+    if (rm) {
+      const host = rm.closest('.nest-slot');
+      nestRemove(host.dataset.nslot, +host.dataset.nidx);
+      renderHome();
+      Save.write(S);
+      return;
+    }
+    const slotEl = e.target.closest('.nest-slot');
+    if (slotEl) openNestPicker({ idx: +slotEl.dataset.nidx, slot: slotEl.dataset.nslot });
+  });
 
   $id('nest-picker').addEventListener('click', e => {
     if (e.target.classList.contains('nest-picker-backdrop') || e.target.closest('#nest-picker-close')) {
@@ -109,21 +128,32 @@ function bindEvents() {
     }
     const row = e.target.closest('[data-pick]');
     if (!row || !pickerSlot) return;
-    if (nestSet(pickerSlot, row.dataset.pick)) {
+    if (nestSet(pickerSlot.slot, row.dataset.pick, pickerSlot.idx)) {
       closeNestPicker();
       renderHome();
       Save.write(S);
     }
   });
 
-  $id('nest-egg').addEventListener('click', e => {
-    if (!e.target.closest('#btn-hatch')) return;
-    const res = hatchEgg();
-    if (res) {
-      showNestModal(res);
-      renderAll();
-      Save.write(S);
+  $id('shop-list').addEventListener('click', e => {
+    const btn = e.target.closest('[data-buy]');
+    if (!btn) return;
+    const key = btn.dataset.buy;
+    let ok = false, msg = '购买失败';
+    if (key === 'nest-slot') {
+      ok = buyNestSlot();
+      msg = ok ? '新窝建好了！去家园放卡开孵' : '碎片不足';
+    } else if (key === 'cosmetic-frame') {
+      ok = buyCosmeticFrame();
+      msg = ok ? '毕业纪念框已到手，全图鉴镀金！' : '碎片不足';
+    } else if (key.indexOf('pity-') === 0) {
+      ok = buyPity(key.slice(5));
+      msg = ok ? '保底券已入袋，下一抽生效' : '碎片不足';
     }
+    if (ok) Save.write(S);
+    toast(msg, ok ? '' : 'rc-white');
+    renderShop();
+    renderTopbar();
   });
 
   bindSortRow($id('codex-sorts'), codexSort, renderCodex);

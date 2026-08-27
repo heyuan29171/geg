@@ -29,7 +29,10 @@ const RATE_TOTAL = RARITY_LIST.reduce((a, r) => a + r.weight, 0);
 
 function ratePct(r) { return r.weight / RATE_TOTAL * 100; }
 
-function frameClass(card) { return 'frame frame-' + effRarity(card); }
+function frameClass(card) {
+  const grad = S && S.cosmetics && S.cosmetics.gradFrame ? ' frame-grad' : '';
+  return 'frame frame-' + effRarity(card) + grad;
+}
 
 function rarityTagHTML(r) { return '<span class="r-tag r-' + r + '">' + RARITIES[r].name + '</span>'; }
 
@@ -566,20 +569,26 @@ function renderAchievements() {
 
 let pickerSlot = null;
 
-function openNestPicker(slot) {
-  pickerSlot = slot;
-  const n = S.homeNest;
+function nestName(i) { return ['一号窝', '二号窝', '三号窝', '四号窝'][i] || ('窝 ' + (i + 1)); }
+
+function openNestPicker(target) {
+  pickerSlot = target;
+  const n = allNests()[target.idx];
   const picker = $id('nest-picker');
-  if (!picker) return;
+  if (!picker || !n) return;
+  const inAnyNest = id => allNests().some(nn => nn.a === id || nn.b === id);
   const list = CARDS.filter(c =>
     !c.hidden && !isEggCard(c) && (S.owned[c.id] || 0) > 0 && c.id !== S.activeCenter
   );
-  const other = slot === 'a' ? n.b : n.a;
+  const other = target.slot === 'a' ? n.b : n.a;
+  $id('nest-picker-title').textContent = nestName(target.idx) + ' · 选择卡片';
   $id('nest-picker-list').innerHTML = list.map(c => {
-    const disabled = c.id === other;
+    const busy = inAnyNest(c.id) && c.id !== other;
+    const disabled = c.id === other || busy;
     const tag = c.id === other
-      ? '<span class="r-tag">已在窝里</span>'
-      : '<span class="r-tag r-' + effRarity(c) + '">' + RARITIES[effRarity(c)].name + '</span>';
+      ? '<span class="r-tag">已在本窝</span>'
+      : busy ? '<span class="r-tag">已在别的窝</span>'
+        : '<span class="r-tag r-' + effRarity(c) + '">' + RARITIES[effRarity(c)].name + '</span>';
     return '<div class="nest-pick-row' + (disabled ? ' disabled' : '') + '" data-pick="' + c.id + '">' +
       '<span class="nest-pick-name">' + effName(c) + '</span>' + tag +
       '<span class="nest-pick-count">持有 ×' + S.owned[c.id] + '</span>' +
@@ -607,31 +616,99 @@ function slotCardHTML(cardId) {
     '</div>';
 }
 
-function renderHome() {
-  const n = S.homeNest;
-  const slotA = $id('nest-a');
-  const slotB = $id('nest-b');
-  const st = $id('nest-status');
-  const egg = $id('nest-egg');
-  if (!n || !slotA || !slotB || !st || !egg) return;
+function nestBlockHTML(idx, n) {
   const htmlA = n.a ? slotCardHTML(n.a) : '<span class="nest-placeholder">点击放入</span>';
   const htmlB = n.b ? slotCardHTML(n.b) : '<span class="nest-placeholder">点击放入</span>';
-  if (slotA.innerHTML !== htmlA) slotA.innerHTML = htmlA;
-  if (slotB.innerHTML !== htmlB) slotB.innerHTML = htmlB;
-  let stText, eggHTML;
+  let stText, eggHTML, actionsHTML = '';
   if (!n.a || !n.b) {
     stText = '未开始：再放一张卡片开始生蛋';
     eggHTML = '';
   } else if (n.ready) {
     stText = '蛋生好了！';
     eggHTML = '<div class="nest-egg-box"><span>🥚</span><div class="nest-egg-title">蛋生好了，随时可以开启</div>' +
-      '<button class="btn primary" id="btn-hatch">开启</button></div>';
+      '<button class="btn primary" data-hatch="' + idx + '">开启</button></div>';
   } else {
     stText = '孵化中…（时长随机 15 分钟 ~ 2 小时，具体时间保密）';
+    const left = CONFIG.SHOP.SPEEDUP_MAX - (n.speedups || 0);
+    actionsHTML = '<div class="nest-actions">' +
+      '<button class="btn btn-sm" data-speedup="' + idx + '"' + (left <= 0 ? ' disabled' : '') + '>加速生蛋 ' + fmtFrag(CONFIG.SHOP.SPEEDUP_COST) + '</button>' +
+      '<span class="nest-action-note">剩余时间 −25%，本周期还能加速 ' + left + ' 次</span></div>';
     eggHTML = '';
   }
-  if (st.textContent !== stText) st.textContent = stText;
-  if (egg.innerHTML !== eggHTML) egg.innerHTML = eggHTML;
+  return '<div class="panel nest-block">' +
+    '<h3>' + nestName(idx) + '</h3>' +
+    '<div class="nest-slots">' +
+    '<div class="nest-slot" data-nidx="' + idx + '" data-nslot="a">' + htmlA + '</div>' +
+    '<div class="nest-x">×</div>' +
+    '<div class="nest-slot" data-nidx="' + idx + '" data-nslot="b">' + htmlB + '</div>' +
+    '</div>' +
+    '<div class="nest-status">' + stText + '</div>' +
+    actionsHTML +
+    '<div class="nest-egg">' + eggHTML + '</div>' +
+    '</div>';
+}
+
+function renderHome() {
+  const wrap = $id('nest-list');
+  if (!wrap || !S.homeNest) return;
+  const nests = allNests();
+  let html = '';
+  for (let i = 0; i < nests.length; i++) html += nestBlockHTML(i, nests[i]);
+  for (let j = nests.length - 1; j < CONFIG.SHOP.NEST_SLOT_COSTS.length; j++) {
+    html += '<div class="panel nest-block locked">' +
+      '<h3>' + nestName(j + 1) + '</h3>' +
+      '<p class="nest-locked-tip">这个窝位还没有建。去<b>商店</b>花 ' + fmtFrag(CONFIG.SHOP.NEST_SLOT_COSTS[j]) + ' 碎片扩建，就能多一窝同时生蛋。</p>' +
+      '</div>';
+  }
+  if (wrap.innerHTML !== html) wrap.innerHTML = html;
+}
+
+function fmtFrag(n) {
+  n = Math.round(n);
+  if (n >= 1e8) return (Math.round(n / 1e8 * 100) / 100) + ' 亿';
+  if (n >= 1e4) return Math.round(n / 1e4).toLocaleString() + ' 万';
+  return n.toLocaleString();
+}
+
+const SHOP_ITEMS = [
+  { key: 'pity-purple', name: '紫卡保底券', tier: 'purple', desc: '下一抽必出紫色稀有度以上，买后自动生效，用完才失效。普通抽卡和开蛋都算。',
+    meta: () => '持有 ' + (S.pityStock.purple || 0) + ' 张 · 已买过 ' + (S.pityBought.purple || 0) + ' 次',
+    cost: () => pityCost('purple'), can: () => true },
+  { key: 'pity-gold', name: '金卡保底券', tier: 'gold', desc: '下一抽必出金色稀有度以上。同时有低阶和高阶保底券时，先用高阶的。',
+    meta: () => '持有 ' + (S.pityStock.gold || 0) + ' 张 · 已买过 ' + (S.pityBought.gold || 0) + ' 次',
+    cost: () => pityCost('gold'), can: () => true },
+  { key: 'pity-black', name: '黑卡保底券', tier: 'black', desc: '下一抽必出黑色稀有度。彩蛋惊喜不受影响，碰到彩蛋不会消耗保底券。',
+    meta: () => '持有 ' + (S.pityStock.black || 0) + ' 张 · 已买过 ' + (S.pityBought.black || 0) + ' 次',
+    cost: () => pityCost('black'), can: () => true },
+  { key: 'nest-slot', name: '扩建窝位', tier: null,
+    desc: () => { const n = (S.extraNests || []).length; return '家园再造一个窝，多窝同时生蛋、各自计时、互不干扰。已建 ' + n + ' / 3 个。'; },
+    meta: () => { const n = (S.extraNests || []).length; return n >= 3 ? '已全部建好' : '当前价格：' + fmtFrag(CONFIG.SHOP.NEST_SLOT_COSTS[n]); },
+    cost: () => { const n = (S.extraNests || []).length; return n >= 3 ? Infinity : CONFIG.SHOP.NEST_SLOT_COSTS[n]; }, can: () => true },
+  { key: 'cosmetic-frame', name: '毕业纪念框', tier: null, desc: '毕业典礼的纪念品：全图鉴永久镀上流动金边，包括还没抽到的卡。',
+    meta: () => S.cosmetics && S.cosmetics.gradFrame ? '已拥有' : '一次性购买，终身有效',
+    cost: () => CONFIG.SHOP.COSMETIC_FRAME_COST, can: () => !(S.cosmetics && S.cosmetics.gradFrame) },
+];
+
+function renderShop() {
+  const list = $id('shop-list');
+  if (!list) return;
+  list.innerHTML = SHOP_ITEMS.map(it => {
+    const cost = it.cost();
+    const soldOut = cost === Infinity;
+    const owned = !it.can();
+    const afford = S.fragments >= cost;
+    const btn = soldOut || owned
+      ? '<button class="btn" disabled>' + (soldOut ? '已售罄' : '已拥有') + '</button>'
+      : '<button class="btn primary' + (afford ? '' : ' dim') + '" data-buy="' + it.key + '">' + fmtFrag(cost) + ' 碎片</button>';
+    const desc = typeof it.desc === 'function' ? it.desc() : it.desc;
+    return '<div class="shop-row">' +
+      '<div class="shop-info"><b>' + it.name + '</b>' +
+      (it.tier ? rarityTagHTML(it.tier) : '') +
+      '<span class="shop-desc">' + desc + '</span>' +
+      '<span class="shop-meta">' + it.meta() + '</span></div>' +
+      '<div class="shop-buy">' + btn + '</div>' +
+      '</div>';
+  }).join('');
 }
 
 function renderSettings() {
@@ -659,13 +736,14 @@ function renderHeavy() {
   else if (currentTab === 'backpack') renderBackpack();
   else if (currentTab === 'achievements') renderAchievements();
   else if (currentTab === 'home') renderHome();
+  else if (currentTab === 'shop') renderShop();
   else if (currentTab === 'settings') renderSettings();
 }
 function renderAll() {
   if (!S) return;
   renderTopbar();
   renderBattle();
-  if (currentTab === 'codex' || currentTab === 'backpack' || currentTab === 'achievements' || currentTab === 'home' || currentTab === 'settings') {
+  if (currentTab === 'codex' || currentTab === 'backpack' || currentTab === 'achievements' || currentTab === 'home' || currentTab === 'shop' || currentTab === 'settings') {
     const now = Date.now();
     if (now - heavyRenderAt >= 1200) {
       heavyRenderAt = now;

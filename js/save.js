@@ -69,8 +69,12 @@ function defaultSave() {
     eggUpgraded: false,
     achievements: {},
     fragEarnedTotal: 0,
-    homeNest: { a: null, b: null, startedAt: 0, hatchAt: 0, ready: false },
+    homeNest: { a: null, b: null, startedAt: 0, hatchAt: 0, ready: false, speedups: 0 },
+    extraNests: [],
     nestHatches: 0,
+    pityStock: { purple: 0, gold: 0, black: 0 },
+    pityBought: { purple: 0, gold: 0, black: 0 },
+    cosmetics: { gradFrame: false },
     updatedAt: Date.now(),
   };
 }
@@ -102,7 +106,13 @@ function sanitize(raw) {
     achievements: raw.achievements && typeof raw.achievements === 'object' ? raw.achievements : {},
     fragEarnedTotal: num(raw.fragEarnedTotal, 0, 0, 1e15),
     homeNest: sanitizeNest(raw.homeNest),
+    extraNests: sanitizeExtraNests(raw.extraNests),
     nestHatches: num(raw.nestHatches, 0, 0, 1e9),
+    pityStock: sanitizePityCounts(raw.pityStock),
+    pityBought: sanitizePityCounts(raw.pityBought),
+    cosmetics: {
+      gradFrame: !!(raw.cosmetics && raw.cosmetics.gradFrame),
+    },
     updatedAt: num(raw.updatedAt, Date.now(), 0, Date.now()),
   };
   CARDS.forEach(c => {
@@ -125,7 +135,7 @@ function sanitize(raw) {
 }
 
 function sanitizeNest(raw) {
-  const n = { a: null, b: null, startedAt: 0, hatchAt: 0, ready: false };
+  const n = { a: null, b: null, startedAt: 0, hatchAt: 0, ready: false, speedups: 0 };
   if (!raw || typeof raw !== 'object') return n;
   const ok = id => typeof id === 'string' && CARD_MAP[id] && CARD_MAP[id].id !== 'egg-rainbow' && CARD_MAP[id].id !== 'egg-rainbow-x';
   const a = ok(raw.a) ? raw.a : null;
@@ -135,8 +145,23 @@ function sanitizeNest(raw) {
   n.startedAt = num(raw.startedAt, 0, 0, Date.now());
   n.hatchAt = num(raw.hatchAt, 0, 0, Date.now() + 1e8);
   n.ready = !!raw.ready;
-  if (!a || !b) { n.startedAt = 0; n.hatchAt = 0; n.ready = false; }
+  n.speedups = num(raw.speedups, 0, 0, CONFIG.SHOP.SPEEDUP_MAX);
+  if (!a || !b) { n.startedAt = 0; n.hatchAt = 0; n.ready = false; n.speedups = 0; }
   return n;
+}
+
+function sanitizeExtraNests(raw) {
+  if (!Array.isArray(raw)) return [];
+  return raw.slice(0, 3).map(sanitizeNest);
+}
+
+function sanitizePityCounts(raw) {
+  const out = { purple: 0, gold: 0, black: 0 };
+  if (!raw || typeof raw !== 'object') return out;
+  ['purple', 'gold', 'black'].forEach(k => {
+    out[k] = num(raw[k], 0, 0, 1e9);
+  });
+  return out;
 }
 
 const Save = {

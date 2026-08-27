@@ -23,6 +23,7 @@
     <button class="tab-btn" data-tab="backpack">背包</button>
     <button class="tab-btn" data-tab="achievements">成就</button>
     <button class="tab-btn" data-tab="home">家园</button>
+    <button class="tab-btn" data-tab="shop">商店</button>
     <button class="tab-btn" data-tab="settings">设置</button>
   </nav>
 </header>
@@ -88,23 +89,31 @@
 
   <section id="tab-home" class="tab">
     <div class="home-layout">
-      <div class="panel">
-        <h3>生蛋窝</h3>
-        <div class="nest-slots">
-          <div class="nest-slot" id="nest-a"><span class="nest-placeholder">点击放入</span></div>
-          <div class="nest-x">×</div>
-          <div class="nest-slot" id="nest-b"><span class="nest-placeholder">点击放入</span></div>
-        </div>
-        <div class="nest-status" id="nest-status">未开始：再放一张卡片开始生蛋</div>
-        <div class="nest-egg" id="nest-egg"></div>
-      </div>
+      <div id="nest-list"></div>
       <div class="panel">
         <h3>生蛋规则</h3>
         <p>放入<b>两张卡片</b>开始生蛋，孵化时长在 15 分钟到 2 小时之间随机，具体时长保密；重新编辑卡片会重新计时。</p>
+        <p>同一张卡同时只能待在一个窝里；正在出战的卡不能放入；窝里的卡被设为出战时，会立即停止生蛋并移出家园。</p>
         <p>蛋生好后<b>不会提示</b>，随时可以开启；开启相当于一次抽卡，开完立刻开始生下一窝。</p>
         <p>每次开蛋有 <b>50% 概率</b>开出稀有度不低于两张亲代中较不稀有者的卡。</p>
+        <p>孵化中可以花碎片加速（每次剩余时间 −25%，每窝每周期最多 4 次）；更多窝位在<b>商店</b>购买。</p>
         <p>彩蛋卡不参与生蛋。</p>
-        <p>正在出战的卡不能放入；窝里的卡被设为出战时，会立即停止生蛋并移出家园。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="tab-shop" class="tab">
+    <div class="home-layout">
+      <div class="panel">
+        <h3>碎片商店</h3>
+        <p>这里只卖<b>选择权和便利</b>：不卖任何影响掉落率、战力、碎片收入的加成。保底券买贵了会更贵，攒够再出手。</p>
+        <div id="shop-list"></div>
+      </div>
+      <div class="panel">
+        <h3>商店规则</h3>
+        <p><b>保底券</b>：持有期间每一抽都会自动消耗一张最高阶的券，保证那一抽稀有度不低于券面等级；普通抽卡和开蛋都生效。碰到彩蛋惊喜时不消耗。</p>
+        <p><b>扩建窝位</b>：每个新窝独立计时生蛋，最多扩到四个窝。价格一个比一个贵。</p>
+        <p><b>毕业纪念框</b>：一次性购买，全图鉴永久镀金边。买不买都不影响数值，纯属好看。</p>
       </div>
     </div>
   </section>
@@ -244,7 +253,7 @@
   <div class="nest-picker-backdrop"></div>
   <div class="nest-picker-box">
     <div class="nest-picker-head">
-      <span>选择放入生蛋的卡片</span>
+      <span id="nest-picker-title">选择放入生蛋的卡片</span>
       <button class="btn nest-picker-close" id="nest-picker-close">✕</button>
     </div>
     <div class="nest-picker-list" id="nest-picker-list"></div>

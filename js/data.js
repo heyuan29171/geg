@@ -167,14 +167,17 @@ const CONFIG = {
   HOME_EGG_MIN: 900,
   HOME_EGG_MAX: 7200,
   HOME_EGG_BOOST: 0.5,
-  ROGUE: {
-    WAVE_LIMIT: 40,
-    WAVE_TIMEOUT: 30,
-    MONSTER_GROWTH: 1.35,
-    KILL_BASE_SEC: 10,
-    REWARD_DENSITY: 5,
-    OPTION_COUNT: 3,
-    CLEAR_BONUS: 1.5,
+  SHOP: {
+    PITY: {
+      purple: { baseCost: 50000, growth: 5 },
+      gold: { baseCost: 800000, growth: 5 },
+      black: { baseCost: 20000000, growth: 10 },
+    },
+    SPEEDUP_COST: 20000,
+    SPEEDUP_MAX: 4,
+    SPEEDUP_PCT: 0.25,
+    NEST_SLOT_COSTS: [100000, 1000000, 10000000],
+    COSMETIC_FRAME_COST: 100000000,
   },
   ACHIEVEMENTS: [
     { id: 'pulls-100', name: '初出茅庐', desc: '累计抽卡 100 次', type: 'pulls', goal: 100, reward: 500 },
