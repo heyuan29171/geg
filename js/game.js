@@ -15,7 +15,8 @@ function effDesc(c) { return (c.id === 'egg-rainbow' && isEggUpgraded()) ? 'æˆ‘ç
 
 function basePowerOf(card) {
   if (card.id === 'egg-rainbow' && isEggUpgraded()) return RARITIES.rainbow.basePower * 2;
-  return RARITIES[card.rarity].basePower;
+  const base = RARITIES[card.rarity].basePower;
+  return isShiny(card.id) ? base * 2 : base;
 }
 
 function formationCardsOf(cardId) {
