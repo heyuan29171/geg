@@ -1228,6 +1228,13 @@ body.dark #boss-ach-hint { color: #fbbf24; }
   border-color: #b9bcc4;
 }
 
+/* 异色 + 毕业纪念框叠加：金框流动在外，内衬保持淡银 */
+.frame.shiny.frame-grad,
+.mini-card.shiny.frame-grad {
+  background: repeating-linear-gradient(90deg, #fde68a 0 16px, #f59e0b 16px 28px, #fffbeb 28px 40px, #b45309 40px 56px);
+  box-shadow: 0 0 8px rgba(245, 158, 11, .55), 0 0 16px rgba(196, 202, 214, .45);
+}
+
 body.dark .frame.shiny,
 body.dark .mini-card.shiny {
   background: linear-gradient(160deg, #a8adb6, #6d727c 42%, #939aa5 68%, #585d66);
@@ -1237,6 +1244,12 @@ body.dark .mini-card.shiny {
 body.dark .shiny > .frame-inner {
   background: linear-gradient(165deg, #90959f, #666b75 55%, #797e88);
   border-color: #5d626c;
+}
+
+body.dark .frame.shiny.frame-grad,
+body.dark .mini-card.shiny.frame-grad {
+  background: repeating-linear-gradient(90deg, #fde68a 0 16px, #f59e0b 16px 28px, #fffbeb 28px 40px, #b45309 40px 56px);
+  box-shadow: 0 0 8px rgba(245, 158, 11, .55), 0 0 14px rgba(80, 85, 95, .55);
 }
 
 .viewer-shiny-btn {
