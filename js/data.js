@@ -148,7 +148,7 @@ const CARDS = [
   { id: 'egg-zhenzhen', name: '珍珍蛋', rarity: 'white', art: { type: 'egg', colors: ['#FFD1DC', '#F5A9BE'] }, desc: '又高又圆的粉团子，说话软乎乎的。', flavor: '它察觉你心情不好，就会默默唱一首温柔的歌。', formation: ['egg-tongtong', 'egg-runrun'] },
   { id: 'egg-tongtong', name: '桐桐蛋', rarity: 'white', art: { type: 'egg', colors: ['#D0E7F5', '#9FC8E8'] }, desc: '镜框半垂的桐蛋，总在暗处憋住笑意。', flavor: '表面不动声色，肚子已经笑到发抖。', formation: ['egg-zhenzhen', 'egg-runrun'] },
   { id: 'egg-runrun', name: '润润蛋', rarity: 'white', art: { type: 'egg', colors: ['#C8B3E6', '#9E82CF'] }, desc: '无比神圣的蛋，比其他两个华丽许多。', flavor: '桐桐和珍珍的蛋妈。', formation: ['egg-zhenzhen', 'egg-tongtong'] },
-  { id: 'moni', name: '莫尼', rarity: 'gold', art: { type: 'emoji', emoji: '🐱' }, desc: '莫尼是一只田园柯基猫，和狗融洽相处。', flavor: '“汪！”', formation: ['moni'] },
+  { id: 'moni', name: '莫尼', rarity: 'gold', art: { type: 'emoji', emoji: '🐱' }, desc: '莫尼是一只田园柯基猫，和狗融洽相处。', flavor: '“汪！”', formation: [] },
 ];
 
 CARDS.forEach((c, i) => { c.no = i + 1; });
