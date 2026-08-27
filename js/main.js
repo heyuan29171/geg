@@ -96,6 +96,7 @@ function bindEvents() {
       const ok = nestSpeedup(+sp.dataset.speedup);
       toast(ok ? '加速成功！剩余时间 −25%' : '碎片不足或次数用完', ok ? '' : 'rc-white');
       renderHome();
+      renderTopbar();
       Save.write(S);
       return;
     }

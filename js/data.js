@@ -177,7 +177,7 @@ const CONFIG = {
     SPEEDUP_MAX: 4,
     SPEEDUP_PCT: 0.25,
     NEST_SLOT_COSTS: [100000, 1000000, 10000000],
-    COSMETIC_FRAME_COST: 100000000,
+    COSMETIC_FRAME_COST: 100000,
   },
   ACHIEVEMENTS: [
     { id: 'pulls-100', name: '初出茅庐', desc: '累计抽卡 100 次', type: 'pulls', goal: 100, reward: 500 },
