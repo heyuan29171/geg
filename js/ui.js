@@ -692,7 +692,7 @@ const SHOP_ITEMS = [
     cost: () => { const n = (S.extraNests || []).length; return n >= 3 ? Infinity : CONFIG.SHOP.NEST_SLOT_COSTS[n]; }, can: () => true },
   { key: 'cosmetic-frame', name: '毕业纪念框', tier: null,
     desc: '全图鉴永久镀金边，包括还没抽到的卡。',
-    meta: () => S.cosmetics && S.cosmetics.gradFrame ? '已拥有' : '一次性购买',
+    meta: () => S.cosmetics && S.cosmetics.gradFrame ? '' : '一次性购买',
     cost: () => CONFIG.SHOP.COSMETIC_FRAME_COST, can: () => !(S.cosmetics && S.cosmetics.gradFrame) },
 ];
 
@@ -705,7 +705,7 @@ function renderShop() {
     const owned = !it.can();
     const afford = S.fragments >= cost;
     const btn = soldOut || owned
-      ? '<button class="btn" disabled>' + (soldOut ? '已售罄' : '已拥有') + '</button>'
+      ? '<button class="btn" disabled>已获得</button>'
       : '<button class="btn primary' + (afford ? '' : ' dim') + '" data-buy="' + it.key + '">' + fmtFrag(cost) + ' 碎片</button>';
     const desc = typeof it.desc === 'function' ? it.desc() : it.desc;
     return '<div class="shop-row">' +
