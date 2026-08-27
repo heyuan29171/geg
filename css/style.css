@@ -1215,16 +1215,42 @@ body.dark #boss-ach-hint { color: #fbbf24; }
   to { background-position: 56px 0; }
 }
 
-/* ===== 异色卡（淡银主体，亮暗同色） ===== */
+/* ===== 异色卡（整卡淡银化，亮暗同色） ===== */
 
-.frame.shiny {
+.frame.shiny,
+.mini-card.shiny {
   background: linear-gradient(160deg, #f7f8fa, #c9ccd3 42%, #eef0f3 68%, #b4b7c1);
   box-shadow: 0 0 10px rgba(176, 180, 190, .6);
 }
 
-.frame.shiny .frame-inner { border-color: #b9bcc4; }
+.shiny > .frame-inner {
+  position: relative;
+  background: linear-gradient(165deg, #f4f5f8, #d3d6dd 55%, #eef0f4);
+  border-color: #b9bcc4;
+}
 
-body.dark .frame.shiny .frame-inner { border-color: #cdd0d7; }
+.shiny .art-img,
+.shiny .egg-art,
+.shiny .emoji-art {
+  filter: grayscale(1) brightness(1.1) contrast(.95);
+}
+
+.shiny > .frame-inner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, rgba(248, 249, 251, .40), rgba(170, 175, 185, .36) 58%, rgba(228, 231, 236, .40));
+  pointer-events: none;
+}
+
+body.dark .shiny > .frame-inner {
+  background: linear-gradient(165deg, #f4f5f8, #d3d6dd 55%, #eef0f4);
+  border-color: #c9ccd3;
+}
+
+body.dark .shiny > .frame-inner::after {
+  background: linear-gradient(160deg, rgba(248, 249, 251, .40), rgba(170, 175, 185, .36) 58%, rgba(228, 231, 236, .40));
+}
 
 .viewer-shiny-btn {
   position: absolute;
