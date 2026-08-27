@@ -228,7 +228,7 @@ function bindEvents() {
   $id('btn-art-mode').addEventListener('click', () => {
     S.artMode = S.artMode === 'emoji' ? 'img' : 'emoji';
     const b = $id('btn-art-mode');
-    if (b) b.textContent = S.artMode === 'emoji' ? '切换到 AI 立绘卡面' : '切换到 emoji 卡面';
+    if (b) b.textContent = S.artMode === 'emoji' ? '切换到立绘卡面' : '切换到 emoji 卡面';
     renderAll();
     Save.write(S);
   });

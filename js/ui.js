@@ -720,7 +720,7 @@ function renderShop() {
 
 function renderSettings() {
   const b = $id('btn-art-mode');
-  if (b) b.textContent = S.artMode === 'emoji' ? '切换到 AI 立绘卡面' : '切换到 emoji 卡面';
+  if (b) b.textContent = S.artMode === 'emoji' ? '切换到立绘卡面' : '切换到 emoji 卡面';
   const rows = RARITY_LIST.map(r =>
     '<tr><td><span class="rate-name rn-' + r.id + '"><span class="r-dot r-' + r.id + '"></span>' + r.name + '</span></td>' +
     '<td>' + fmtRate(ratePct(r)) + '</td>' +
