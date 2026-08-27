@@ -1319,3 +1319,105 @@ body.dark .mini-card.shiny.frame-grad {
 
 body.dark .nest-slot { border-color: #334155; }
 body.dark .nest-pick-row:hover { background: rgba(59, 130, 246, .15); }
+/* ===== 冒险（肉鸽）===== */
+
+.rogue-layout { display: flex; flex-direction: column; gap: 14px; }
+.rogue-col-main { display: flex; flex-direction: column; gap: 14px; }
+.rogue-run-head { display: flex; justify-content: space-between; align-items: baseline; font-size: 15px; margin-bottom: 10px; }
+.rogue-run-head b { color: var(--text); font-size: 18px; }
+.rogue-monster-box { text-align: center; }
+.rogue-monster-img { width: 96px; height: 96px; object-fit: contain; border-radius: 12px; }
+.rogue-timer { margin: 8px 0 2px; font-size: 13px; color: var(--muted); }
+.rogue-timer b { color: var(--text); }
+.rogue-crit { display: inline-block; margin-left: 8px; color: var(--c-gold); font-weight: 700; }
+.rogue-team-head { display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; margin: 12px 0 8px; }
+.rogue-team { display: flex; flex-wrap: wrap; gap: 8px; }
+.rogue-team-card { width: 74px; text-align: center; }
+.rogue-team-art { height: 64px; margin-bottom: 4px; }
+.rogue-team-art .egg-art, .rogue-team-art .art-img { width: 100%; height: 100%; }
+.rogue-team-art .emoji-art { font-size: 34px; line-height: 64px; }
+.rogue-team-name { font-size: 12px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rogue-team-card .r-tag { font-size: 10px; margin-top: 3px; }
+.rogue-bank { margin: 12px 0 4px; font-size: 13px; color: var(--muted); }
+.rogue-bank b { color: var(--text); }
+.rogue-preview { margin: 10px 0; padding: 10px 12px; background: #eef2f7; border-radius: 10px; font-size: 13px; color: var(--muted); }
+.rogue-preview b { color: var(--accent); }
+.rogue-upgrades { display: flex; flex-direction: column; gap: 8px; }
+.rogue-upg-head { font-size: 14px; font-weight: 700; display: flex; justify-content: space-between; align-items: baseline; }
+.rogue-upg-head .hint { font-weight: 400; }
+.rogue-coins { color: var(--c-gold); }
+.rogue-upg-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+.rogue-upg-info { flex: 1; }
+.rogue-upg-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.rogue-upg-name .hint { font-weight: 400; }
+.rogue-upg-lv { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.r-tag.r-bond { background: var(--accent); color: #fff; }
+
+.rogue-pick { position: fixed; inset: 0; z-index: 9015; display: flex; align-items: center; justify-content: center; }
+.rogue-pick.hidden { display: none; }
+.rogue-pick-backdrop { position: absolute; inset: 0; background: rgba(15, 23, 42, .55); }
+.rogue-pick-box { position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; width: min(560px, 92vw); max-height: 78vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0, 0, 0, .35); }
+.rogue-pick-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; font-weight: 700; border-bottom: 1px solid var(--line); }
+.rogue-pick-close { padding: 0 10px; }
+.rogue-pick-list { overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.rogue-pick-card { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; cursor: pointer; background: var(--panel); }
+.rogue-pick-card:hover { border-color: var(--accent); }
+.rogue-pick-art { width: 64px; height: 64px; flex-shrink: 0; }
+.rogue-pick-art .egg-art, .rogue-pick-art .art-img { width: 100%; height: 100%; }
+.rogue-pick-art .emoji-art { font-size: 42px; line-height: 64px; text-align: center; }
+.rogue-pick-name { font-size: 15px; font-weight: 700; color: var(--text); }
+.rogue-pick-power { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.rogue-pick-power b { color: var(--text); }
+.rogue-pick-join { font-size: 12px; color: var(--muted); }
+.rogue-pick-join b { color: var(--accent); }
+.rogue-pick-card .hint { margin-left: auto; text-align: right; font-size: 11px; }
+
+body.boss-mode .rogue-pick { display: none; }
+body.dark .rogue-preview { background: #1e293b; }
+body.dark .rogue-upg-row { background: #1e293b; border-color: #334155; }
+body.dark .rogue-pick-card { background: #1e293b; border-color: #334155; }
+body.dark .rogue-pick-card:hover { border-color: var(--accent); }
+
+.r-tag.r-mech { background: #6366f1; color: #fff; font-weight: 600; }
+.r-tag.r-kind { background: #0891b2; color: #fff; font-weight: 600; }
+.r-tag.r-evo { background: linear-gradient(90deg, #a855f7, #ec4899); color: #fff; font-weight: 700; }
+.rogue-mechs { margin: 6px 0; display: flex; flex-direction: column; gap: 4px; align-items: center; }
+.rogue-mech-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.rogue-pick-info { flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+.rogue-pick-sub { font-size: 12px; color: var(--muted); }
+.rogue-team-card.evo { outline: 2px solid #a855f7; border-radius: 12px; }
+
+.rogue-monster-wrap { position: relative; display: inline-block; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.rogue-weak-ring { position: absolute; inset: -7px; border-radius: 18px; border: 3px solid transparent; pointer-events: none; transition: border-color .15s, box-shadow .15s; }
+.rogue-monster-wrap.weak-on .rogue-weak-ring { border-color: #f59e0b; box-shadow: 0 0 16px rgba(245, 158, 11, .75); animation: weak-pulse 1.2s ease-in-out infinite; }
+@keyframes weak-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.07); }
+}
+.rogue-weak-flash {
+  position: absolute; left: 50%; top: 38%;
+  transform: translate(-50%, 0);
+  font-size: 20px; font-weight: 800; color: var(--c-gold, #f59e0b);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, .35);
+  pointer-events: none; opacity: 0;
+}
+.rogue-weak-flash.go { animation: weak-pop .8s ease forwards; }
+@keyframes weak-pop {
+  from { opacity: 1; transform: translate(-50%, 0) scale(1.25); }
+  to { opacity: 0; transform: translate(-50%, -26px) scale(.9); }
+}
+.rogue-pick-card.r-event { border-color: #f59e0b; background: linear-gradient(120deg, rgba(245, 158, 11, .08), transparent); }
+.rogue-pick-card.r-event:hover { border-color: #d97706; }
+.rogue-pick-art.ev-art { display: flex; align-items: center; justify-content: center; font-size: 40px; }
+#rogue-pick-reroll.hidden { display: none; }
+.rogue-goal-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 4px; }
+.rogue-goal-btn { min-width: 44px; padding: 8px 0; font-size: 15px; font-weight: 700; }
+#rogue-pick-reroll {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  border-color: #d97706;
+  color: #451a03;
+  font-weight: 700;
+}
+#rogue-pick-reroll:hover { background: linear-gradient(135deg, #fcd34d, #fbbf24); border-color: #b45309; }
+#rogue-pick-reroll:disabled { opacity: .55; filter: saturate(.6); }
+#rogue-pick-reroll:disabled:hover { background: linear-gradient(135deg, #fbbf24, #f59e0b); border-color: #d97706; }

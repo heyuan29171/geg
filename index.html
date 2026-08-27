@@ -19,6 +19,7 @@
   </div>
   <nav class="tabs">
     <button class="tab-btn active" data-tab="battle">战斗</button>
+    <button class="tab-btn" data-tab="rogue">冒险</button>
     <button class="tab-btn" data-tab="codex">图鉴</button>
     <button class="tab-btn" data-tab="backpack">背包</button>
     <button class="tab-btn" data-tab="achievements">成就</button>
@@ -107,6 +108,12 @@
     <div class="panel">
       <h3>碎片商店</h3>
       <div id="shop-list"></div>
+    </div>
+  </section>
+
+  <section id="tab-rogue" class="tab">
+    <div class="rogue-layout">
+      <div class="rogue-col-main" id="rogue-view"></div>
     </div>
   </section>
 
@@ -249,6 +256,32 @@
   </div>
 </div>
 
+<div id="rogue-goal" class="egg-modal hidden">
+  <div class="egg-modal-backdrop"></div>
+  <div class="egg-modal-box">
+    <div class="egg-modal-title">本局目标</div>
+    <div class="egg-modal-sub" id="rogue-goal-sub"></div>
+    <div class="rogue-goal-row">
+      <button class="btn rogue-goal-btn cancel" data-goal="0">取消</button>
+      <button class="btn rogue-goal-btn" data-goal="3">3</button>
+      <button class="btn rogue-goal-btn" data-goal="4">4</button>
+      <button class="btn rogue-goal-btn" data-goal="5">5</button>
+    </div>
+  </div>
+</div>
+
+<div id="rogue-pick" class="rogue-pick hidden">
+  <div class="rogue-pick-backdrop"></div>
+  <div class="rogue-pick-box">
+    <div class="rogue-pick-head">
+      <span id="rogue-pick-head-txt">选择一个强化</span>
+      <button class="btn hidden" id="rogue-pick-reroll" data-rogue-pick-reroll="1"></button>
+      <button class="btn rogue-pick-close" id="rogue-pick-close">✕</button>
+    </div>
+    <div class="rogue-pick-list" id="rogue-pick-list"></div>
+  </div>
+</div>
+
 <div id="nest-picker" class="nest-picker hidden">
   <div class="nest-picker-backdrop"></div>
   <div class="nest-picker-box">
@@ -263,6 +296,7 @@
 <script src="js/data.js"></script>
 <script src="js/save.js"></script>
 <script src="js/game.js"></script>
+<script src="js/rogue.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/tutorial.js"></script>
 <script src="js/main.js"></script>

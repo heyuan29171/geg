@@ -77,6 +77,10 @@ function defaultSave() {
     cosmetics: { gradFrame: false },
     shiny: {},
     shinySeen: false,
+    coins: 0,
+    rogueUpgrades: { time: 0, damage: 0, crit: 0, critd: 0, weakauto: 0 },
+    rogue: null,
+    rogueBest: null,
     updatedAt: Date.now(),
   };
 }
@@ -117,6 +121,10 @@ function sanitize(raw) {
     },
     shiny: sanitizeShiny(raw.shiny),
     shinySeen: !!raw.shinySeen,
+    coins: num(raw.coins, 0, 0, 1e15),
+    rogueUpgrades: sanitizeRogueUpgrades(raw.rogueUpgrades),
+    rogue: sanitizeRogue(raw.rogue),
+    rogueBest: sanitizeRogueBest(raw.rogueBest),
     updatedAt: num(raw.updatedAt, Date.now(), 0, Date.now()),
   };
   CARDS.forEach(c => {
@@ -181,6 +189,81 @@ function sanitizeShiny(raw) {
     }
   });
   return out;
+}
+
+function sanitizeRogueUpgrades(raw) {
+  const u = { time: 0, damage: 0, crit: 0, critd: 0, weakauto: 0 };
+  if (raw && typeof raw === 'object') {
+    const ups = CONFIG.ROGUE.UPGRADES;
+    Object.keys(ups).forEach(k => { u[k] = num(raw[k], 0, 0, ups[k].max); });
+  }
+  return u;
+}
+
+function rogueNum(v, def) {
+  return typeof v === 'number' && isFinite(v) ? v : def;
+}
+
+function sanitizeRogue(raw) {
+  if (!raw || typeof raw !== 'object') return null;
+  return {
+    team: Array.isArray(raw.team) ? raw.team.filter(s => s && typeof s.id === 'string' && CARD_MAP[s.id]).map(s => ({
+      id: s.id,
+      lv: num(s.lv, 0, 0, 1e4),
+    })) : [],
+    wave: num(raw.wave, 1, 1, 1e6),
+    baseInterval: rogueNum(raw.baseInterval, CONFIG.INTERVAL_BASE),
+    waveHpMax: rogueNum(raw.waveHpMax, 0),
+    waveHpLeft: rogueNum(raw.waveHpLeft, 0),
+    waveSecs: rogueNum(raw.waveSecs, 0),
+    attackAcc: rogueNum(raw.attackAcc, 0),
+    smashT: rogueNum(raw.smashT, 0),
+    bank: rogueNum(raw.bank, 0),
+    battleSecs: rogueNum(raw.battleSecs, 0),
+    offer: Array.isArray(raw.offer) && raw.offer.length ? raw.offer.filter(o => {
+      if (!o || typeof o !== 'object') return false;
+      if (o.kind === 'event') return !!CONFIG.ROGUE.EVENTS[o.eventId];
+      return typeof o.id === 'string' && !!CARD_MAP[o.id];
+    }) : null,
+    rerollN: num(raw.rerollN, 0, 0, CONFIG.ROGUE.REROLL_MAX),
+    powerMult: rogueNum(raw.powerMult, 1),
+    goal: raw.goal == null ? 0 : num(raw.goal, 0, 0, 5),
+    lastGoal: rogueNum(raw.lastGoal, null),
+    awaiting: !!raw.awaiting,
+    segBankStart: num(raw.segBankStart, 0, 0, 1e15),
+    segStartWave: num(raw.segStartWave, 0, 0, 1e9),
+    goalPaid: !!raw.goalPaid,
+    bonusLayer: (function () {
+      const out = {};
+      if (raw.bonusLayer && typeof raw.bonusLayer === 'object') {
+        Object.keys(CONFIG.ROGUE.MECHANICS).forEach(m => {
+          const v = num(raw.bonusLayer[m], 0, 0, 1e4);
+          if (v > 0) out[m] = v;
+        });
+      }
+      return out;
+    })(),
+    weakAt: rogueNum(raw.weakAt, Date.now() + CONFIG.ROGUE.WEAK_EVERY * 1000),
+    weakActive: !!raw.weakActive,
+    weakEnd: rogueNum(raw.weakEnd, 0),
+    weakUsed: !!raw.weakUsed,
+    startedAt: num(raw.startedAt, 0, 0, Date.now() + 1e9),
+  };
+}
+
+function sanitizeRogueBest(raw) {
+  if (!raw || typeof raw !== 'object' || !Array.isArray(raw.team) || !raw.team.length) return null;
+  return {
+    wave: num(raw.wave, 0, 0, 1e6),
+    team: raw.team.filter(s => s && typeof s.id === 'string' && CARD_MAP[s.id]).map(s => ({
+      id: s.id,
+      lv: num(s.lv, 0, 0, 1e4),
+    })),
+    frags: num(raw.frags, 0, 0, 1e15),
+    coins: num(raw.coins, 0, 0, 1e15),
+    secs: num(raw.secs, 0, 0, 1e7),
+    updatedAt: num(raw.updatedAt, Date.now(), 0, Date.now()),
+  };
 }
 
 const Save = {

@@ -32,7 +32,7 @@
   Tutorial.begin();
   if (off) toast('离线归来：碎片收益 +' + off.frags + '（相当于 ' + Math.floor(off.frags / CONFIG.FRAG_COST_PER_DRAW) + ' 抽）', '', 6000);
 
-  setInterval(() => { tick(performance.now()); Tutorial.check(); }, 250);
+  setInterval(() => { tick(performance.now()); Tutorial.check(); rogueTick(performance.now()); }, 250);
   setInterval(() => Save.write(S), 5000);
   onPageHide = () => Save.write(S);
   window.addEventListener('pagehide', onPageHide);
@@ -248,6 +248,77 @@ function bindEvents() {
   $id('egg-modal').addEventListener('click', e => {
     if (e.target.classList.contains('egg-modal-backdrop')) hideEggModal();
   });
+  $id('rogue-view').addEventListener('click', e => {
+    const btn = e.target.closest('[data-rogue]');
+    if (!btn) return;
+    const act = btn.dataset.rogue;
+    if (act === 'start') {
+      if (rogueStart()) toast('先立约本局目标波数', '', 3000);
+      else toast('已有一局进行中', 'rc-white');
+    } else if (act === 'retreat') {
+      const res = rogueRetreat();
+      if (res) toast('撤退结算：碎片 +' + res.frags + ' · 金币 +' + res.coins + '（' + res.wins + ' 波）', '', 5000);
+    } else if (act === 'showgoal') {
+      rogueShowGoal();
+    } else if (act === 'weak') {
+      rogueWeakClick();
+    } else if (act && act.indexOf('upgrade:') === 0) {
+      const key = act.slice(8);
+      if (rogueUpgrade(key)) {
+        toast(CONFIG.ROGUE.UPGRADES[key].name + ' 升级成功', '');
+        Save.write(S);
+      }
+      else toast('金币不足或已满级', 'rc-white');
+    }
+    renderRogue();
+    if (bossOpen) updateBossPanel();
+  });
+
+  $id('rogue-goal').addEventListener('click', e => {
+    const b = e.target.closest('[data-goal]');
+    if (!b) return;
+    const n = parseInt(b.dataset.goal, 10);
+    if (!n) {
+      rogueCancelRun();
+      return;
+    }
+    if (rogueChooseGoal(n)) Save.write(S);
+  });
+
+  $id('rogue-pick').addEventListener('click', e => {
+    if (e.target.closest('[data-rogue-pick-reroll]')) {
+      if (!rogueReroll()) toast('金币不足或次数用完', 'rc-white');
+      return;
+    }
+    if (e.target.classList.contains('rogue-pick-backdrop') || e.target.closest('#rogue-pick-close')) {
+      if (S.rogue && S.rogue.pendingSwap) {
+        S.rogue.pendingSwap = null;
+        renderRoguePick();
+      } else {
+        $id('rogue-pick').classList.add('hidden');
+      }
+      return;
+    }
+    const swapRow = e.target.closest('[data-rogue-swap]');
+    if (swapRow) {
+      if (S.rogue && S.rogue.pendingSwap && rogueDoSwap(S.rogue.pendingSwap.id, swapRow.dataset.rogueSwap)) {
+        renderAll();
+        Save.write(S);
+      }
+      return;
+    }
+    const row = e.target.closest('[data-rogue-pick]');
+    if (!row) return;
+    const val = row.dataset.roguePick;
+    const idx = S.rogue && S.rogue.offer ? S.rogue.offer.findIndex(o => (o.kind + ':' + o.id) === val) : -1;
+    if (idx >= 0 && roguePick(idx)) {
+      if (!S.rogue || !S.rogue.pendingSwap) {
+        renderAll();
+        Save.write(S);
+      }
+    }
+  });
+
   $id('nest-modal-close').addEventListener('click', () => { if (!nestModalOpen()) return; hideNestModal(); });
   $id('shiny-modal-close').addEventListener('click', () => { if (!shinyModalOpen()) return; hideShinyModal(); });
   $id('shiny-modal').addEventListener('click', e => {
@@ -269,6 +340,17 @@ function bindEvents() {
     } else if (e.key === 'Escape') {
       if (eggModalOpen()) { hideEggModal(); return; }
       if (nestModalOpen()) { hideNestModal(); return; }
+      const rp = $id('rogue-pick');
+      if (rp && !rp.classList.contains('hidden')) {
+        if (S.rogue && S.rogue.pendingSwap) {
+          S.rogue.pendingSwap = null;
+          renderRoguePick();
+        } else {
+          rp.classList.add('hidden');
+        }
+        return;
+      }
+      if (rogueGoalOpen()) { rogueHideGoal(); return; }
       if (bossOpen) toggleBoss();
     }
   });

@@ -766,13 +766,14 @@ function renderHeavy() {
   else if (currentTab === 'achievements') renderAchievements();
   else if (currentTab === 'home') renderHome();
   else if (currentTab === 'shop') renderShop();
+  else if (currentTab === 'rogue') renderRogue();
   else if (currentTab === 'settings') renderSettings();
 }
 function renderAll() {
   if (!S) return;
   renderTopbar();
   renderBattle();
-  if (currentTab === 'codex' || currentTab === 'backpack' || currentTab === 'achievements' || currentTab === 'home' || currentTab === 'shop' || currentTab === 'settings') {
+  if (currentTab === 'codex' || currentTab === 'backpack' || currentTab === 'achievements' || currentTab === 'home' || currentTab === 'shop' || currentTab === 'rogue' || currentTab === 'settings') {
     const now = Date.now();
     if (now - heavyRenderAt >= 1200) {
       heavyRenderAt = now;
