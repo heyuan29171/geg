@@ -1228,9 +1228,15 @@ body.dark #boss-ach-hint { color: #fbbf24; }
   border-color: #b9bcc4;
 }
 
+body.dark .frame.shiny,
+body.dark .mini-card.shiny {
+  background: linear-gradient(160deg, #d7dae0, #9aa0aa 42%, #c6cad2 68%, #80858f);
+  box-shadow: 0 0 10px rgba(140, 146, 158, .55);
+}
+
 body.dark .shiny > .frame-inner {
-  background: linear-gradient(165deg, #f4f5f8, #d3d6dd 55%, #eef0f4);
-  border-color: #c9ccd3;
+  background: linear-gradient(165deg, #c4c8cf, #969ba5 55%, #b6bac2);
+  border-color: #8b909a;
 }
 
 .viewer-shiny-btn {
