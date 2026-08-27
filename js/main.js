@@ -94,7 +94,7 @@ function bindEvents() {
     const sp = e.target.closest('[data-speedup]');
     if (sp && !sp.disabled) {
       const ok = nestSpeedup(+sp.dataset.speedup);
-      toast(ok ? '加速成功！剩余时间 −25%' : '碎片不足或次数用完', ok ? '' : 'rc-white');
+      toast(ok ? '加速成功！孵化时长 −25%' : '碎片不足或次数用完', ok ? '' : 'rc-white');
       renderHome();
       renderTopbar();
       Save.write(S);

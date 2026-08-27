@@ -279,11 +279,12 @@ function nestRemove(slot, idx) {
 
 function resetNestTimer(n) {
   n = n || S.homeNest;
-  if (!n.a || !n.b) { n.startedAt = 0; n.hatchAt = 0; n.ready = false; n.speedups = 0; return; }
+  if (!n.a || !n.b) { n.startedAt = 0; n.hatchAt = 0; n.ready = false; n.speedups = 0; n.dur = 0; return; }
   n.ready = false;
   n.speedups = 0;
   n.startedAt = Date.now();
   n.hatchAt = n.startedAt + (CONFIG.HOME_EGG_MIN + Math.random() * (CONFIG.HOME_EGG_MAX - CONFIG.HOME_EGG_MIN)) * 1000;
+  n.dur = n.hatchAt - n.startedAt;
 }
 
 function nestSpeedup(idx) {
@@ -293,8 +294,7 @@ function nestSpeedup(idx) {
   if (S.fragments < CONFIG.SHOP.SPEEDUP_COST) return false;
   S.fragments -= CONFIG.SHOP.SPEEDUP_COST;
   n.speedups = (n.speedups || 0) + 1;
-  const remaining = n.hatchAt - Date.now();
-  n.hatchAt -= remaining * CONFIG.SHOP.SPEEDUP_PCT;
+  n.hatchAt -= (n.dur || (CONFIG.HOME_EGG_MIN + CONFIG.HOME_EGG_MAX) / 2 * 1000) * CONFIG.SHOP.SPEEDUP_PCT;
   if (Date.now() >= n.hatchAt) {
     n.ready = true;
     if (typeof renderSoon === 'function') renderSoon();
@@ -308,7 +308,7 @@ function buyNestSlot() {
   const cost = CONFIG.SHOP.NEST_SLOT_COSTS[extra.length];
   if (S.fragments < cost) return false;
   S.fragments -= cost;
-  S.extraNests = extra.concat([{ a: null, b: null, startedAt: 0, hatchAt: 0, ready: false, speedups: 0 }]);
+  S.extraNests = extra.concat([{ a: null, b: null, startedAt: 0, hatchAt: 0, ready: false, speedups: 0, dur: 0 }]);
   return true;
 }
 

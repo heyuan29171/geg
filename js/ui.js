@@ -635,7 +635,7 @@ function nestBlockHTML(idx, n) {
     const left = CONFIG.SHOP.SPEEDUP_MAX - (n.speedups || 0);
     actionsHTML = '<div class="nest-actions">' +
       '<button class="btn btn-sm" data-speedup="' + idx + '"' + (left <= 0 ? ' disabled' : '') + '>加速生蛋 ' + fmtFrag(CONFIG.SHOP.SPEEDUP_COST) + ' 碎片</button>' +
-      '<span class="nest-action-note">剩余时间 −25%，本周期还能加速 ' + left + ' 次</span></div>';
+      '<span class="nest-action-note">每次减总时长的 25%，还能加速 ' + left + ' 次</span></div>';
     eggHTML = '';
   }
   return '<div class="panel nest-block">' +
