@@ -660,7 +660,7 @@ function renderHome() {
   for (let j = nests.length - 1; j < CONFIG.SHOP.NEST_SLOT_COSTS.length; j++) {
     html += '<div class="panel nest-block locked">' +
       '<h3>' + nestName(j + 1) + '</h3>' +
-      '<p class="nest-locked-tip">这个窝位还没有建。去<b>商店</b>花 ' + fmtFrag(CONFIG.SHOP.NEST_SLOT_COSTS[j]) + ' 碎片扩建，就能多一窝同时生蛋。</p>' +
+      '<p class="nest-locked-tip">在商店花 ' + fmtFrag(CONFIG.SHOP.NEST_SLOT_COSTS[j]) + ' 碎片扩建后解锁。</p>' +
       '</div>';
   }
   if (wrap.innerHTML !== html) wrap.innerHTML = html;
@@ -675,23 +675,24 @@ function fmtFrag(n) {
 
 const SHOP_ITEMS = [
   { key: 'pity-purple', name: '紫卡保底券', tier: 'purple',
-    desc: '持有期间每一抽自动消耗一张，保证那一抽必出<b>紫卡</b>及以上；只对普通抽卡生效，开蛋不看保底。',
-    meta: () => '持有 ' + (S.pityStock.purple || 0) + ' 张 · 已买过 ' + (S.pityBought.purple || 0) + ' 次',
+    desc: '每一抽自动消耗一张，那一抽必出<b>紫卡</b>及以上；生蛋不生效。',
+    meta: () => '持有 ' + (S.pityStock.purple || 0) + ' 张',
     cost: () => pityCost('purple'), can: () => true },
   { key: 'pity-gold', name: '金卡保底券', tier: 'gold',
-    desc: '持有期间每一抽自动消耗一张，保证那一抽必出<b>金卡</b>及以上；只对普通抽卡生效，开蛋不看保底。',
-    meta: () => '持有 ' + (S.pityStock.gold || 0) + ' 张 · 已买过 ' + (S.pityBought.gold || 0) + ' 次',
+    desc: '每一抽自动消耗一张，那一抽必出<b>金卡</b>及以上；生蛋不生效。',
+    meta: () => '持有 ' + (S.pityStock.gold || 0) + ' 张',
     cost: () => pityCost('gold'), can: () => true },
   { key: 'pity-black', name: '黑卡保底券', tier: 'black',
-    desc: '持有期间每一抽自动消耗一张，保证那一抽必出<b>黑卡</b>及以上；只对普通抽卡生效，开蛋不看保底。',
-    meta: () => '持有 ' + (S.pityStock.black || 0) + ' 张 · 已买过 ' + (S.pityBought.black || 0) + ' 次',
+    desc: '每一抽自动消耗一张，那一抽必出<b>黑卡</b>及以上；生蛋不生效。',
+    meta: () => '持有 ' + (S.pityStock.black || 0) + ' 张',
     cost: () => pityCost('black'), can: () => true },
   { key: 'nest-slot', name: '扩建窝位', tier: null,
-    desc: () => { const n = (S.extraNests || []).length; return '家园再造一个窝，多窝同时生蛋、各自计时、互不干扰。已建 ' + n + ' / 3 个。'; },
-    meta: () => { const n = (S.extraNests || []).length; return n >= 3 ? '已全部建好' : '当前价格：' + fmtFrag(CONFIG.SHOP.NEST_SLOT_COSTS[n]); },
+    desc: '再造一个窝同时生蛋。',
+    meta: () => '已建 ' + (S.extraNests || []).length + ' / 3 个',
     cost: () => { const n = (S.extraNests || []).length; return n >= 3 ? Infinity : CONFIG.SHOP.NEST_SLOT_COSTS[n]; }, can: () => true },
-  { key: 'cosmetic-frame', name: '毕业纪念框', tier: null, desc: '毕业典礼的纪念品：全图鉴永久镀上流动金边，包括还没抽到的卡。',
-    meta: () => S.cosmetics && S.cosmetics.gradFrame ? '已拥有' : '一次性购买，终身有效',
+  { key: 'cosmetic-frame', name: '毕业纪念框', tier: null,
+    desc: '全图鉴永久镀金边，包括还没抽到的卡。',
+    meta: () => S.cosmetics && S.cosmetics.gradFrame ? '已拥有' : '一次性购买',
     cost: () => CONFIG.SHOP.COSMETIC_FRAME_COST, can: () => !(S.cosmetics && S.cosmetics.gradFrame) },
 ];
 
