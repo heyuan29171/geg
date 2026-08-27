@@ -1230,13 +1230,13 @@ body.dark #boss-ach-hint { color: #fbbf24; }
 
 body.dark .frame.shiny,
 body.dark .mini-card.shiny {
-  background: linear-gradient(160deg, #d7dae0, #9aa0aa 42%, #c6cad2 68%, #80858f);
-  box-shadow: 0 0 10px rgba(140, 146, 158, .55);
+  background: linear-gradient(160deg, #a8adb6, #6d727c 42%, #939aa5 68%, #585d66);
+  box-shadow: 0 0 10px rgba(96, 102, 112, .55);
 }
 
 body.dark .shiny > .frame-inner {
-  background: linear-gradient(165deg, #c4c8cf, #969ba5 55%, #b6bac2);
-  border-color: #8b909a;
+  background: linear-gradient(165deg, #90959f, #666b75 55%, #797e88);
+  border-color: #5d626c;
 }
 
 .viewer-shiny-btn {
