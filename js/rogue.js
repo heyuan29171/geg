@@ -244,6 +244,7 @@ function rogueStart() {
 function rogueChooseGoal(n) {
   const R = S.rogue;
   if (!R || !R.awaiting || !n || n < 3 || n > 5) return false;
+  R.goalPaid = false; // 每段立约复位，上一段立满 5 波则本段续约兑现一次奖励
   const bonusEligible = R.lastGoal === 5 && !R.goalPaid;
   R.goal = n | 0;
   R.awaiting = false;
@@ -255,8 +256,9 @@ function rogueChooseGoal(n) {
   if (bonusEligible) {
     const keys = Object.keys(CONFIG.ROGUE.EVENTS);
     const ev = keys[Math.floor(Math.random() * keys.length)];
-    R.offer[R.offer.length - 1] = { kind: 'event', eventId: ev, id: 'event' };
+    R.offer[R.offer.length - 1] = { kind: 'event', eventId: ev, id: 'event', bonus: true };
     R.goalPaid = true;
+    if (typeof toast === 'function') toast('达成 5 波契约，附赠一张事件卡！', 'rc-gold', 4000);
   }
   rogueHideGoal();
   if (typeof renderRogue === 'function') renderRogue();
@@ -610,6 +612,7 @@ function rogueEventHTML(opt) {
     '<div class="rogue-pick-info">' +
     '<div class="rogue-pick-name">' + ev.name + '</div>' +
     '<span class="r-tag r-mech">事件</span>' +
+    (opt.bonus ? '<span class="r-tag r-kind">契约奖励</span>' : '') +
     '<div class="rogue-pick-sub">' + ev.desc + '</div>' +
     '</div>' +
     '</div>';
