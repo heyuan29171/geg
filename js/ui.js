@@ -841,8 +841,8 @@ let viewerShinyHide = false;
 
 function applyViewerFrame(c) {
   const plain = viewerShinyHide;
+  $id('vfront-wrap').className = 'vface-wrap ' + frameClass(c, plain);
   const compact = (c.formation && c.formation.length >= 8) ? ' compact' : '';
-  $id('vfront-wrap').className = 'vface-wrap' + compact + ' ' + frameClass(c, plain);
   $id('vback-wrap').className = 'vface-wrap vback-wrap' + compact + ' ' + frameClass(c, plain);
   const btn = $id('viewer-shiny-toggle');
   if (btn) {
@@ -891,7 +891,7 @@ function frontHTML(c) {
 function backHTML(c) {
   const owned = (S.owned[c.id] || 0) > 0;
   const complete = formationComplete(c.id);
-  const members = formationCardsOf(c.id).map(cm => {
+  const allMembers = formationCardsOf(c.id).map(cm => {
     const has = (S.owned[cm.id] || 0) > 0;
     return '<span class="v-mem ' + (has ? 'ok' : 'miss') + '">' +
       '<span class="r-dot r-' + effRarity(cm) + '"></span>' +
@@ -899,7 +899,10 @@ function backHTML(c) {
       (cm.id === c.id ? '（中心）' : '') +
       (has ? '' : ' ✗') +
       '</span>';
-  }).join('');
+  });
+  const shown = c.formation.length >= 8 ? allMembers.slice(0, 8) : allMembers;
+  const rest = allMembers.length - shown.length;
+  const members = shown.join('') + (rest > 0 ? '<span class="v-mem more">…还有 ' + rest + ' 位</span>' : '');
   return '<div class="v-sec">掉落概率 <b>' + (c.id === 'egg-rainbow' ? (isEggUpgraded() ? fmtRate(CONFIG.SECRET_EGG_RATE * 100) : '0%') : fmtRate(ratePct(RARITIES[effRarity(c)]))) + '</b></div>' +
     '<div class="v-sec">重复获得 → 碎片 +' + RARITIES[effRarity(c)].frag + '</div>' +
     '<div class="v-sec">战力：单独 ' + fmtBig(basePowerOf(c)) +
