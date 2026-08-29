@@ -221,6 +221,14 @@ function battleRowHTML() {
   const n = owned.length;
   if (n === 1) return miniCardHTML(center, true);
   const others = owned.filter(cm => cm.id !== center.id);
+  if (n > 7) {
+    const left = others.slice(0, 3);
+    const right = others.slice(others.length - 3);
+    return left.map(m => miniCardHTML(m, false)).join('') +
+      miniCardHTML(center, true) +
+      right.map(m => miniCardHTML(m, false)).join('') +
+      '<span class="battle-more">…共 ' + n + ' 人</span>';
+  }
   const left = others.slice(0, Math.floor(n / 2));
   const right = others.slice(Math.floor(n / 2));
   return left.map(m => miniCardHTML(m, false)).join('') +
