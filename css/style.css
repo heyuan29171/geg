@@ -682,7 +682,7 @@ body.dark .frame-rainbow .frame-inner::after {
 
 .v-sec-title { font-size: 12px; font-weight: 700; text-align: left; width: 100%; margin-top: 6px; }
 
-.v-mems { display: flex; flex-wrap: wrap; gap: 4px; }
+.v-mems { display: flex; flex-wrap: wrap; gap: 4px; max-height: 100px; overflow-y: auto; }
 
 .v-mem { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; padding: 1px 7px; border-radius: 99px; border: 1px solid var(--line); }
 .v-mem.ok { color: #15803d; border-color: #bbf7d0; background: #f0fdf4; }
@@ -693,6 +693,12 @@ body.dark .frame-rainbow .frame-inner::after {
 .v-flavor { font-size: 11px; color: var(--muted); font-style: italic; text-align: left; width: 100%; }
 
 .v-unowned { font-size: 12px; color: #b91c1c; margin-top: 4px; }
+
+.vface-wrap.compact .v-art { width: 92px; height: 108px; }
+.vface-wrap.compact .v-art .emoji-art { font-size: 54px; }
+.vface-wrap.compact .v-mems { max-height: 62px; font-size: 10px; }
+.vface-wrap.compact .v-sec-title { margin-top: 2px; }
+.vface-wrap.compact .v-desc { margin-top: 2px; }
 
 .viewer-hint {
   position: absolute;

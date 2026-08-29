@@ -841,8 +841,9 @@ let viewerShinyHide = false;
 
 function applyViewerFrame(c) {
   const plain = viewerShinyHide;
-  $id('vfront-wrap').className = 'vface-wrap ' + frameClass(c, plain);
-  $id('vback-wrap').className = 'vface-wrap vback-wrap ' + frameClass(c, plain);
+  const compact = (c.formation && c.formation.length >= 8) ? ' compact' : '';
+  $id('vfront-wrap').className = 'vface-wrap' + compact + ' ' + frameClass(c, plain);
+  $id('vback-wrap').className = 'vface-wrap vback-wrap' + compact + ' ' + frameClass(c, plain);
   const btn = $id('viewer-shiny-toggle');
   if (btn) {
     const shinyOwned = !!(S.shiny && S.shiny[c.id]);
