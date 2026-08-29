@@ -180,7 +180,7 @@ const CONFIG = {
   },
   ROGUE: {
     WAVE_TIMEOUT: 10,
-    MONSTER_GROWTH: 1.30,
+    MONSTER_GROWTH: 1.35,
     MONSTER_BASE: 3,
     FRAG_EQUIV_MULT: 3,
     FRAG_WAVE_SECS: 10,
@@ -244,6 +244,7 @@ const CONFIG = {
     { id: 'frags-10000', name: '碎片富翁', desc: '累计获得 1 万碎片', type: 'frags', goal: 10000, reward: 1000 },
     { id: 'offline-10000', name: '离线暴富', desc: '单次离线收益达到 1 万碎片', type: 'offline', goal: 10000, reward: 2000 },
     { id: 'nest-1', name: '宝宝出生了', desc: '开启第一枚蛋', type: 'nest', goal: 1, reward: 1000 },
+    { id: 'rogue-1000', name: '千波霸主', desc: '冒险模式单局突破 1000 波', type: 'rogue', goal: 1000, reward: 5000000 },
     { id: 'secret-egg', name: '幻蛋之秘', desc: '触发神秘的炫彩幻蛋', type: 'secret', goal: 1, reward: 1000000 },
   ],
 };

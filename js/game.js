@@ -163,6 +163,7 @@ function achievementProgress(cfg) {
     case 'offline': return { cur: S.achievements[cfg.id] ? 1 : 0, goal: 1 };
     case 'secret': return { cur: isEggUpgraded() ? 1 : 0, goal: 1 };
     case 'nest': return { cur: S.nestHatches || 0, goal: cfg.goal };
+    case 'rogue': return { cur: Math.max(S.rogue ? (S.rogue.wave - 1) : 0, (S.rogueBest && S.rogueBest.wave) || 0), goal: cfg.goal };
   }
   return { cur: 0, goal: 1 };
 }
