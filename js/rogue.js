@@ -717,7 +717,7 @@ function rogueBestHTML() {
   return '<div class="panel"><h3>历史最高战绩</h3>' +
     '<div class="kv"><span>通过波数</span><b>' + b.wave + ' 波</b></div>' +
     '<div class="kv"><span>队伍</span><b>' + b.team.map(s => effName(CARD_MAP[s.id]) + (s.lv ? ' +' + s.lv : '')).join(' / ') + '</b></div>' +
-    '<div class="kv"><span>结算</span><b>+' + b.frags.toLocaleString() + ' 碎片 · +' + fmtSci(b.coins) + ' 金币</b></div>' +
+    '<div class="kv"><span>结算</span><b>+' + fmtSci(b.frags) + ' 碎片 · +' + fmtSci(b.coins) + ' 金币</b></div>' +
     '<div class="hint">' + new Date(b.updatedAt).toLocaleString() + '</div></div>';
 }
 
@@ -772,7 +772,7 @@ function rogueResultHTML() {
     '<h3>' + (r.timedOut ? '超时结算' : '撤退结算') + (r.isBest ? ' 🏆 新纪录！' : '') + '</h3>' +
     '<div class="kv"><span>通过波次</span><b>' + r.wins + ' 波</b></div>' +
     '<div class="kv"><span>战斗时长</span><b>' + (mins >= 1 ? mins.toFixed(1) + ' 分钟' : r.secs + ' 秒') + '</b></div>' +
-    '<div class="kv"><span>碎片收益</span><b>+' + r.frags.toLocaleString() + (r.msFrag > 0 ? ' <span class="hint">（基础 ' + r.baseFrags + ' + 里程碑 ' + r.msFrag.toLocaleString() + '）</span>' : '') + '</b></div>' +
+    '<div class="kv"><span>碎片收益</span><b>+' + fmtSci(r.frags) + (r.msFrag > 0 ? ' <span class="hint">（基础 ' + fmtSci(r.baseFrags) + ' + 里程碑 ' + fmtSci(r.msFrag) + '）</span>' : '') + '</b></div>' +
     (r.penalty > 0 ? '<div class="kv"><span>未达 ' + r.goal + ' 波目标</span><b class="miss-text">-' + fmtSci(r.penalty) + ' 金币</b></div>' : '') +
     '<div class="kv"><span>金币收益</span><b>+' + fmtSci(r.coins) + '</b></div>' +
     '<div class="btn-row"><button class="btn primary" data-rogue="start">再来一局</button></div>' +
@@ -812,7 +812,7 @@ function rogueUpdateDyn() {
   const left = Math.max(0, timeout - R.waveSecs);
   rogueDyn.fill.style.width = pct + '%';
   rogueDyn.txt.textContent = '怪物 HP ' + rogueFmt(Math.max(0, R.waveHpLeft)) + ' / ' + rogueFmt(R.waveHpMax) + ' · 剩余 ' + left.toFixed(1) + 's';
-  const bankTxt = '金币 <b>' + fmtSci(R.bank) + '</b>（本波 +' + fmtSci(rogueWaveCoins(R.wave)) + '）· 已获基础碎片 <b>' + rogueRunFrags().toLocaleString() + '</b>';
+  const bankTxt = '金币 <b>' + fmtSci(R.bank) + '</b>（本波 +' + fmtSci(rogueWaveCoins(R.wave)) + '）· 已获基础碎片 <b>' + fmtSci(rogueRunFrags()) + '</b>';
   if (rogueDyn.bank.innerHTML !== bankTxt) rogueDyn.bank.innerHTML = bankTxt;
   if (rogueDyn.weakEl) {
     const on = !!R.weakActive && !R.weakUsed && performance.now() <= (R.weakEnd || 0);

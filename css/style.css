@@ -97,6 +97,8 @@ h3 { font-size: 15px; color: var(--text); margin: 14px 0 8px; }
 .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
 
 .btn {
+  white-space: normal;
+  overflow-wrap: anywhere;
   border: 1px solid var(--line);
   background: #fff;
   color: var(--text);
@@ -105,6 +107,25 @@ h3 { font-size: 15px; color: var(--text); margin: 14px 0 8px; }
   cursor: pointer;
   font-size: 13px;
   transition: all .15s;
+}
+
+.top-stats b,
+.kv b,
+.stat b,
+.shop-meta,
+.shop-desc,
+.codex-progress span,
+.ach-head,
+.f-summary,
+.fnote,
+.v-sec,
+.rogue-timer,
+.rogue-bank,
+.nest-status,
+.nest-locked-tip,
+#btn-spend-all-frag,
+#btn-spend-frag {
+  overflow-wrap: anywhere;
 }
 
 .btn:hover { border-color: #c8cdd6; background: #f9fafb; }
@@ -784,6 +805,11 @@ body.dark .frame-rainbow .frame-inner::after {
 
 @media (max-width: 560px) {
   main { margin: 12px auto; padding: 0 10px 70px; }
+  .shop-row { flex-wrap: wrap; }
+  .shop-buy { width: 100%; }
+  .shop-buy .btn { width: 100%; }
+  .rogue-upg-row { flex-wrap: wrap; }
+  .rogue-pick-box { width: 94vw; max-height: 82vh; }
   .topbar { padding: 8px 12px; gap: 8px; }
   .brand { font-size: 16px; }
   .top-stats { order: 3; width: 100%; gap: 10px; font-size: 12px; justify-content: space-between; }

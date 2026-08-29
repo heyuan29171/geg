@@ -198,10 +198,10 @@ function onReward(res) {
 }
 
 function renderTopbar() {
-  $id('ts-power').textContent = Math.round(activePower());
+  $id('ts-power').textContent = fmtBig(activePower());
   $id('ts-interval').textContent = fmtInterval(battleInterval());
-  $id('ts-frag').textContent = S.fragments;
-  $id('ts-kills').textContent = S.kills;
+  $id('ts-frag').textContent = fmtBig(S.fragments);
+  $id('ts-kills').textContent = fmtBig(S.kills);
   const btn = $id('btn-spend-all-frag');
   const draws = Math.floor(S.fragments / CONFIG.FRAG_COST_PER_DRAW);
   const capped = Math.min(draws, CONFIG.MAX_FRAG_DRAWS);
@@ -240,15 +240,15 @@ function memberChipHTML(cm, isSelf) {
 
 function formationLineHTML(cardId) {
   const c = CARD_MAP[cardId];
-  if (!c.formation.length) return '独行编队 · 战力 ' + Math.round(basePowerOf(c));
+  if (!c.formation.length) return '独行编队 · 战力 ' + fmtBig(basePowerOf(c));
   const ownedCount = formationCardsOf(cardId).filter(cm => (S.owned[cm.id] || 0) > 0).length;
   const total = 1 + c.formation.length;
   const complete = ownedCount === total;
   const chips = formationCardsOf(cardId).map(cm => memberChipHTML(cm, cm.id === cardId)).join('');
   return '<div class="f-line">' + chips + '</div>' +
     '<div class="f-summary ' + (complete ? 'ok-text' : 'miss-text') + '">' +
-    (complete ? '编队已集齐（' + total + ' 张）· 编队战力 ' + Math.round(formationPowerOf(cardId))
-      : '编队未集齐（' + ownedCount + '/' + total + ' 张）· 战力 ' + Math.round(formationPowerOf(cardId)) + ' · 集齐后 ' + Math.round(formationPowerFull(cardId))) +
+    (complete ? '编队已集齐（' + total + ' 张）· 编队战力 ' + fmtBig(formationPowerOf(cardId))
+      : '编队未集齐（' + ownedCount + '/' + total + ' 张）· 战力 ' + fmtBig(formationPowerOf(cardId)) + ' · 集齐后 ' + fmtBig(formationPowerFull(cardId))) +
     '</div>';
 }
 
@@ -268,12 +268,12 @@ function renderBattle() {
     rbCache.rate = true;
     $id('rate-panel').innerHTML = rateRowsHTML();
   }
-  $id('st-pulls').textContent = S.totalPulls;
-  $id('st-kills').textContent = S.kills;
+  $id('st-pulls').textContent = fmtBig(S.totalPulls);
+  $id('st-kills').textContent = fmtBig(S.kills);
   const lc = S.rarityCounts;
-  $id('st-lower').textContent = (lc.white || 0) + ' / ' + (lc.green || 0) + ' / ' + (lc.blue || 0);
-  $id('st-upper').textContent = (lc.purple || 0) + ' / ' + (lc.gold || 0) + ' / ' + (lc.red || 0);
-  $id('st-top').textContent = (lc.black || 0) + ' / ' + (lc.rainbow || 0);
+  $id('st-lower').textContent = fmtBig(lc.white || 0) + ' / ' + fmtBig(lc.green || 0) + ' / ' + fmtBig(lc.blue || 0);
+  $id('st-upper').textContent = fmtBig(lc.purple || 0) + ' / ' + fmtBig(lc.gold || 0) + ' / ' + fmtBig(lc.red || 0);
+  $id('st-top').textContent = fmtBig(lc.black || 0) + ' / ' + fmtBig(lc.rainbow || 0);
   $id('st-shiny').textContent = shinyCountOf() + ' / ' + ((S.owned['egg-rainbow'] || 0) > 0 ? 1 : 0);
   renderLog();
   updateBattle();
@@ -285,12 +285,12 @@ function formationInfoHTML() {
   const rows = cards.map(cm => {
     const has = (S.owned[cm.id] || 0) > 0;
     const isSelf = cm.id === S.activeCenter;
-    return '<div class="frow ' + (has ? 'ok' : 'miss') + '">' + (has ? '✓' : '✗') + ' ' + effName(cm) + (isSelf ? '（中心）' : '') + ' · 基础战力 ' + basePowerOf(cm) + '</div>';
+    return '<div class="frow ' + (has ? 'ok' : 'miss') + '">' + (has ? '✓' : '✗') + ' ' + effName(cm) + (isSelf ? '（中心）' : '') + ' · 基础战力 ' + fmtBig(basePowerOf(cm)) + '</div>';
   }).join('');
   return '<div class="fhead">' + effName(CARD_MAP[S.activeCenter]) + ' ' + rarityTagHTML(effRarity(CARD_MAP[S.activeCenter])) + '</div>' +
     '<div class="fbody">' + rows + '</div>' +
-    '<div class="fnote">' + (complete ? '编队战力 ' + Math.round(formationPowerOf(S.activeCenter))
-      : '编队未集齐（' + formationCardsOf(S.activeCenter).filter(cm => (S.owned[cm.id] || 0) > 0).length + '/' + formationCardsOf(S.activeCenter).length + '）· 战力 ' + Math.round(formationPowerOf(S.activeCenter)) + ' · 集齐后 ' + Math.round(formationPowerFull(S.activeCenter))) + ' · 战斗间隔 ' + fmtInterval(battleInterval()) + '</div>';
+    '<div class="fnote">' + (complete ? '编队战力 ' + fmtBig(formationPowerOf(S.activeCenter))
+      : '编队未集齐（' + formationCardsOf(S.activeCenter).filter(cm => (S.owned[cm.id] || 0) > 0).length + '/' + formationCardsOf(S.activeCenter).length + '）· 战力 ' + fmtBig(formationPowerOf(S.activeCenter)) + ' · 集齐后 ' + fmtBig(formationPowerFull(S.activeCenter))) + ' · 战斗间隔 ' + fmtInterval(battleInterval()) + '</div>';
 }
 
 function rateRowsHTML() {
@@ -565,10 +565,10 @@ function achievementCardHTML(cfg) {
   const pct = Math.min(100, Math.max(0, Math.round(p.cur / p.goal * 100)));
   const name = secret ? '？？？' : cfg.name;
   const desc = secret ? '？？？' : cfg.desc;
-  const reward = secret ? '？？？' : '+' + cfg.reward.toLocaleString() + ' 碎片';
+  const reward = secret ? '？？？' : '+' + fmtBig(cfg.reward) + ' 碎片';
   const bar = secret
     ? '<div class="ach-bar"><div class="ach-bar-fill" style="width:0%"></div></div><div class="ach-foot">？？？</div>'
-    : '<div class="ach-bar"><div class="ach-bar-fill" style="width:' + pct + '%"></div></div><div class="ach-foot">' + p.cur.toLocaleString() + ' / ' + p.goal.toLocaleString() + '</div>';
+    : '<div class="ach-bar"><div class="ach-bar-fill" style="width:' + pct + '%"></div></div><div class="ach-foot">' + fmtBig(p.cur) + ' / ' + fmtBig(p.goal) + '</div>';
   const badge = isDone
     ? '<span class="ach-badge done">✓ 达成' + (S.achievements[cfg.id] ? ' · ' + new Date(S.achievements[cfg.id]).toLocaleString() : '') + '</span>'
     : '<span class="ach-badge">未达成</span>';
@@ -587,7 +587,7 @@ function renderAchievements() {
   const done = list.filter(c => S.achievements[c.id]).length;
   const totalReward = list.reduce((a, c) => a + c.reward, 0);
   const pct = list.length ? Math.round(done / list.length * 100) : 0;
-  head.innerHTML = '<div class="codex-progress"><span>成就 ' + done + ' / ' + list.length + '（' + pct + '%）· 全部奖励碎片合计 ' + totalReward.toLocaleString() + '</span><div class="bar"><div class="bar-fill" style="width:' + pct + '%"></div></div></div>';
+  head.innerHTML = '<div class="codex-progress"><span>成就 ' + done + ' / ' + list.length + '（' + pct + '%）· 全部奖励碎片合计 ' + fmtBig(totalReward) + '</span><div class="bar"><div class="bar-fill" style="width:' + pct + '%"></div></div></div>';
   fl.innerHTML = chipGroup('状态', 'achf', [['all', '全部'], ['done', '已达成'], ['todo', '未达成']], achFilter);
   const pool = list.filter(c => achFilter === 'all' ? true : achFilter === 'done' ? !!S.achievements[c.id] : !S.achievements[c.id]);
   if (!pool.length) { grid.innerHTML = '<div class="log-empty">没有符合条件的成就</div>'; return; }
@@ -692,6 +692,13 @@ function fmtFrag(n) {
   n = Math.round(n);
   if (n >= 1e8) return (Math.round(n / 1e8 * 100) / 100) + ' 亿';
   if (n >= 1e4) return Math.round(n / 1e4).toLocaleString() + ' 万';
+  return n.toLocaleString();
+}
+
+function fmtBig(n) {
+  n = Math.round(n);
+  if (n >= 1e8) return (n / 1e8).toFixed(1) + ' 亿';
+  if (n >= 1e4) return (n / 1e4).toFixed(1) + ' 万';
   return n.toLocaleString();
 }
 
@@ -894,8 +901,8 @@ function backHTML(c) {
   }).join('');
   return '<div class="v-sec">掉落概率 <b>' + (c.id === 'egg-rainbow' ? (isEggUpgraded() ? fmtRate(CONFIG.SECRET_EGG_RATE * 100) : '0%') : fmtRate(ratePct(RARITIES[effRarity(c)]))) + '</b></div>' +
     '<div class="v-sec">重复获得 → 碎片 +' + RARITIES[effRarity(c)].frag + '</div>' +
-    '<div class="v-sec">战力：单独 ' + basePowerOf(c) +
-    (c.formation.length ? ' / 编队 ' + Math.round(formationPowerOf(c.id)) + (complete ? '' : '（未集齐）') : '') + '</div>' +
+    '<div class="v-sec">战力：单独 ' + fmtBig(basePowerOf(c)) +
+    (c.formation.length ? ' / 编队 ' + fmtBig(formationPowerOf(c.id)) + (complete ? '' : '（未集齐）') : '') + '</div>' +
     '<div class="v-sec-title">编队成员（共 ' + (1 + c.formation.length) + ' 张）</div>' +
     '<div class="v-mems">' + members + '</div>' +
     '<div class="v-desc">' + effDesc(c) + '</div>' +

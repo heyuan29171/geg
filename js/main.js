@@ -417,7 +417,7 @@ function handleSpendAllFrag() {
     .map(r => r.name.replace('卡', '') + '×' + res.byRarity[r.id]).join(' ');
   parts.push(rc);
   if (res.newCards.length) parts.push('新卡：' + res.newCards.join('、'));
-  if (res.fragGain) parts.push('重复转化碎片 +' + res.fragGain);
+  if (res.fragGain) parts.push('重复转化碎片 +' + fmtBig(res.fragGain));
   if (res.secretNew) showEggUpgradeNotice();
   const achN = checkAchievements();
   if (achN > 0) parts.push('成就 +' + achN + ' 项');
@@ -452,7 +452,7 @@ function bossNewCard(card) {
 function updateBossPanel() {
   if (!document || !$id('boss-panel')) return;
   $id('boss-rate').textContent = (1 / battleInterval()).toFixed(1);
-  $id('boss-frag').textContent = S.fragments.toLocaleString();
+  $id('boss-frag').textContent = fmtBig(S.fragments);
   $id('boss-new').textContent = bossRarity < 0 ? '暂无新卡' : '新卡：' + RARITY_LIST[bossRarity].name;
 }
 
