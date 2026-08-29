@@ -322,8 +322,12 @@ body.dark .frame-rainbow .frame-inner::after {
 }
 
 .egg-art {
-  width: 100%;
-  height: 100%;
+  aspect-ratio: 3 / 4;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  margin: 0 auto;
   border-radius: 50% 50% 50% 50% / 58% 58% 42% 42%;
   position: relative;
   box-shadow: inset -4px -6px 10px rgba(0, 0, 0, .15);
@@ -499,7 +503,7 @@ body.dark .frame-rainbow .frame-inner::after {
   border: 1px solid var(--line);
   border-radius: 8px;
 }
-.cell-art .egg-art, .cell-art .art-img { width: 100%; height: 100%; }
+.cell-art .art-img { width: 100%; height: 100%; object-fit: cover; }
 .cell-art .emoji-art { font-size: 42px; }
 
 .cell-no { font-size: 11px; color: var(--muted); }
@@ -540,7 +544,7 @@ body.dark .frame-rainbow .frame-inner::after {
   border: 1px solid var(--line);
   border-radius: 8px;
 }
-.bag-art .egg-art, .bag-art .art-img { width: 100%; height: 100%; }
+.bag-art .art-img { width: 100%; height: 100%; object-fit: cover; }
 .bag-art .emoji-art { font-size: 42px; }
 
 .bag-info { flex: 1; min-width: 0; }
@@ -667,7 +671,7 @@ body.dark .frame-rainbow .frame-inner::after {
   border: 1px solid var(--line);
   border-radius: 8px;
 }
-.v-art .egg-art, .v-art .art-img { width: 100%; height: 100%; }
+.v-art .art-img { width: 100%; height: 100%; object-fit: cover; }
 .v-art .emoji-art { font-size: 76px; }
 
 .v-no { font-size: 11px; color: var(--muted); letter-spacing: 1px; }
@@ -1096,7 +1100,7 @@ body.boss-mode .egg-modal { display: none; }
 
 .nest-modal-art { width: 110px; height: 130px; margin: 0 auto 8px; overflow: hidden; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); }
 
-.nest-modal-art .art-img, .nest-modal-art .egg-art { width: 100%; height: 100%; }
+.nest-modal-art .art-img { width: 100%; height: 100%; object-fit: cover; }
 
 .nest-modal-art .emoji-art { font-size: 56px; line-height: 130px; text-align: center; }
 
@@ -1191,7 +1195,7 @@ body.dark #boss-ach-hint { color: #fbbf24; }
 
 .nest-card-art { width: 56px; height: 64px; flex-shrink: 0; overflow: hidden; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); }
 
-.nest-card-art .art-img, .nest-card-art .egg-art { width: 100%; height: 100%; }
+.nest-card-art .art-img { width: 100%; height: 100%; object-fit: cover; }
 
 .nest-card-art .emoji-art { font-size: 30px; line-height: 64px; text-align: center; }
 
@@ -1246,7 +1250,7 @@ body.dark #boss-ach-hint { color: #fbbf24; }
 }
 
 .mini-art .emoji-art { font-size: 34px; text-align: center; }
-.mini-art .egg-art, .mini-art .art-img { width: 100%; height: 100%; object-fit: cover; }
+.mini-art .art-img { width: 100%; height: 100%; object-fit: cover; }
 
 .battle-more {
   align-self: center;
@@ -1382,7 +1386,7 @@ body.dark .nest-pick-row:hover { background: rgba(59, 130, 246, .15); }
 .rogue-team { display: flex; flex-wrap: wrap; gap: 8px; }
 .rogue-team-card { width: 74px; text-align: center; }
 .rogue-team-art { height: 64px; margin-bottom: 4px; }
-.rogue-team-art .egg-art, .rogue-team-art .art-img { width: 100%; height: 100%; }
+.rogue-team-art .art-img { width: 100%; height: 100%; object-fit: cover; }
 .rogue-team-art .emoji-art { font-size: 34px; line-height: 64px; }
 .rogue-team-name { font-size: 12px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .rogue-team-card .r-tag { font-size: 10px; margin-top: 3px; }
@@ -1411,7 +1415,7 @@ body.dark .nest-pick-row:hover { background: rgba(59, 130, 246, .15); }
 .rogue-pick-card { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; cursor: pointer; background: var(--panel); }
 .rogue-pick-card:hover { border-color: var(--accent); }
 .rogue-pick-art { width: 64px; height: 64px; flex-shrink: 0; }
-.rogue-pick-art .egg-art, .rogue-pick-art .art-img { width: 100%; height: 100%; }
+.rogue-pick-art .art-img { width: 100%; height: 100%; object-fit: cover; }
 .rogue-pick-art .emoji-art { font-size: 42px; line-height: 64px; text-align: center; }
 .rogue-pick-name { font-size: 15px; font-weight: 700; color: var(--text); }
 .rogue-pick-power { font-size: 12px; color: var(--muted); margin-top: 2px; }
