@@ -240,7 +240,6 @@ function spendAllFragments() {
     byRarity[res.r.id] = (byRarity[res.r.id] || 0) + 1;
     fragGain += res.frag;
   }
-  S.fragEarnedTotal = (S.fragEarnedTotal || 0) + fragGain;
   return { draws, newCards, byRarity, fragGain, secretCount, secretNew };
 }
 
