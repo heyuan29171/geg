@@ -1354,6 +1354,13 @@ body.dark .mini-card.shiny.frame-grad {
 
 .nest-picker-list { overflow-y: auto; padding: 8px; }
 
+.nest-picker-tools { padding: 8px 12px 0; display: flex; flex-direction: column; gap: 8px; }
+.nest-picker-filters { display: flex; gap: 6px; flex-wrap: wrap; max-height: 76px; overflow-y: auto; }
+.nest-picker-filters .chip { padding: 4px 10px; font-size: 12px; }
+.nest-picker-filters .chip.dim { opacity: .35; }
+.nest-picker-search { width: 100%; box-sizing: border-box; }
+.nest-pick-empty { padding: 18px; text-align: center; color: var(--muted); font-size: 13px; }
+
 .nest-pick-row {
   display: flex;
   align-items: center;

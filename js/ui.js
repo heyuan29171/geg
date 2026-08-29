@@ -603,21 +603,21 @@ function renderAchievements() {
 }
 
 let pickerSlot = null;
+let pickerRarity = 'all';
+let pickerQuery = '';
 
 function nestName(i) { return ['一号窝', '二号窝', '三号窝', '四号窝'][i] || ('窝 ' + (i + 1)); }
 
-function openNestPicker(target) {
-  pickerSlot = target;
-  const n = allNests()[target.idx];
-  const picker = $id('nest-picker');
-  if (!picker || !n) return;
+function nestPickerListHTML() {
   const inAnyNest = id => allNests().some(nn => nn.a === id || nn.b === id);
   const list = CARDS.filter(c =>
     !c.hidden && !isEggCard(c) && (S.owned[c.id] || 0) > 0 && c.id !== S.activeCenter
-  );
-  const other = target.slot === 'a' ? n.b : n.a;
-  $id('nest-picker-title').textContent = nestName(target.idx) + ' · 选择卡片';
-  $id('nest-picker-list').innerHTML = list.map(c => {
+  ).filter(c => pickerRarity === 'all' || effRarity(c) === pickerRarity)
+    .filter(c => !pickerQuery || effName(c).indexOf(pickerQuery) >= 0);
+  const n = allNests()[pickerSlot.idx];
+  const other = pickerSlot.slot === 'a' ? n.b : n.a;
+  if (!list.length) return '<div class="nest-pick-empty">没有符合条件的卡片</div>';
+  return list.map(c => {
     const busy = inAnyNest(c.id) && c.id !== other;
     const disabled = c.id === other || busy;
     const tag = c.id === other
@@ -629,13 +629,44 @@ function openNestPicker(target) {
       '<span class="nest-pick-count">持有 ×' + S.owned[c.id] + '</span>' +
       '</div>';
   }).join('');
+}
+
+function renderNestPicker() {
+  const picker = $id('nest-picker');
+  if (!picker || !pickerSlot) return;
+  const n = allNests()[pickerSlot.idx];
+  if (!n) return;
+  const ownable = CARDS.filter(c => !c.hidden && !isEggCard(c) && (S.owned[c.id] || 0) > 0 && c.id !== S.activeCenter);
+  const ownRar = ownable.reduce((a, c) => { a[effRarity(c)] = 1; return a; }, {});
+  const rarityChips = [['all', '全部']].concat(RARITY_LIST.map(r => [r.id, r.name])).map(it =>
+    '<button class="chip' + (pickerRarity === it[0] ? ' active' : '') + '" data-picker-filter="' + it[0] + '">' + it[1] + '</button>'
+  ).join('');
+  $id('nest-picker-filters').innerHTML = rarityChips;
+  $id('nest-picker-filters').querySelectorAll('[data-picker-filter]').forEach(chip => {
+    if (chip.dataset.pickerFilter !== 'all' && !ownRar[chip.dataset.pickerFilter]) chip.classList.add('dim');
+  });
+  const q = $id('nest-picker-search');
+  if (q && q.value !== pickerQuery) q.value = pickerQuery;
+  const list = $id('nest-picker-list');
+  if (list) list.innerHTML = nestPickerListHTML();
   picker.classList.remove('hidden');
+}
+
+function openNestPicker(target) {
+  pickerSlot = target;
+  const n = allNests()[target.idx];
+  const picker = $id('nest-picker');
+  if (!picker || !n) return;
+  $id('nest-picker-title').textContent = nestName(target.idx) + ' · 选择卡片';
+  renderNestPicker();
 }
 
 function closeNestPicker() {
   const picker = $id('nest-picker');
   if (picker) picker.classList.add('hidden');
   pickerSlot = null;
+  pickerRarity = 'all';
+  pickerQuery = '';
 }
 
 function slotCardHTML(cardId) {

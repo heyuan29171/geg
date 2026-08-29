@@ -118,6 +118,12 @@ function bindEvents() {
       closeNestPicker();
       return;
     }
+    const filterChip = e.target.closest('[data-picker-filter]');
+    if (filterChip) {
+      pickerRarity = filterChip.dataset.pickerFilter;
+      renderNestPicker();
+      return;
+    }
     const row = e.target.closest('[data-pick]');
     if (!row || !pickerSlot) return;
     if (nestSet(pickerSlot.slot, row.dataset.pick, pickerSlot.idx)) {
@@ -125,6 +131,10 @@ function bindEvents() {
       renderHome();
       Save.write(S);
     }
+  });
+  $id('nest-picker-search').addEventListener('input', e => {
+    pickerQuery = e.target.value.trim();
+    renderNestPicker();
   });
 
   $id('shop-list').addEventListener('click', e => {
