@@ -434,6 +434,9 @@ function hatchEgg(idx) {
 function gameInit() {
   const up = S.eggUpgraded;
   S.eggUpgraded = false;
+  const savedShiny = S.shiny;
+  S.shiny = {};
   P0 = formationPowerOf('egg-rainbow');
+  S.shiny = savedShiny;
   S.eggUpgraded = up;
 }
