@@ -293,7 +293,7 @@ const CARD_MAP = {};
 CARDS.forEach(c => { CARD_MAP[c.id] = c; });
 
 const CONFIG = {
-  VERSION: '2.2.0',
+  VERSION: '2.2.1',
   INTERVAL_BASE: 10,
   INTERVAL_EXP: 0.4956,
   MIN_INTERVAL: 0.005,
