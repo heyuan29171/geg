@@ -1258,20 +1258,10 @@ body.dark #boss-ach-hint { color: #fbbf24; }
   white-space: nowrap;
 }
 
-/* 列表密集页关闭帧动画，降低 CPU（图鉴/背包/家园网格） */
-.codex-grid .frame-grad,
-.codex-grid .frame-rainbow::before,
-.codex-grid .frame-rainbow .frame-inner::after,
-.codex-grid .egg-art,
-.bag-list .frame-grad,
-.bag-list .frame-rainbow::before,
-.bag-list .frame-rainbow .frame-inner::after,
-.bag-list .egg-art,
-.nest-slots .frame-grad,
-.nest-slots .frame-rainbow::before,
-.nest-slots .frame-rainbow .frame-inner::after,
-.nest-slots .egg-art {
+/* 动态动画开关（设置页控制）：关闭时停掉全部帧动画与过渡，省 CPU */
+body.no-anim * {
   animation: none !important;
+  transition: none !important;
 }
 
 @keyframes frame-grad-slide {

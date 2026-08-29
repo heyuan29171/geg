@@ -238,6 +238,12 @@ function bindEvents() {
     Save.write(S);
   });
 
+  $id('btn-anim').addEventListener('click', () => {
+    S.anim = !S.anim;
+    applyTheme();
+    Save.write(S);
+  });
+
   $id('boss-strongest').addEventListener('click', () => {
     const best = strongestCard();
     if (best) {
@@ -485,7 +491,12 @@ setInterval(() => { if (bossOpen) updateBossPanel(); }, 250);
 
 function applyTheme() {
   const body = document && document.body;
-  if (body && body.classList) body.classList.toggle('dark', S.theme === 'dark');
+  if (body && body.classList) {
+    body.classList.toggle('dark', S.theme === 'dark');
+    body.classList.toggle('no-anim', S.anim === false);
+  }
   const b = $id('btn-theme');
   if (b) b.textContent = S.theme === 'dark' ? '切换到亮色模式' : '切换到深色模式';
+  const ab = $id('btn-anim');
+  if (ab) ab.textContent = S.anim === false ? '开启动态动画' : '关闭动态动画';
 }
