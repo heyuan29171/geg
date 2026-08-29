@@ -197,16 +197,23 @@ function onReward(res) {
   renderSoon();
 }
 
+let tbCache = {};
 function renderTopbar() {
-  $id('ts-power').textContent = fmtBig(activePower());
-  $id('ts-interval').textContent = fmtInterval(battleInterval());
-  $id('ts-frag').textContent = fmtBig(S.fragments);
-  $id('ts-kills').textContent = fmtBig(S.kills);
+  const power = fmtBig(activePower());
+  const interval = fmtInterval(battleInterval());
+  const frag = fmtBig(S.fragments);
+  const kills = fmtBig(S.kills);
+  if (tbCache.power !== power) { tbCache.power = power; $id('ts-power').textContent = power; }
+  if (tbCache.interval !== interval) { tbCache.interval = interval; $id('ts-interval').textContent = interval; }
+  if (tbCache.frag !== frag) { tbCache.frag = frag; $id('ts-frag').textContent = frag; }
+  if (tbCache.kills !== kills) { tbCache.kills = kills; $id('ts-kills').textContent = kills; }
   const btn = $id('btn-spend-all-frag');
   const draws = Math.floor(S.fragments / CONFIG.FRAG_COST_PER_DRAW);
   const capped = Math.min(draws, CONFIG.MAX_FRAG_DRAWS);
-  btn.textContent = '用全部碎片抽卡（' + S.fragments + ' 碎片 → ' + capped + ' 抽' + (draws > CONFIG.MAX_FRAG_DRAWS ? '，单次上限 ' + CONFIG.MAX_FRAG_DRAWS + ' 抽' : '') + '）';
-  btn.disabled = draws < 1;
+  const label = '用全部碎片抽卡（' + S.fragments + ' 碎片 → ' + capped + ' 抽' + (draws > CONFIG.MAX_FRAG_DRAWS ? '，单次上限 ' + CONFIG.MAX_FRAG_DRAWS + ' 抽' : '') + '）';
+  const disabled = draws < 1;
+  if (tbCache.btnLabel !== label) { tbCache.btnLabel = label; btn.textContent = label; }
+  if (tbCache.btnDisabled !== disabled) { tbCache.btnDisabled = disabled; btn.disabled = disabled; }
 }
 
 function miniCardHTML(card, isCenter) {
@@ -276,13 +283,19 @@ function renderBattle() {
     rbCache.rate = true;
     $id('rate-panel').innerHTML = rateRowsHTML();
   }
-  $id('st-pulls').textContent = fmtBig(S.totalPulls);
-  $id('st-kills').textContent = fmtBig(S.kills);
+  const pulls = fmtBig(S.totalPulls);
+  const kills = fmtBig(S.kills);
   const lc = S.rarityCounts;
-  $id('st-lower').textContent = fmtBig(lc.white || 0) + ' / ' + fmtBig(lc.green || 0) + ' / ' + fmtBig(lc.blue || 0);
-  $id('st-upper').textContent = fmtBig(lc.purple || 0) + ' / ' + fmtBig(lc.gold || 0) + ' / ' + fmtBig(lc.red || 0);
-  $id('st-top').textContent = fmtBig(lc.black || 0) + ' / ' + fmtBig(lc.rainbow || 0);
-  $id('st-shiny').textContent = shinyCountOf() + ' / ' + ((S.owned['egg-rainbow'] || 0) > 0 ? 1 : 0);
+  const lower = fmtBig(lc.white || 0) + ' / ' + fmtBig(lc.green || 0) + ' / ' + fmtBig(lc.blue || 0);
+  const upper = fmtBig(lc.purple || 0) + ' / ' + fmtBig(lc.gold || 0) + ' / ' + fmtBig(lc.red || 0);
+  const top = fmtBig(lc.black || 0) + ' / ' + fmtBig(lc.rainbow || 0);
+  const shiny = shinyCountOf() + ' / ' + ((S.owned['egg-rainbow'] || 0) > 0 ? 1 : 0);
+  if (rbCache.pulls !== pulls) { rbCache.pulls = pulls; $id('st-pulls').textContent = pulls; }
+  if (rbCache.kills !== kills) { rbCache.kills = kills; $id('st-kills').textContent = kills; }
+  if (rbCache.lower !== lower) { rbCache.lower = lower; $id('st-lower').textContent = lower; }
+  if (rbCache.upper !== upper) { rbCache.upper = upper; $id('st-upper').textContent = upper; }
+  if (rbCache.top !== top) { rbCache.top = top; $id('st-top').textContent = top; }
+  if (rbCache.shiny !== shiny) { rbCache.shiny = shiny; $id('st-shiny').textContent = shiny; }
   renderLog();
   updateBattle();
 }

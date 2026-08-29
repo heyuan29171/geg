@@ -2,6 +2,7 @@ let S = null;
 let P0 = 20;
 let monsterHp = 1;
 let lastTick = 0;
+let achTickN = 0;
 
 function isEggUpgraded() { return !!(S && S.eggUpgraded); }
 
@@ -127,7 +128,7 @@ function tick(now) {
     onReward(res);
   }
   updateBattle();
-  checkAchievements();
+  if (++achTickN % 4 === 0) checkAchievements(); // 每 ~1s 全量检查；事件点（点击/开蛋/抽卡）已即时触发
   nestTickCheck();
 }
 

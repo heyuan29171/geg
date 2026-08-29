@@ -9,7 +9,7 @@
     im.onload = () => {
       if (im.naturalWidth > 0) {
         PNG_READY.add(c.id);
-        renderAll();
+        renderSoon();
       }
     };
     im.src = 'img/cards/thumb/' + c.id + '.jpg';
