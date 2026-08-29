@@ -247,8 +247,8 @@ const CARDS = [
   { id: 'g2-board-uno', name: '变色牌', rarity: 'red', art: { type: 'emoji', emoji: '🌈' }, desc: '能变颜色的纸牌，一扔出去全场换色。', flavor: '它最喜欢喊反转。', formation: ['g2-board-dice', 'g2-board-werewolf', 'g2-board-sgs', 'g2-board-monopoly', 'g2-board-queen', 'g2-board-go'] },
   { id: 'g2-board-queen', name: '王后', rarity: 'gold', art: { type: 'emoji', emoji: '♛' }, desc: '棋盘上横冲直撞的王后，没有她到不了的格。', flavor: '她的吃法一条直线通杀。', formation: ['g2-board-dice', 'g2-board-werewolf', 'g2-board-sgs', 'g2-board-monopoly', 'g2-board-uno', 'g2-board-go'] },
   { id: 'g2-board-go', name: '落子神', rarity: 'gold', art: { type: 'emoji', emoji: '⚫' }, desc: '闭眼落子的棋圣，落子无悔。', flavor: '他数棋的时候数两遍，怕数错。', formation: ['g2-board-dice', 'g2-board-werewolf', 'g2-board-sgs', 'g2-board-monopoly', 'g2-board-uno', 'g2-board-queen'] },
-  { id: 'g2-game-all', name: '全能玩家', rarity: 'rainbow', art: { type: 'emoji', emoji: '👾' }, desc: '所有游戏的存档都在它的卡带里。', flavor: '它掉线的时候，全世界都会卡一下。', formation: ['g2-crystal-final'] },
-  { id: 'g2-crystal-final', name: '最终水晶', rarity: 'rainbow', art: { type: 'emoji', emoji: '💎' }, desc: '所有故事都是为了守护它而展开。', flavor: '它一碎，世界就要重来。', formation: ['g2-game-all'] },
+  { id: 'g2-game-all', name: '全能玩家', rarity: 'rainbow', art: { type: 'emoji', emoji: '👾' }, desc: '所有游戏的存档都在它的卡带里。', flavor: '它掉线的时候，全世界都会卡一下。', formation: ['egg-gold', 'egg-wood', 'egg-water', 'egg-fire', 'egg-earth', 'sapling', 'ember', 'droplet', 'g2-mario-plumber', 'g2-poke-ball', 'g2-ow-egg'] },
+  { id: 'g2-crystal-final', name: '最终水晶', rarity: 'rainbow', art: { type: 'emoji', emoji: '💎' }, desc: '所有故事都是为了守护它而展开。', flavor: '它一碎，世界就要重来。', formation: ['chaos-lord', 'abyss-lord', 'void-dragon', 'storm-lord', 'g2-zeld-ganon', 'g2-wow-arthas', 'g2-sekiro-isshin', 'g2-elden-marika', 'g2-diablo-lord', 'g2-dota-shadow', 'g2-hollow-knight'] },
 ];
 
 CARDS.forEach((c, i) => { c.no = i + 1; });
