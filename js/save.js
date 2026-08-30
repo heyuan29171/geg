@@ -207,7 +207,7 @@ function sanitizeRogue(raw) {
   return {
     team: Array.isArray(raw.team) ? raw.team.filter(s => s && typeof s.id === 'string' && CARD_MAP[s.id]).map(s => ({
       id: s.id,
-      lv: num(s.lv, 0, 0, 240),
+      lv: num(s.lv, 0, 0, 2000),
     })) : [],
     wave: num(raw.wave, 1, 1, 1e5),
     baseInterval: rogueNum(raw.baseInterval, CONFIG.INTERVAL_BASE),
@@ -255,7 +255,7 @@ function sanitizeRogueBest(raw) {
     wave: num(raw.wave, 0, 0, 1e5),
     team: raw.team.filter(s => s && typeof s.id === 'string' && CARD_MAP[s.id]).map(s => ({
       id: s.id,
-      lv: num(s.lv, 0, 0, 240),
+      lv: num(s.lv, 0, 0, 2000),
     })),
     frags: num(raw.frags, 0, 0, 1e15),
     coins: num(raw.coins, 0, 0, 1e15),

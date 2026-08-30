@@ -108,7 +108,7 @@ function rogueStats() {
     press: rogueMechLayer('press'),
   };
   if (lv.growth) st.dmgMult *= Math.pow(1.44, lv.growth);
-  const rawCrit = 0.01 * (u.crit || 0) * Math.pow(1.5, lv.crit) + 0.02 * lv.crit;
+  const rawCrit = 0.01 * (u.crit || 0) * Math.pow(CONFIG.ROGUE.CRIT_RATE_BASE, lv.crit) + 0.02 * lv.crit;
   st.critRate = Math.min(0.9, rawCrit);
   if (rawCrit > 0.9) st.dmgMult *= 1 + (rawCrit - 0.9) * 0.1;
   if (lv.smash) st.smashDmg = 2 * Math.pow(1.5, lv.smash - 1);
@@ -122,6 +122,10 @@ function rogueStats() {
   st.timeBonus += 0.5 * (u.time || 0);
   st.weakAuto = 0.01 * (u.weakauto || 0);
   st.critRate = Math.min(0.9, st.critRate);
+  if (st.atkPerSec > CONFIG.ROGUE.ATTACK_CAP) {
+    st.dmgMult *= st.atkPerSec / CONFIG.ROGUE.ATTACK_CAP;
+    st.atkPerSec = CONFIG.ROGUE.ATTACK_CAP;
+  }
   return st;
 }
 
@@ -132,7 +136,7 @@ function rogueTimeout() {
 function rogueMonsterHp(wave) {
   const R = S.rogue;
   const base = Math.max(rogueTeamPower() * CONFIG.ROGUE.MONSTER_BASE, 1);
-  return base * Math.pow(CONFIG.ROGUE.MONSTER_GROWTH, wave - 1) * rogueStats().hpCut;
+  return Math.min(base * Math.pow(CONFIG.ROGUE.MONSTER_GROWTH0 + CONFIG.ROGUE.MONSTER_GROWTH1 * (wave - 1), wave - 1) * rogueStats().hpCut, 1e308);
 }
 
 // 碎片只由波数与抽数率决定（同战力同波奖励恒定，局内时长不参与）：
@@ -501,7 +505,7 @@ function rogueTick(now) {
   R.attackAcc += dt * st.atkPerSec;
   R.smashT += dt;
   let guard = 0;
-  while (R.attackAcc >= 1 && guard++ < 50) {
+  while (R.attackAcc >= 1 && guard++ < 150) {
     R.attackAcc -= 1;
     rogueAttack(now);
     if (!S.rogue || S.rogue.offer) return;
@@ -725,7 +729,7 @@ function rogueRunHTML() {
   const R = S.rogue;
   const st = rogueStats();
   const timeout = rogueTimeout();
-  const growth = Math.pow(CONFIG.ROGUE.MONSTER_GROWTH, R.wave - 1);
+  const growth = Math.pow(CONFIG.ROGUE.MONSTER_GROWTH0 + CONFIG.ROGUE.MONSTER_GROWTH1 * (R.wave - 1), R.wave - 1);
   const mechInfo = Object.keys(CONFIG.ROGUE.MECHANICS).map(m => {
     const layer = rogueMechLayer(m);
     const n = rogueBondLevel(m);
