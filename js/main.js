@@ -367,6 +367,40 @@ function bindEvents() {
   });
 
   $id('btn-export').addEventListener('click', () => Save.export(S));
+  $id('btn-copy-code').addEventListener('click', () => {
+    const code = encodeSave(S);
+    const done = () => toast('存档码已复制，可粘贴保存或发给别人', '', 4000);
+    const fail = () => toast('复制失败，请手动复制', 'rc-white');
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code).then(done).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = code;
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); done(); } catch (e) { fail(); }
+        ta.remove();
+      });
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); done(); } catch (e) { fail(); }
+      ta.remove();
+    }
+  });
+  $id('btn-import-code').addEventListener('click', () => {
+    const code = $id('save-code-input').value.trim();
+    if (!code) { toast('先粘贴存档码', 'rc-white'); return; }
+    const obj = decodeSave(code);
+    if (!obj) { toast('存档码不正确', 'rc-red', 4000); return; }
+    const s = sanitize(obj);
+    localStorage.setItem(SAVE_KEY, JSON.stringify(s));
+    S = s;
+    window.removeEventListener('pagehide', onPageHide);
+    toast('导入成功，页面刷新');
+    setTimeout(() => location.reload(), 800);
+  });
   $id('btn-import').addEventListener('click', () => $id('import-file').click());
   $id('import-file').addEventListener('change', e => {
     const f = e.target.files[0];

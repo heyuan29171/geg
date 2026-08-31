@@ -1264,6 +1264,9 @@ body.no-anim * {
   transition: none !important;
 }
 
+.save-code-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.save-code-input { flex: 1; min-width: 200px; box-sizing: border-box; }
+
 @keyframes frame-grad-slide {
   from { background-position: 0 0; }
   to { background-position: 56px 0; }

@@ -179,9 +179,14 @@
       <p>同一浏览器下多个页面共用一份存档；需要独立存档时，在网址后加 <code>?save=名字</code>（如 <code>index.html?save=test</code>）。</p>
       <div class="btn-row">
         <button class="btn" id="btn-export">导出存档</button>
+        <button class="btn" id="btn-copy-code">复制存档码</button>
         <button class="btn" id="btn-import">导入存档</button>
         <input type="file" id="import-file" accept=".geg,text/plain,application/json" hidden>
         <button class="btn danger" id="btn-reset">重置存档（点两次确认）</button>
+      </div>
+      <div class="save-code-row">
+        <input class="search-input save-code-input" id="save-code-input" type="text" placeholder="粘贴存档码，点击「导入存档码」覆盖当前存档" spellcheck="false">
+        <button class="btn" id="btn-import-code">导入存档码</button>
       </div>
     </div>
     <div class="panel">
