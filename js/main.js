@@ -293,11 +293,13 @@ function bindEvents() {
   $id('rogue-goal').addEventListener('click', e => {
     const b = e.target.closest('[data-goal]');
     if (!b) return;
-    const n = parseInt(b.dataset.goal, 10);
-    if (!n) {
+    const g = b.dataset.goal;
+    if (g === '0') {
       rogueCancelRun();
       return;
     }
+    const n = parseInt($id('rogue-goal-input').value, 10);
+    if (!n || n < 4 || n > 99) { toast('立约波数需在 4~99 之间', 'rc-white'); return; }
     if (rogueChooseGoal(n)) Save.write(S);
   });
 

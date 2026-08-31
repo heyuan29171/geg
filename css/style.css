@@ -1476,6 +1476,7 @@ body.dark .rogue-pick-card:hover { border-color: var(--accent); }
 #rogue-pick-reroll.hidden { display: none; }
 .rogue-goal-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 4px; }
 .rogue-goal-btn { min-width: 44px; padding: 8px 0; font-size: 15px; font-weight: 700; }
+.rogue-goal-input { width: 96px; text-align: center; font-size: 15px; font-weight: 700; box-sizing: border-box; }
 #rogue-pick-reroll {
   background: linear-gradient(135deg, #fbbf24, #f59e0b);
   border-color: #d97706;
