@@ -243,13 +243,13 @@ function rogueStart() {
   return true;
 }
 
-// 契约机制（滚动）：每段立约 3~5 波，打满重新弹窗续约；金币按段记账，
+// 契约机制（滚动）：每段立约 5~10 波，打满重新弹窗续约；金币按段记账，
 // 未达承诺（含撤退）没收本段赚到的全部金币（已兑现段落锁定），「取消」在段间隙=全额结算离场
 function rogueChooseGoal(n) {
   const R = S.rogue;
-  if (!R || !R.awaiting || !n || n < 3 || n > 5) return false;
-  R.goalPaid = false; // 每段立约复位，上一段立满 5 波则本段续约兑现一次奖励
-  const bonusEligible = R.lastGoal === 5 && !R.goalPaid;
+  if (!R || !R.awaiting || !n || n < 5 || n > 10) return false;
+  R.goalPaid = false; // 每段立约复位，上一段立满 10 波则本段续约兑现一次奖励
+  const bonusEligible = R.lastGoal === 10 && !R.goalPaid;
   R.goal = n | 0;
   R.awaiting = false;
   R.segStartWave = R.wave;
@@ -262,7 +262,7 @@ function rogueChooseGoal(n) {
     const ev = keys[Math.floor(Math.random() * keys.length)];
     R.offer[R.offer.length - 1] = { kind: 'event', eventId: ev, id: 'event', bonus: true };
     R.goalPaid = true;
-    if (typeof toast === 'function') toast('达成 5 波契约，附赠一张事件卡！', 'rc-gold', 4000);
+    if (typeof toast === 'function') toast('达成 10 波契约，附赠一张事件卡！', 'rc-gold', 4000);
   }
   rogueHideGoal();
   if (typeof renderRogue === 'function') renderRogue();
@@ -298,12 +298,14 @@ function rogueGoalOpen() {
 function rogueShowGoal() {
   const m = $id('rogue-goal');
   if (!m) return;
+  const ab = $id('rogue-goal-auto');
+  if (ab) ab.textContent = '自动选强化：' + (S.rogueAuto ? '开' : '关');
   const sub = $id('rogue-goal-sub');
   if (sub) {
     const R = S.rogue;
     sub.textContent = (!R || R.lastGoal == null)
-      ? '立约 3~5 波后开打；未达承诺（含主动撤退）将失去本段赚到的全部金币。取消则本局作废、无得无损'
-      : '上一契约（' + R.lastGoal + ' 波）已兑现，已赚金币锁定。续约 3~5 波继续，取消即全额结算离场';
+      ? '立约 5~10 波后开打；未达承诺（含主动撤退）将失去本段赚到的全部金币。取消则本局作废、无得无损'
+      : '上一契约（' + R.lastGoal + ' 波）已兑现，已赚金币锁定。续约 5~10 波继续，取消即全额结算离场';
   }
   m.classList.remove('hidden');
 }
@@ -324,6 +326,10 @@ function rogueWinWave() {
   R.offer = rogueRollOptions();
   R.rerollN = 0;
   if (typeof renderRogue === 'function') renderRogue();
+  // 自动选强化：开启时直接选第一个选项（swap 除外，需要玩家挑目标）
+  if (S.rogueAuto && R.offer && R.offer[0] && R.offer[0].kind !== 'swap') {
+    roguePick(0);
+  }
 }
 
 function roguePick(optIdx) {
@@ -753,14 +759,15 @@ function rogueRunHTML() {
     '<span class="hint">战力 ' + rogueFmt(rogueTeamPower()) + '</span></div>' +
     '<div class="rogue-team">' + (R.team.length ? R.team.map(rogueCardHTML).join('') : '<span class="hint">等待第一张卡…</span>') + '</div>' +
     '<div class="rogue-bank" id="rogue-bank-text"></div>' +
-    '<div class="btn-row"><button class="btn danger" data-rogue="retreat">撤退结算（当前波不计入）</button></div>' +
+    '<div class="btn-row"><button class="btn btn-sm" id="rogue-run-auto" data-rogue="autotoggle">自动选强化：' + (S.rogueAuto ? '开' : '关') + '</button>' +
+    '<button class="btn danger" data-rogue="retreat">撤退结算（当前波不计入）</button></div>' +
     '</div>';
 }
 
 function rogueHomeHTML() {
   return '<div class="panel">' +
     '<h3>冒险（肉鸽）</h3>' +
-    '<p>从你<b>已拥有的卡</b>里三选一组建 5 人队伍，迎战一波比一波强的怪物，无限波。<b>上阵会消耗一张该卡</b>（至少留一张在包），结算后不返还。滚动立约 3~5 波：未达承诺（含主动撤退）<b>本段赚到的金币全部没收</b>，已兑现段落锁定；立约满 5 波且达成，续约时附赠奖励卡。每波限时 ' + CONFIG.ROGUE.WAVE_TIMEOUT + ' 秒。</p>' +
+    '<p>从你<b>已拥有的卡</b>里三选一组建 5 人队伍，迎战一波比一波强的怪物，无限波。<b>上阵会消耗一张该卡</b>（至少留一张在包），结算后不返还。滚动立约 5~10 波：未达承诺（含主动撤退）<b>本段赚到的金币全部没收</b>，已兑现段落锁定；立约满 10 波且达成，续约时附赠奖励卡。每波限时 ' + CONFIG.ROGUE.WAVE_TIMEOUT + ' 秒。</p>' +
     '<p><b>弱点时刻</b>：怪物发亮时点击它，造成一次必定暴击的重击；离线挂机由「弱点直觉」等级概率自动命中。</p>' +
     '<p><b>流派机制</b>：每张卡自带 1 层流派被动，强化每 3 级再 +1 层；同族卡层数累加共享，专精一族收益最大；强化 3 次触发<b>超进化</b>，战力大幅增强。</p>' +
     '<p>三选一可花金币重掷；偶尔出现事件卡。碎片按波数结算：每通过一波 = 当前抽数率挂机 ' + CONFIG.ROGUE.FRAG_WAVE_SECS + ' 秒的收益 ×' + CONFIG.ROGUE.FRAG_EQUIV_MULT + '，同战力同波奖励恒定。金币随波数递增，用于下方局外养成。</p>' +

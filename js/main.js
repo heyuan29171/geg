@@ -273,6 +273,11 @@ function bindEvents() {
       rogueShowGoal();
     } else if (act === 'weak') {
       rogueWeakClick();
+    } else if (act === 'autotoggle') {
+      S.rogueAuto = !S.rogueAuto;
+      Save.write(S);
+      renderRogue();
+      toast(S.rogueAuto ? '自动选强化已开启（选到换卡时仍需手动）' : '自动选强化已关闭', '', 3000);
     } else if (act && act.indexOf('upgrade:') === 0) {
       const key = act.slice(8);
       if (rogueUpgrade(key)) {
@@ -294,6 +299,16 @@ function bindEvents() {
       return;
     }
     if (rogueChooseGoal(n)) Save.write(S);
+  });
+
+  $id('rogue-goal-auto').addEventListener('click', () => {
+    S.rogueAuto = !S.rogueAuto;
+    Save.write(S);
+    const b = $id('rogue-goal-auto');
+    if (b) b.textContent = '自动选强化：' + (S.rogueAuto ? '开' : '关');
+    const rb = $id('rogue-run-auto');
+    if (rb) rb.textContent = '自动选强化：' + (S.rogueAuto ? '开' : '关');
+    toast(S.rogueAuto ? '自动选强化已开启（选到换卡时仍需手动）' : '自动选强化已关闭', '', 3000);
   });
 
   $id('rogue-pick').addEventListener('click', e => {
