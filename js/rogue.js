@@ -117,8 +117,8 @@ function rogueStats() {
   st.atkPerSec *= Math.pow(1.4, lv.haste);
   st.timeBonus += 5 * Math.pow(1.5, lv.delay - 1);
   st.critMult *= Math.pow(1.4, lv.crit);
-  st.dmgMult *= 1 + 0.02 * (u.damage || 0);
-  st.critMult *= 1 + 0.05 * (u.critd || 0);
+  st.dmgMult *= Math.pow(1.07, u.damage || 0);
+  st.critMult *= Math.pow(1.05, u.critd || 0);
   st.timeBonus += 0.5 * (u.time || 0);
   st.weakAuto = 0.01 * (u.weakauto || 0);
   st.critRate = Math.min(0.9, st.critRate);
